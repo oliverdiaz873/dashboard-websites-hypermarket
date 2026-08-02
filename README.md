@@ -74,19 +74,19 @@ src/
 - **Angular Material** = componentes complejos (dialogs, forms, overlays…).
 - **SCSS parciales** (`src/styles/`) = tokens, resets, tipografía, animaciones.
 
-| Archivo            | Responsabilidad                                               |
-| ------------------ | ------------------------------------------------------------- |
-| `_variables.scss`  | Tokens: colores, tipografía, spacing, radios, sombras, z      |
-| `_mixins.scss`     | Mixins reutilizables (container, media, focus, card…)         |
-| `_functions.scss`  | Funciones puras (rem, fluid, tint/shade, contrast)            |
-| `_reset.scss`      | Reset CSS moderno                                             |
-| `_typography.scss` | Jerarquía tipográfica base                                    |
-| `_animations.scss` | Keyframes y clases de animación                               |
-| `_utilities.scss`  | Utilidades propias que complementan a Tailwind                |
-| `styles.scss`      | Entry: parciales + `@theme` de Tailwind + tema M3 de Material |
+| Archivo            | Responsabilidad                                                |
+| ------------------ | -------------------------------------------------------------- |
+| `_variables.scss`  | Tokens: colores, tipografía, spacing, radios, sombras, z       |
+| `_mixins.scss`     | Mixins reutilizables (container, media, focus, card…)          |
+| `_functions.scss`  | Funciones puras (rem, fluid, tint/shade, contrast)             |
+| `_reset.scss`      | Reset CSS moderno                                              |
+| `_typography.scss` | Jerarquía tipográfica base                                     |
+| `_animations.scss` | Keyframes y clases de animación                                |
+| `_utilities.scss`  | Utilidades propias que complementan a Tailwind                 |
+| `styles.scss`      | Entry: parciales + tokens CSS (`--hs-*`) + tema M3 de Material |
 
 Los tokens de `_variables.scss` se exponen a Tailwind v4 mediante el bloque
-`@theme` de `styles.scss`, de modo que utilidades como `bg-brand-600` o
+`@theme` de `src/tailwind.css`, de modo que utilidades como `bg-brand-600` o
 `text-muted` nacen de la **misma fuente de verdad**. Tailwind se importa como
 entry aparte (`src/tailwind.css`) porque el compilador Sass no resuelve
 `@use 'tailwindcss'`.
@@ -96,6 +96,11 @@ entry aparte (`src/tailwind.css`) porque el compilador Sass no resuelve
 - API base en desarrollo: `http://localhost:3000/api` (Express + MongoDB).
 - El CORS del backend ya permite `http://localhost:4200`.
 - Configurable desde `src/environments/` (`apiBaseUrl`).
+
+> **Nota sobre producción:** `environment.ts` contiene
+> `apiBaseUrl: "http://localhost:3000/api"` **únicamente para desarrollo
+> local** (actúa como placeholder). Antes del primer despliegue deberá
+> configurarse la URL pública del backend en el entorno de producción.
 
 ---
 

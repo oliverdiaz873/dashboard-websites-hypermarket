@@ -2,8 +2,9 @@
 // _variables.scss
 // -----------------------------------------------------------------------------
 // Tokens de diseño de la aplicación. Es la FUENTE ÚNICA DE VERDAD:
-//   - Las utilidades de Tailwind v4 se generan a partir de estas variables
-//     mediante el bloque `@theme` de `styles.scss`.
+//   - `styles.scss` los expone como CSS custom properties (`--hs-*`).
+//   - `tailwind.css` los consume en su bloque `@theme` para generar las
+//     utilidades de Tailwind v4 (bg-brand-600, text-muted, …).
 //   - Los componentes consumen los tokens vía `@use 'variables' as *;`
 //     (gracias a `stylePreprocessorOptions.includePaths`).
 // -----------------------------------------------------------------------------
