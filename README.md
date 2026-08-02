@@ -19,6 +19,56 @@ administradores, construido sobre la API REST del backend
 
 ---
 
+## System Architecture
+
+Este repositorio es el **Admin Application (panel administrativo)** del ecosistema
+**Hipermercado Superior**. Es el cliente de administración del sistema y consume la
+misma API REST central del backend que los storefronts públicos de clientes.
+
+```
+                    Hipermercado Superior Ecosystem
+
+        backend-advanced-websites-hypermarket-express-mongodb
+                         Express REST API
+                                      |
+        -----------------------------------------------------------------
+        |                           |                            |
+        |                           |                            |
+pre-advanced-websites-    pre-advanced-websites-      dashboard-websites-
+hypermarket-next          hypermarket-angular         hypermarket
+
+   Next.js Storefront         Angular Storefront      Angular Admin Dashboard
+     (Customer App)            (Customer App)              (Admin App)
+                                      |
+                                      ▼
+                                 MongoDB
+```
+
+| Repository                                            | Type              | Technology                        | Purpose                    |
+| ----------------------------------------------------- | ----------------- | --------------------------------- | -------------------------- |
+| backend-advanced-websites-hypermarket-express-mongodb | Backend API       | Express + MongoDB + JWT           | API central del sistema    |
+| pre-advanced-websites-hypermarket-next                | Customer Frontend | Next.js + React                   | Tienda pública             |
+| pre-advanced-websites-hypermarket-angular             | Customer Frontend | Angular                           | Tienda pública alternativa |
+| dashboard-websites-hypermarket                        | Admin Frontend    | Angular + Material + NgRx Signals | Panel administrativo       |
+
+**Admin Application** — Este repositorio es el cliente administrativo del sistema:
+ofrece la gestión interna (productos, inventario, pedidos, clientes, estadísticas y
+usuarios/roles) a través de la API REST central.
+
+### Flujo de comunicación
+
+```
+Storefronts (Next · Angular) · Admin Dashboard (este repo)
+        │
+        ▼
+backend-advanced-websites-hypermarket-express-mongodb (Express REST API)
+        │
+        ▼
+MongoDB
+```
+
+---
+
 ## Arquitectura
 
 Arquitectura **Feature-Based** preparada para crecer durante años. Cada dominio
