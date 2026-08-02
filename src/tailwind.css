@@ -1,0 +1,83 @@
+/*
+ * tailwind.css — Entry de Tailwind CSS v4
+ * ---------------------------------------------------------------------------
+ * Es el ÚNICO archivo que importa Tailwind (`@import 'tailwindcss'`). El plugin
+ * de PostCSS procesa el bloque `@theme` solo si está en este archivo.
+ *
+ * Los valores provienen de `_variables.scss` (fuente única de verdad): `styles.scss`
+ * los expone como CSS custom properties `--hs-*` y aquí se mapean a los tokens de
+ * Tailwind (--color-*, --font-*, --radius-*, --shadow-*, --z-*). Así, utilidades
+ * como `bg-brand-600`, `text-muted`, `rounded-lg` o `shadow-md` funcionan.
+ */
+
+@import 'tailwindcss';
+
+@theme {
+  /* Tipografía */
+  --font-sans: var(--hs-font-sans);
+  --font-heading: var(--hs-font-heading);
+
+  /* Paleta principal (Hipermercado Superior) */
+  --color-brand-50: var(--hs-brand-50);
+  --color-brand-100: var(--hs-brand-100);
+  --color-brand-200: var(--hs-brand-200);
+  --color-brand-300: var(--hs-brand-300);
+  --color-brand-400: var(--hs-brand-400);
+  --color-brand-500: var(--hs-brand-500);
+  --color-brand-600: var(--hs-brand-600);
+  --color-brand-700: var(--hs-brand-700);
+  --color-brand-800: var(--hs-brand-800);
+  --color-brand-900: var(--hs-brand-900);
+  --color-brand-950: var(--hs-brand-950);
+
+  /* Paleta neutra */
+  --color-neutral-50: var(--hs-neutral-50);
+  --color-neutral-100: var(--hs-neutral-100);
+  --color-neutral-200: var(--hs-neutral-200);
+  --color-neutral-300: var(--hs-neutral-300);
+  --color-neutral-400: var(--hs-neutral-400);
+  --color-neutral-500: var(--hs-neutral-500);
+  --color-neutral-600: var(--hs-neutral-600);
+  --color-neutral-700: var(--hs-neutral-700);
+  --color-neutral-800: var(--hs-neutral-800);
+  --color-neutral-900: var(--hs-neutral-900);
+  --color-neutral-950: var(--hs-neutral-950);
+
+  /* Estados semánticos */
+  --color-success-500: var(--hs-success-500);
+  --color-success-600: var(--hs-success-600);
+  --color-warning-500: var(--hs-warning-500);
+  --color-warning-600: var(--hs-warning-600);
+  --color-danger-500: var(--hs-danger-500);
+  --color-danger-600: var(--hs-danger-600);
+  --color-info-500: var(--hs-info-500);
+  --color-info-600: var(--hs-info-600);
+
+  /* Superficies y texto */
+  --color-surface: var(--hs-surface);
+  --color-surface-alt: var(--hs-surface-alt);
+  --color-border: var(--hs-border);
+  --color-muted: var(--hs-muted);
+
+  /* Radios */
+  --radius-sm: var(--hs-radius-sm);
+  --radius-md: var(--hs-radius-md);
+  --radius-lg: var(--hs-radius-lg);
+  --radius-xl: var(--hs-radius-xl);
+
+  /* Sombras */
+  --shadow-sm: var(--hs-shadow-sm);
+  --shadow-md: var(--hs-shadow-md);
+  --shadow-lg: var(--hs-shadow-lg);
+  --shadow-xl: var(--hs-shadow-xl);
+
+  /* Z-index */
+  --z-dropdown: var(--hs-z-dropdown);
+  --z-sticky: var(--hs-z-sticky);
+  --z-fixed: var(--hs-z-fixed);
+  --z-modal-backdrop: var(--hs-z-modal-backdrop);
+  --z-modal: var(--hs-z-modal);
+  --z-popover: var(--hs-z-popover);
+  --z-tooltip: var(--hs-z-tooltip);
+  --z-toast: var(--hs-z-toast);
+}

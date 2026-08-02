@@ -1,0 +1,115 @@
+// -----------------------------------------------------------------------------
+// _animations.scss
+// -----------------------------------------------------------------------------
+// Keyframes y clases de animación reutilizables.
+// -----------------------------------------------------------------------------
+
+@use 'variables' as *;
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in $transition-base both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up $transition-base both;
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down $transition-base both;
+}
+
+.animate-scale-in {
+  animation: scale-in $transition-base both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right $transition-base both;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/// Placeholder de carga con efecto shimmer.
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    $color-neutral-100 25%,
+    $color-neutral-200 37%,
+    $color-neutral-100 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+}

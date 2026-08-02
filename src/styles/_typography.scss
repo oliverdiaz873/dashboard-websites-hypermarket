@@ -1,0 +1,49 @@
+// -----------------------------------------------------------------------------
+// _typography.scss
+// -----------------------------------------------------------------------------
+// Jerarquía tipográfica global y estilos de texto base.
+// Las utilidades de tamaño/peso (text-sm, font-bold, ...) las genera Tailwind
+// a partir de los tokens de `_variables.scss` vía el bloque `@theme`; aquí solo
+// se definen la base y la jerarquía de encabezados.
+// -----------------------------------------------------------------------------
+
+@use 'variables' as *;
+
+html {
+  font-family: $font-family-base;
+  font-size: 16px;
+  line-height: $line-height-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-family-heading;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+}
+
+h1 {
+  font-size: $font-size-3xl;
+}
+
+h2 {
+  font-size: $font-size-2xl;
+}
+
+h3 {
+  font-size: $font-size-xl;
+}
+
+h4 {
+  font-size: $font-size-lg;
+}
+
+small {
+  font-size: $font-size-sm;
+}

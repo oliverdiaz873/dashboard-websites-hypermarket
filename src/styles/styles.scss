@@ -1,0 +1,138 @@
+// -----------------------------------------------------------------------------
+// styles.scss — Entry global de estilos del dashboard
+// -----------------------------------------------------------------------------
+// Responsabilidades:
+//   1. Cargar los parciales del design system (tokens, mixins, funciones,
+//      reset, tipografía, animaciones y utilidades propias).
+//   2. Exponer los tokens de `_variables.scss` como CSS custom properties
+//      (`--hs-*`) para que `src/tailwind.css` los consuma en su bloque `@theme`
+//      y genere las utilidades Tailwind (bg-brand-600, text-muted, ...) desde
+//      la MISMA fuente de verdad.
+//   3. Configurar el tema de Angular Material (M3) de forma mínima. El design
+//      system propio se construirá en fases posteriores.
+//
+// NOTA: Tailwind se importa como entry aparte en `src/tailwind.css`
+//       (`@import 'tailwindcss'`). El compilador Sass no puede inlinear ese
+//       import y el plugin de Tailwind v4 solo procesa `@theme` dentro del
+//       archivo que contiene dicho import; por eso los tokens se enlazan vía
+//       variables CSS. Ambos archivos figuran en `angular.json` > styles.
+// -----------------------------------------------------------------------------
+
+// --- Sass built-ins ---
+@use 'sass:math';
+@use 'sass:color';
+
+// --- Parciales del design system ---
+@use 'variables' as *;
+@use 'functions' as *;
+@use 'mixins' as *;
+@use 'reset';
+@use 'typography';
+@use 'animations';
+@use 'utilities';
+
+// --- Angular Material (Material 3, tema mínimo) ---
+@use '@angular/material' as mat;
+
+// --- Tokens del design system como CSS custom properties ----------------------
+// Estos `--hs-*` son el puente hacia Tailwind: `tailwind.css` los consume en su
+// bloque `@theme` (p. ej. `--color-brand-600: var(--hs-brand-600)`), de modo que
+// los valores viven una sola vez, en `_variables.scss`.
+:root {
+  // Tipografía
+  --hs-font-sans: #{$font-family-base};
+  --hs-font-heading: #{$font-family-heading};
+
+  // Paleta principal (Hipermercado Superior)
+  --hs-brand-50: #{$color-brand-50};
+  --hs-brand-100: #{$color-brand-100};
+  --hs-brand-200: #{$color-brand-200};
+  --hs-brand-300: #{$color-brand-300};
+  --hs-brand-400: #{$color-brand-400};
+  --hs-brand-500: #{$color-brand-500};
+  --hs-brand-600: #{$color-brand-600};
+  --hs-brand-700: #{$color-brand-700};
+  --hs-brand-800: #{$color-brand-800};
+  --hs-brand-900: #{$color-brand-900};
+  --hs-brand-950: #{$color-brand-950};
+
+  // Paleta neutra
+  --hs-neutral-50: #{$color-neutral-50};
+  --hs-neutral-100: #{$color-neutral-100};
+  --hs-neutral-200: #{$color-neutral-200};
+  --hs-neutral-300: #{$color-neutral-300};
+  --hs-neutral-400: #{$color-neutral-400};
+  --hs-neutral-500: #{$color-neutral-500};
+  --hs-neutral-600: #{$color-neutral-600};
+  --hs-neutral-700: #{$color-neutral-700};
+  --hs-neutral-800: #{$color-neutral-800};
+  --hs-neutral-900: #{$color-neutral-900};
+  --hs-neutral-950: #{$color-neutral-950};
+
+  // Estados semánticos
+  --hs-success-500: #{$color-success-500};
+  --hs-success-600: #{$color-success-600};
+  --hs-warning-500: #{$color-warning-500};
+  --hs-warning-600: #{$color-warning-600};
+  --hs-danger-500: #{$color-danger-500};
+  --hs-danger-600: #{$color-danger-600};
+  --hs-info-500: #{$color-info-500};
+  --hs-info-600: #{$color-info-600};
+
+  // Superficies y texto
+  --hs-surface: #{$color-surface};
+  --hs-surface-alt: #{$color-surface-alt};
+  --hs-border: #{$color-border};
+  --hs-muted: #{$color-text-muted};
+
+  // Radios
+  --hs-radius-sm: #{$radius-sm};
+  --hs-radius-md: #{$radius-md};
+  --hs-radius-lg: #{$radius-lg};
+  --hs-radius-xl: #{$radius-xl};
+
+  // Sombras
+  --hs-shadow-sm: #{$shadow-sm};
+  --hs-shadow-md: #{$shadow-md};
+  --hs-shadow-lg: #{$shadow-lg};
+  --hs-shadow-xl: #{$shadow-xl};
+
+  // Z-index
+  --hs-z-dropdown: #{$z-dropdown};
+  --hs-z-sticky: #{$z-sticky};
+  --hs-z-fixed: #{$z-fixed};
+  --hs-z-modal-backdrop: #{$z-modal-backdrop};
+  --hs-z-modal: #{$z-modal};
+  --hs-z-popover: #{$z-popover};
+  --hs-z-tooltip: #{$z-tooltip};
+  --hs-z-toast: #{$z-toast};
+}
+
+// --- Tema mínimo de Angular Material (M3) -------------------------------------
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  // Tema claro por defecto (se podrá cambiar a `dark` o `light dark`).
+  color-scheme: light;
+
+  // Superficie, tipografía y color base desde las variables del sistema de Material.
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset de margen del agente de usuario.
+  margin: 0;
+  height: 100%;
+}

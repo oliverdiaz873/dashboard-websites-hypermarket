@@ -1,0 +1,26 @@
+// -----------------------------------------------------------------------------
+// _utilities.scss
+// -----------------------------------------------------------------------------
+// Utilidades globales propias que complementan a Tailwind (casos que no
+// quedan cubiertos por el utility-first). Evitar abusar: si Tailwind ya lo
+// resuelve, usar la clase de Tailwind.
+// -----------------------------------------------------------------------------
+
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Contenedor central.
+.container-app {
+  @include container;
+}
+
+// Scroll fino para paneles y tablas.
+.scrollbar-thin {
+  @include scrollbar;
+}
+
+// Auxiliar para accesibilidad: oculta visualmente pero sigue siendo legible
+// por lectores de pantalla.
+.visually-hidden {
+  @include visually-hidden;
+}

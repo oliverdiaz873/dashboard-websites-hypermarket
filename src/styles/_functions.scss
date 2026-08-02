@@ -1,0 +1,50 @@
+// -----------------------------------------------------------------------------
+// _functions.scss
+// -----------------------------------------------------------------------------
+// Funciones SCSS puras y reutilizables. NO generan CSS por sí solas.
+// -----------------------------------------------------------------------------
+
+@use 'sass:math';
+@use 'sass:color';
+
+/// Convierte un valor en px a rem según el tamaño base del documento.
+/// @param {Number} $px - Valor en píxeles.
+/// @param {Number} $base - Tamaño de fuente raíz (por defecto 16px).
+@function rem($px, $base: 16px) {
+  @if unit($px) == 'px' {
+    @return math.div($px, $base) * 1rem;
+  }
+
+  @return $px;
+}
+
+/// Clamp fluido para tamaños de fuente/responsive:
+/// `clamp($min, $preferred, $max)`.
+@function fluid($min, $max, $min-vw: 20rem, $max-vw: 90rem) {
+  $slope: math.div($max - $min, $max-vw - $min-vw);
+  $base: $min - $slope * $min-vw;
+
+  @return clamp($min, $base + $slope * 100vw, $max);
+}
+
+/// Aclara un color mezclándolo con blanco.
+@function tint($color, $percentage) {
+  @return color.mix(#ffffff, $color, $percentage);
+}
+
+/// Oscurece un color mezclándolo con negro.
+@function shade($color, $percentage) {
+  @return color.mix(#000000, $color, $percentage);
+}
+
+/// Calcula un color legible (blanco o negro) sobre un fondo dado,
+/// basándose en el contraste relativo de WCAG.
+@function contrast-color($background) {
+  $lightness: math.div(color.lightness($background), 100);
+
+  @if $lightness > 0.55 {
+    @return #000000;
+  }
+
+  @return #ffffff;
+}

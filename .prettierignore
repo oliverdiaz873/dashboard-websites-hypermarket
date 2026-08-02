@@ -1,0 +1,10 @@
+# Dependencies
+node_modules
+
+# Build outputs / cache
+dist
+coverage
+.angular
+
+# Lockfile (generado)
+package-lock.json

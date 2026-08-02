@@ -1,0 +1,102 @@
+// -----------------------------------------------------------------------------
+// _mixins.scss
+// -----------------------------------------------------------------------------
+// Mixins reutilizables. Se consumen con `@use 'mixins' as *;`.
+// -----------------------------------------------------------------------------
+
+@use 'sass:map';
+@use 'variables' as *;
+
+/// Contenedor centrado con ancho máximo configurable.
+@mixin container($max-width: $content-max-width) {
+  width: 100%;
+  max-width: $max-width;
+  margin-inline: auto;
+  padding-inline: $spacing-4;
+
+  @include media('md') {
+    padding-inline: $spacing-6;
+  }
+}
+
+/// Media query mobile-first.
+/// Uso: `@include media('sm')`, `@include media('lg')`.
+@mixin media($breakpoint) {
+  $bp: map.get(
+    (
+      'sm': $breakpoint-sm,
+      'md': $breakpoint-md,
+      'lg': $breakpoint-lg,
+      'xl': $breakpoint-xl,
+      '2xl': $breakpoint-2xl,
+    ),
+    $breakpoint
+  );
+
+  @if not $bp {
+    @error "Breakpoint desconocido: `#{$breakpoint}`.";
+  }
+
+  @media (min-width: $bp) {
+    @content;
+  }
+}
+
+/// Estilo de foco accesible para elementos interactivos.
+@mixin focus-visible {
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid $color-brand-500;
+    outline-offset: 2px;
+  }
+}
+
+/// Centra un elemento absoluto dentro de su contenedor posicionado.
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/// Oculta visualmente pero mantiene accesible para lectores de pantalla.
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/// Establece una tarjeta estándar del dashboard.
+@mixin card {
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+/// Barra de scroll fina y discreta.
+@mixin scrollbar($thumb-color: $color-neutral-300, $size: 8px) {
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-color transparent;
+
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb-color;
+    border-radius: $radius-full;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
