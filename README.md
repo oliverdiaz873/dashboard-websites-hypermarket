@@ -6,9 +6,9 @@ administradores, construido sobre la API REST del backend
 
 > **Project Status**
 >
-> - **Current Phase:** `Phase 0 — Foundation` ✅ (esta fase)
-> - **Upcoming:** `Phase 1 — Authentication` · `Phase 2 — Dashboard Layout` ·
->   `Phase 3 — Shared Components` · `Phase 4+ — Productos, Órdenes, Estadísticas…`
+> - **Current Phase:** `Phase 1 — Core` ✅ (esta fase)
+> - **Upcoming:** `Phase 2 — Authentication` · `Phase 3 — Dashboard Layout` ·
+>   `Phase 4 — Shared Components` · `Phase 5+ — Productos, Órdenes, Estadísticas…`
 
 ---
 
@@ -22,12 +22,15 @@ reparte entre `core/` (singletons) y `shared/` (reutilizable).
 src/
 ├─ app/                  # Shell de la aplicación (AppComponent, config, rutas)
 ├─ core/                 # Singletons de ámbito app-wide
+│   ├─ config/           # Configuración de la app (AppConfig + APP_CONFIG)
 │   ├─ guards/           # Route guards (auth, role)
-│   ├─ interceptors/     # HTTP interceptors (JWT, error handling)
+│   ├─ interceptors/     # HTTP interceptors (JWT, loading, error)
 │   ├─ services/         # Servicios singleton
-│   ├─ state/            # Gestión de estado con Signals (sesión, tema, …)
+│   ├─ state/            # Gestión de estado con Signals (@ngrx/signals)
+│   ├─ http/             # Capa HTTP (config, endpoints, BaseApiService)
+│   ├─ tokens/           # Injection tokens de la app (AUTH_TOKEN, …)
 │   ├─ models/           # Modelos de dominio
-│   ├─ constants/        # Constantes globales
+│   ├─ constants/        # Constantes globales (storage keys, …)
 │   ├─ enums/            # Enumeraciones de dominio
 │   └─ utils/            # Utilidades puras
 ├─ shared/               # Componentes/directivas/pipes reutilizables
@@ -64,6 +67,7 @@ src/
 | Tailwind CSS **v4**   | Layout y utilidades (utility-first)        |
 | SCSS                  | Tokens, mixins, resets y reglas globales   |
 | RxJS                  | Programación reactiva (HTTP, streams)      |
+| @ngrx/signals         | Estado global (stores de `core/state`)     |
 | Jest 30               | Tests unitarios (`@angular-builders/jest`) |
 | ESLint + Prettier     | Lint y formato                             |
 | Husky + lint-staged   | Git hooks de calidad                       |
