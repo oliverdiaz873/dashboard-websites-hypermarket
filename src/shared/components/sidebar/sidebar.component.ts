@@ -18,6 +18,7 @@ import { filter } from 'rxjs';
 
 import { APP_CONFIG } from '@core/config/app.config';
 import { NAVIGATION_ITEMS } from '@core/constants/navigation';
+import { AuthStore } from '@core/state/auth/auth.store';
 import { SidebarStore } from '@core/state/sidebar/sidebar.store';
 
 @Component({
@@ -30,7 +31,10 @@ import { SidebarStore } from '@core/state/sidebar/sidebar.store';
 export class SidebarComponent {
   protected readonly appConfig = inject(APP_CONFIG);
   protected readonly sidebarStore = inject(SidebarStore);
-  protected readonly navItems = NAVIGATION_ITEMS;
+  protected readonly authStore = inject(AuthStore);
+  protected readonly navItems = computed(() =>
+    NAVIGATION_ITEMS.filter((item) => this.authStore.hasRole(item.roles ?? [])),
+  );
 
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);

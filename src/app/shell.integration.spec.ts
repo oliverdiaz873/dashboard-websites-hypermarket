@@ -1,11 +1,24 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 
+import { AuthService } from '@core/services/auth.service';
 import { ThemeManagerService } from '@core/services/theme-manager.service';
+import { AuthTokenService } from '@core/services/auth-token.service';
 import { ThemeStore } from '@core/state/theme/theme.store';
 
 import { routes } from './app.routes';
 import { App } from './app';
+
+const adminUser = {
+  id: '1',
+  name: 'Admin',
+  email: 'admin@hypermarket.dev',
+  role: 'admin',
+  createdAt: '2024-01-01T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+};
 
 function installMatchMedia(pairs: Record<string, boolean>): void {
   window.matchMedia = jest.fn().mockImplementation((query: string) => ({
@@ -27,12 +40,27 @@ describe('Shell integration', () => {
     delete document.documentElement.dataset['theme'];
   });
 
+  function setupProviders() {
+    return [
+      provideRouter(routes),
+      provideHttpClient(),
+      {
+        provide: AuthService,
+        useValue: {
+          login: jest.fn(),
+          register: jest.fn(),
+          getProfile: jest.fn(() => of(adminUser)),
+        },
+      },
+    ];
+  }
+
   it('activa ThemeManagerService y aplica data-theme basado en system + OS dark', async () => {
     installMatchMedia({ '(prefers-color-scheme: dark)': true });
 
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes)],
+      providers: setupProviders(),
     }).compileComponents();
 
     const fixture = TestBed.createComponent(App);
@@ -50,7 +78,7 @@ describe('Shell integration', () => {
 
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes)],
+      providers: setupProviders(),
     }).compileComponents();
 
     const fixture = TestBed.createComponent(App);
@@ -69,12 +97,15 @@ describe('Shell integration', () => {
 
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes)],
+      providers: setupProviders(),
     }).compileComponents();
 
     const router = TestBed.inject(Router);
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
+
+    // El authGuard restaura la sesión a partir de un token persistido.
+    TestBed.inject(AuthTokenService).setToken('token-valid');
     await router.navigateByUrl('/');
     await fixture.whenStable();
     fixture.detectChanges();
@@ -86,12 +117,31 @@ describe('Shell integration', () => {
     expect(el.querySelector('.hs-shell__body.hs-shell--desktop')).toBeTruthy();
   });
 
+  it('redirige a /login un usuario sin sesión y conserva returnUrl', async () => {
+    installMatchMedia({ '(min-width: 1200px)': true, '(prefers-color-scheme: dark)': false });
+
+    await TestBed.configureTestingModule({
+      imports: [App],
+      providers: setupProviders(),
+    }).compileComponents();
+
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    await router.navigateByUrl('/stats');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(router.url).toContain('/login');
+    expect(router.url).toContain('returnUrl=');
+  });
+
   it('no renderiza el shell en una ruta inexistente (wildcard 404)', async () => {
     installMatchMedia({ '(prefers-color-scheme: dark)': false });
 
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes)],
+      providers: setupProviders(),
     }).compileComponents();
 
     const router = TestBed.inject(Router);

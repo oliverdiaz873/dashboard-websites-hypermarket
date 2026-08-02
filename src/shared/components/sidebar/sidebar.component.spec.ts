@@ -1,11 +1,25 @@
 import { Component } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
 import { NAVIGATION_ITEMS } from '@core/constants/navigation';
+import type { User } from '@core/models/user.model';
+import { AuthStore } from '@core/state/auth/auth.store';
 import { SidebarStore } from '@core/state/sidebar/sidebar.store';
 
 import { SidebarComponent } from './sidebar.component';
+
+const adminUser: User = {
+  id: '1',
+  name: 'Admin',
+  email: 'admin@hypermarket.dev',
+  role: 'admin',
+  createdAt: '2024-01-01T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+};
+
+const customerUser: User = { ...adminUser, id: '2', name: 'Cliente', role: 'customer' };
 
 @Component({ template: '' })
 class StubComponent {}
@@ -16,7 +30,7 @@ describe('SidebarComponent', () => {
     window.localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [SidebarComponent],
-      providers: [provideRouter([{ path: '**', component: StubComponent }])],
+      providers: [provideRouter([{ path: '**', component: StubComponent }]), provideHttpClient()],
     }).compileComponents();
   });
 
@@ -26,12 +40,27 @@ describe('SidebarComponent', () => {
     return fixture;
   }
 
-  it('muestra la navegación completa y el nombre del sistema', () => {
+  function authenticate(user: User) {
+    TestBed.inject(AuthStore).setAuthenticated({ token: 'token-123', user });
+  }
+
+  it('muestra la navegación completa para un administrador', () => {
+    authenticate(adminUser);
     const fixture = create();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelectorAll('.hs-sidebar__item').length).toBe(NAVIGATION_ITEMS.length);
     expect(el.textContent).toContain('Hipermercado Superior');
     expect(el.textContent).toContain('Productos');
+  });
+
+  it('oculta los items restringidos por rol para un cliente', () => {
+    authenticate(customerUser);
+    const fixture = create();
+    const el = fixture.nativeElement as HTMLElement;
+    const labels = Array.from(el.querySelectorAll('.hs-sidebar__item-label')).map(
+      (node) => node.textContent,
+    );
+    expect(labels).not.toContain('Estadísticas');
   });
 
   it('el botón de colapso expone aria-expanded', () => {

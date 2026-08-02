@@ -1,0 +1,43 @@
+<form [formGroup]="form" class="login-form" (ngSubmit)="onSubmit()">
+  @if (errorMessage) {
+    <div role="alert" class="login-form__error">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
+  <mat-form-field appearance="outline">
+    <mat-label>Correo electrónico</mat-label>
+    <input matInput formControlName="email" type="email" autocomplete="email" />
+    @if (form.controls.email.hasError('required') && form.controls.email.touched) {
+      <mat-error>El correo es obligatorio</mat-error>
+    } @else if (form.controls.email.hasError('email')) {
+      <mat-error>Introduce un correo válido</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Contraseña</mat-label>
+    <input matInput formControlName="password" type="password" autocomplete="current-password" />
+    @if (form.controls.password.hasError('required') && form.controls.password.touched) {
+      <mat-error>La contraseña es obligatoria</mat-error>
+    }
+  </mat-form-field>
+
+  <button
+    mat-flat-button
+    type="submit"
+    color="primary"
+    class="login-form__submit"
+    [disabled]="loading()"
+  >
+    @if (loading()) {
+      <span
+        class="inline-block size-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
+      ></span>
+      <span>Iniciando…</span>
+    } @else {
+      <span>Iniciar sesión</span>
+    }
+  </button>
+</form>

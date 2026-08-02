@@ -78,21 +78,17 @@
         <mat-icon class="!size-5">person</mat-icon>
       </span>
       <span class="hidden text-sm font-medium text-neutral-900 dark:text-neutral-100 lg:block">
-        Administrador
+        {{ authStore.currentUser()?.name ?? 'Administrador' }}
       </span>
     </button>
 
     <mat-menu #userMenu="matMenu">
-      <button mat-menu-item>
+      <button mat-menu-item disabled>
         <mat-icon aria-hidden="true">account_circle</mat-icon>
-        <span>Mi perfil</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon aria-hidden="true">settings</mat-icon>
-        <span>Configuración</span>
+        <span>{{ authStore.currentUser()?.email ?? 'Sin sesión' }}</span>
       </button>
       <mat-divider />
-      <button mat-menu-item>
+      <button mat-menu-item (click)="onLogout()">
         <mat-icon aria-hidden="true">logout</mat-icon>
         <span>Cerrar sesión</span>
       </button>

@@ -6,10 +6,12 @@ administradores, construido sobre la API REST del backend
 
 > **Project Status**
 >
-> - **Current Phase:** `Phase 2 — Admin Layout & Application Shell` ✅ (cerrada)
+> - **Current Phase:** `Phase 3 — Authentication & Authorization` 🔒 (en progreso)
 > - **Completed:** `Phase 0 — Init` · `Phase 1 — Core` · `Phase 2 — Admin Layout`
-> - **Upcoming:** `Phase 3 — Authentication` · `Phase 4+ — Productos, Órdenes,
-Estadísticas…`
+> - **Upcoming:** `Phase 4+ — Productos, Órdenes, Estadísticas…`
+>
+> **Phase 3 — Authentication & Authorization** — login real contra el backend,
+> persistencia del JWT, guards de ruta, RBAC por roles y cerrado de sesión.
 >
 > **Phase 2 — Admin Layout & Application Shell** — responsive shell, dark theme
 > runtime, sidebar navigation, accesibilidad, loading indicator e integración de
@@ -131,6 +133,33 @@ personalizado `--breakpoint-desktop: 75rem` (1200px).
   `dashboard` lazy y un **404 real** lazy (`not-found`) en `**`.
 - **Carga:** `LoadingStore` global no bloqueante mostrado como barra superior
   fija (`pointer-events-none`).
+
+### Phase 3 — Authentication & Authorization
+
+Flujo de autenticación completo contra el backend
+(`/api/auth/login`, `/api/auth/register`, `/api/auth/me`):
+
+- **`AuthStore`** (`core/state/auth/auth.store.ts`, @ngrx/signals) gestiona el
+  estado de sesión (`user`, `token`, `isLoading`, `initialized`) con los métodos
+  `login`, `logout`, `setAuthenticated`, `initializeSession` y `hasRole` (RBAC).
+- **`AuthTokenService`** (`core/services/auth-token.service.ts`) es la **única
+  puerta** al token en `localStorage` (`hs.auth-token`). El resto de la app nunca
+  toca `localStorage` directamente, lo que permite migrar a HttpOnly cookie sin
+  tocar el estado.
+- **`AuthService`** extiende `BaseApiService`: `login`/`register` usan
+  `skipAuth`; `getProfile()` va autenticado. El **`AuthInterceptor`** (via
+  `AUTH_TOKEN`) adjunta `Authorization: Bearer <token>` automáticamente.
+- **Guards** (`core/guards/`): `authGuard` restaura la sesión (si hay token) y
+  redirige a `/login?returnUrl=…`; `roleGuard` restringe por `data.roles`.
+- **RBAC:** `NAVIGATION_ITEMS` admite `roles?: UserRole[]`; el `Sidebar` filtra
+  los items por `AuthStore.hasRole`. La ruta `/stats` es solo `admin`.
+- **`errorInterceptor`**: un `401` fuera de `/auth/login` cierra la sesión
+  (limpia estado y token) sin navegar; la navegación la decide el guard.
+- **`features/auth`**: página/componente de login (standalone + `OnPush`) con
+  formulario Material, validación y aviso de error, y rutas lazy en `auth.routes.ts`.
+
+`UserRole` vive en `core/models/user-role.ts` (`'admin' | 'customer'`) y `User`
+(identidad compartida) en `core/models/user.model.ts`.
 
 ### Backend
 

@@ -1,11 +1,14 @@
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
 
+import { authGuard } from '@core/guards/auth.guard';
+import { roleGuard } from '@core/guards/role.guard';
 import { AdminLayoutComponent } from '@layouts/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: AdminLayoutComponent,
+    canActivate: [authGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
@@ -15,7 +18,18 @@ export const routes: Routes = [
             (m) => m.DashboardPageComponent,
           ),
       },
+      {
+        path: 'stats',
+        canActivate: [roleGuard],
+        data: { roles: ['admin'] },
+        loadComponent: () =>
+          import('@features/stats/stats-page.component').then((m) => m.StatsPageComponent),
+      },
     ],
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('@features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
     path: '**',

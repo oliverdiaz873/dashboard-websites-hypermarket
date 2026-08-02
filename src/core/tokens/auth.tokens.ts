@@ -1,15 +1,18 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, inject } from '@angular/core';
+
+import { AuthTokenService } from '../services/auth-token.service';
 
 /**
  * Fuente del token JWT para el AuthInterceptor.
  *
- * Hoy devuelve siempre `null` (el interceptor queda inerte: no añade ninguna
- * cabecera). La Phase de Authentication proveerá el valor real leyendo el token
- * almacenado. Así toda la infraestructura queda lista sin lógica de auth.
+ * Lee el token persistido a través de AuthTokenService (única puerta a
+ * localStorage), por lo que el interceptor puede adjuntar `Authorization: Bearer`
+ * en cada petición autenticada. Si no hay token, devuelve `null` y el interceptor
+ * queda inerte para esa petición.
  */
 export type AuthTokenSource = () => string | null;
 
 export const AUTH_TOKEN = new InjectionToken<AuthTokenSource>('AUTH_TOKEN', {
   providedIn: 'root',
-  factory: () => () => null,
+  factory: () => () => inject(AuthTokenService).getToken(),
 });

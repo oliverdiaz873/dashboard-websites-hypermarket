@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
@@ -32,7 +33,7 @@ describe('AdminLayoutComponent', () => {
     installMatchMedia(queries);
     await TestBed.configureTestingModule({
       imports: [AdminLayoutComponent],
-      providers: [provideRouter([{ path: '**', component: StubComponent }])],
+      providers: [provideRouter([{ path: '**', component: StubComponent }]), provideHttpClient()],
     }).compileComponents();
     const fixture = TestBed.createComponent(AdminLayoutComponent);
     fixture.detectChanges();
