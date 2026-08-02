@@ -7,6 +7,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 
 import { APP_CONFIG } from '@core/config/app.config';
+import { ThemeManagerService } from '@core/services/theme-manager.service';
 import { NotificationsStore } from '@core/state/notifications/notifications.store';
 import { SidebarStore } from '@core/state/sidebar/sidebar.store';
 import { ThemeStore } from '@core/state/theme/theme.store';
@@ -34,5 +35,10 @@ export class TopbarComponent {
   protected readonly appConfig = inject(APP_CONFIG);
   protected readonly sidebarStore = inject(SidebarStore);
   protected readonly themeStore = inject(ThemeStore);
+  protected readonly themeManager = inject(ThemeManagerService);
   protected readonly notificationsStore = inject(NotificationsStore);
+
+  protected toggleTheme(): void {
+    this.themeStore.setMode(this.themeManager.resolvedTheme() === 'dark' ? 'light' : 'dark');
+  }
 }

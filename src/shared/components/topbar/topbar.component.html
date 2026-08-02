@@ -40,14 +40,16 @@
     <button
       type="button"
       mat-icon-button
-      (click)="themeStore.toggle()"
-      [matTooltip]="themeStore.mode() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+      (click)="toggleTheme()"
+      [matTooltip]="
+        themeManager.resolvedTheme() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+      "
       [attr.aria-label]="
-        themeStore.mode() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+        themeManager.resolvedTheme() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
       "
     >
       <mat-icon aria-hidden="true">
-        {{ themeStore.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}
+        {{ themeManager.resolvedTheme() === 'dark' ? 'light_mode' : 'dark_mode' }}
       </mat-icon>
     </button>
 

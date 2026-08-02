@@ -22,7 +22,11 @@ export class ThemeManagerService {
       ? window.matchMedia('(prefers-color-scheme: dark)')
       : null;
 
-  private readonly resolvedTheme = computed<ResolvedTheme>(() => {
+  /**
+   * Tema efectivo visible: `mode` resuelto por la preferencia del sistema cuando
+   * está en `system`. Es la fuente de verdad para iconos/tooltips y el DOM.
+   */
+  readonly resolvedTheme = computed<ResolvedTheme>(() => {
     const mode = this.themeStore.mode();
     return mode === 'system' ? (this.systemPrefersDark() ? 'dark' : 'light') : mode;
   });

@@ -6,10 +6,14 @@ administradores, construido sobre la API REST del backend
 
 > **Project Status**
 >
-> - **Current Phase:** `Phase 2 — Admin Layout & Application Shell` ✅ (esta fase)
+> - **Current Phase:** `Phase 2 — Admin Layout & Application Shell` ✅ (cerrada)
 > - **Completed:** `Phase 0 — Init` · `Phase 1 — Core` · `Phase 2 — Admin Layout`
 > - **Upcoming:** `Phase 3 — Authentication` · `Phase 4+ — Productos, Órdenes,
 Estadísticas…`
+>
+> **Phase 2 — Admin Layout & Application Shell** — responsive shell, dark theme
+> runtime, sidebar navigation, accesibilidad, loading indicator e integración de
+> Signals.
 
 ---
 

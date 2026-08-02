@@ -25,6 +25,7 @@
         class="hs-sidebar__item"
         [routerLink]="item.route"
         routerLinkActive="hs-sidebar__item--active"
+        [attr.aria-current]="isActive(item.route) ? 'page' : null"
         (click)="onNavigate()"
       >
         <mat-icon class="hs-sidebar__item-icon" aria-hidden="true">{{ item.icon }}</mat-icon>

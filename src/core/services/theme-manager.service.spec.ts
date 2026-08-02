@@ -6,12 +6,17 @@ import { ThemeManagerService } from './theme-manager.service';
 describe('ThemeManagerService', () => {
   let addEventListenerSpy: jest.SpyInstance;
   let removeEventListenerSpy: jest.SpyInstance;
+  let changeHandler: ((event: MediaQueryListEvent) => void) | null = null;
 
   const mockMatchMedia = (prefersDark: boolean) => {
     const mql = {
       matches: prefersDark,
-      addEventListener: () => undefined,
-      removeEventListener: () => undefined,
+      addEventListener: (_type: string, handler: (event: MediaQueryListEvent) => void) => {
+        changeHandler = handler;
+      },
+      removeEventListener: () => {
+        changeHandler = null;
+      },
     } as unknown as MediaQueryList;
     addEventListenerSpy = jest.spyOn(mql, 'addEventListener');
     removeEventListenerSpy = jest.spyOn(mql, 'removeEventListener');
@@ -62,5 +67,18 @@ describe('ThemeManagerService', () => {
 
     TestBed.resetTestingModule();
     expect(removeEventListenerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('reacciona al cambio de preferencia del sistema en modo system', () => {
+    mockMatchMedia(false);
+    const themeStore = TestBed.inject(ThemeStore);
+    themeStore.setMode('system');
+    TestBed.inject(ThemeManagerService);
+    TestBed.flushEffects();
+    expect(document.documentElement.dataset['theme']).toBe('light');
+
+    changeHandler?.({ matches: true } as MediaQueryListEvent);
+    TestBed.flushEffects();
+    expect(document.documentElement.dataset['theme']).toBe('dark');
   });
 });

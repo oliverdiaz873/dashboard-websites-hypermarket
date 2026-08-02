@@ -66,4 +66,22 @@ describe('SidebarComponent', () => {
     firstLink.click();
     expect(store.isMobileOpen()).toBe(false);
   });
+
+  it('bloquea el scroll del body al abrir el drawer móvil', () => {
+    const store = TestBed.inject(SidebarStore);
+    store.setViewport('mobile');
+    store.setMobileOpen(true);
+    create();
+    expect(document.body.style.overflow).toBe('hidden');
+    store.closeMobile();
+    TestBed.flushEffects();
+    expect(document.body.style.overflow).toBe('');
+  });
+
+  it('no marca items activos con una URL sin coincidencia', () => {
+    const fixture = create();
+    const items = fixture.nativeElement.querySelectorAll('.hs-sidebar__item');
+    const active = Array.from(items).filter((i) => i.getAttribute('aria-current') === 'page');
+    expect(active.length).toBe(0);
+  });
 });

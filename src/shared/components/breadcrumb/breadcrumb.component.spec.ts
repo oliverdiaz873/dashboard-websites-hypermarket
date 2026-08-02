@@ -41,4 +41,12 @@ describe('BreadcrumbComponent', () => {
     expect(el.textContent).toContain('productos');
     expect(el.textContent).toContain('nuevo');
   });
+
+  it('solo el último segmento lleva aria-current', async () => {
+    const el = await setup('/productos/nuevo');
+    const active = el.querySelectorAll('[aria-current="page"]');
+    expect(active.length).toBe(1);
+    expect(active[0]?.textContent).toContain('nuevo');
+    expect(el.querySelector('[aria-current="page"]')?.textContent).not.toContain('productos');
+  });
 });

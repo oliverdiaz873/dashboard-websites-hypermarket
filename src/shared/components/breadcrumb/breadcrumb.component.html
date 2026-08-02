@@ -7,8 +7,10 @@
       >
         {{ crumb.label }}
       </a>
-    } @else {
+    } @else if ($last) {
       <span class="shrink-0 text-muted" aria-current="page">{{ crumb.label }}</span>
+    } @else {
+      <span class="shrink-0 text-muted">{{ crumb.label }}</span>
     }
     @if (!$last) {
       <mat-icon class="!size-4 shrink-0 text-muted" aria-hidden="true">chevron_right</mat-icon>

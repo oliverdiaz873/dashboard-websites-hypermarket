@@ -66,4 +66,26 @@ describe('AdminLayoutComponent', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     expect(store.isMobileOpen()).toBe(false);
   });
+
+  it('aplica la clase hs-shell--desktop al cuerpo del shell', async () => {
+    const fixture = await setup(['(min-width: 1200px)']);
+    const body = fixture.nativeElement.querySelector('.hs-shell__body') as HTMLElement;
+    expect(body.classList.contains('hs-shell--desktop')).toBe(true);
+  });
+
+  it('aplica la clase de colapso al cuerpo en desktop colapsado', async () => {
+    const fixture = await setup(['(min-width: 1200px)']);
+    const store = TestBed.inject(SidebarStore);
+    store.toggleCollapsed();
+    fixture.detectChanges();
+    const body = fixture.nativeElement.querySelector('.hs-shell__body') as HTMLElement;
+    expect(body.classList.contains('hs-shell--sidebar-collapsed')).toBe(true);
+  });
+
+  it('no aplica offset al cuerpo en mobile (drawer overlay)', async () => {
+    const fixture = await setup(['(max-width: 767.98px)']);
+    const body = fixture.nativeElement.querySelector('.hs-shell__body') as HTMLElement;
+    expect(body.classList.contains('hs-shell--desktop')).toBe(false);
+    expect(body.classList.contains('hs-shell--tablet')).toBe(false);
+  });
 });

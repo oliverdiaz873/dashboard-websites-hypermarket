@@ -23,13 +23,12 @@
 }
 
 @include media('md') {
-  .hs-shell--tablet .hs-shell__body,
-  .hs-shell--desktop .hs-shell__body {
+  .hs-shell__body.hs-shell--tablet,
+  .hs-shell__body.hs-shell--desktop {
     margin-left: $sidebar-width;
   }
 
-  .hs-shell--tablet.hs-shell--sidebar-collapsed .hs-shell__body,
-  .hs-shell--desktop.hs-shell--sidebar-collapsed .hs-shell__body {
+  .hs-shell__body.hs-shell--sidebar-collapsed {
     margin-left: $sidebar-width-collapsed;
   }
 }
