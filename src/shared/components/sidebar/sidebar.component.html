@@ -1,0 +1,55 @@
+<aside
+  #drawer
+  class="hs-sidebar"
+  [class.hs-sidebar--collapsed]="collapsedClass()"
+  [class.hs-sidebar--open]="sidebarStore.isMobileOpen()"
+  aria-label="Menú lateral"
+>
+  <div class="hs-sidebar__brand">
+    <span
+      class="grid size-9 shrink-0 place-items-center rounded-lg bg-brand-600 text-white"
+      aria-hidden="true"
+    >
+      <mat-icon class="!size-5">storefront</mat-icon>
+    </span>
+    <span
+      class="hs-sidebar__brand-name truncate font-semibold text-neutral-900 dark:text-neutral-100"
+    >
+      {{ appConfig.appName }}
+    </span>
+  </div>
+
+  <nav class="hs-sidebar__nav" aria-label="Navegación principal">
+    @for (item of navItems; track item.route) {
+      <a
+        class="hs-sidebar__item"
+        [routerLink]="item.route"
+        routerLinkActive="hs-sidebar__item--active"
+        (click)="onNavigate()"
+      >
+        <mat-icon class="hs-sidebar__item-icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+        <span class="hs-sidebar__item-label">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="hs-sidebar__footer">
+    <button
+      type="button"
+      class="hs-sidebar__collapse-btn hidden desktop:flex"
+      (click)="sidebarStore.toggleCollapsed()"
+      matTooltip="{{ sidebarStore.isCollapsed() ? 'Expandir menú' : 'Colapsar menú' }}"
+      matTooltipPosition="right"
+      aria-label="Alternar colapso del menú"
+      [attr.aria-expanded]="!sidebarStore.isCollapsed()"
+    >
+      <mat-icon aria-hidden="true">
+        {{ sidebarStore.isCollapsed() ? 'chevron_right' : 'chevron_left' }}
+      </mat-icon>
+    </button>
+  </div>
+</aside>
+
+@if (sidebarStore.isMobileOpen()) {
+  <div class="hs-sidebar__backdrop" (click)="sidebarStore.closeMobile()" aria-hidden="true"></div>
+}

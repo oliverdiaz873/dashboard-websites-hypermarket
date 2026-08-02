@@ -1,0 +1,35 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--hs-background);
+  transition: background-color $transition-base;
+}
+
+.hs-shell__body {
+  min-height: 100vh;
+  margin-left: 0;
+  transition: margin-left $transition-base;
+}
+
+.hs-shell__content {
+  padding-block: $spacing-6;
+}
+
+.hs-shell__container {
+  @include container;
+}
+
+@include media('md') {
+  .hs-shell--tablet .hs-shell__body,
+  .hs-shell--desktop .hs-shell__body {
+    margin-left: $sidebar-width;
+  }
+
+  .hs-shell--tablet.hs-shell--sidebar-collapsed .hs-shell__body,
+  .hs-shell--desktop.hs-shell--sidebar-collapsed .hs-shell__body {
+    margin-left: $sidebar-width-collapsed;
+  }
+}

@@ -6,9 +6,10 @@ administradores, construido sobre la API REST del backend
 
 > **Project Status**
 >
-> - **Current Phase:** `Phase 1 — Core` ✅ (esta fase)
-> - **Upcoming:** `Phase 2 — Authentication` · `Phase 3 — Dashboard Layout` ·
->   `Phase 4 — Shared Components` · `Phase 5+ — Productos, Órdenes, Estadísticas…`
+> - **Current Phase:** `Phase 2 — Admin Layout & Application Shell` ✅ (esta fase)
+> - **Completed:** `Phase 0 — Init` · `Phase 1 — Core` · `Phase 2 — Admin Layout`
+> - **Upcoming:** `Phase 3 — Authentication` · `Phase 4+ — Productos, Órdenes,
+Estadísticas…`
 
 ---
 
@@ -77,23 +78,55 @@ src/
 - **Tailwind** = layout, spacing, grid y composición visual.
 - **Angular Material** = componentes complejos (dialogs, forms, overlays…).
 - **SCSS parciales** (`src/styles/`) = tokens, resets, tipografía, animaciones.
-
-| Archivo            | Responsabilidad                                                |
-| ------------------ | -------------------------------------------------------------- |
-| `_variables.scss`  | Tokens: colores, tipografía, spacing, radios, sombras, z       |
-| `_mixins.scss`     | Mixins reutilizables (container, media, focus, card…)          |
-| `_functions.scss`  | Funciones puras (rem, fluid, tint/shade, contrast)             |
-| `_reset.scss`      | Reset CSS moderno                                              |
-| `_typography.scss` | Jerarquía tipográfica base                                     |
-| `_animations.scss` | Keyframes y clases de animación                                |
-| `_utilities.scss`  | Utilidades propias que complementan a Tailwind                 |
-| `styles.scss`      | Entry: parciales + tokens CSS (`--hs-*`) + tema M3 de Material |
+  | Archivo            | Responsabilidad                                                |
+  | ------------------ | -------------------------------------------------------------- |
+  | `_variables.scss`  | Tokens: colores, tipografía, spacing, radios, sombras, z       |
+  | `_mixins.scss`     | Mixins reutilizables (container, media, focus, card…)          |
+  | `_functions.scss`  | Funciones puras (rem, fluid, tint/shade, contrast)             |
+  | `_reset.scss`      | Reset CSS moderno                                              |
+  | `_typography.scss` | Jerarquía tipográfica base                                     |
+  | `_animations.scss` | Keyframes y clases de animación                                |
+  | `_utilities.scss`  | Utilidades propias que complementan a Tailwind                 |
+  | `styles.scss`      | Entry: parciales + tokens CSS (`--hs-*`) + tema M3 de Material |
 
 Los tokens de `_variables.scss` se exponen a Tailwind v4 mediante el bloque
 `@theme` de `src/tailwind.css`, de modo que utilidades como `bg-brand-600` o
 `text-muted` nacen de la **misma fuente de verdad**. Tailwind se importa como
 entry aparte (`src/tailwind.css`) porque el compilador Sass no resuelve
 `@use 'tailwindcss'`.
+
+### Phase 2 — Admin Layout & Application Shell
+
+El shell del dashboard vive en `layouts/admin-layout` y compone el `Sidebar`,
+`Topbar`, `Breadcrumb` y el `RouterOutlet`. Se definió con un `SidebarStore`
+(@ngrx/signals) que gestiona colapso, drawer móvil y viewport
+(`mobile`/`tablet`/`desktop`):
+
+- **Desktop (≥1200px):** sidebar fijo, colapsable a 72px (preferencia persistida
+  en `localStorage`).
+- **Tablet (768–1199px):** sidebar siempre colapsado.
+- **Mobile (<768px):** sidebar como drawer overlay con backdrop, cerrado con
+  `Escape` y con `FocusTrap` del CDK.
+
+La detección de viewport usa `BreakpointObserver` del CDK (solo comportamiento),
+mientras que el CSS aplica la variante Tailwind `desktop:` sobre el breakpoint
+personalizado `--breakpoint-desktop: 75rem` (1200px).
+
+- **Navegación** (`core/constants/navigation.ts`): `NAVIGATION_ITEMS` con rutas
+  UI desacopladas de los endpoints HTTP (`core/http/endpoints.ts`), permitiendo
+  rutas de UI como `/contacts` frente a una API `/contact`.
+- **Tema** (`core/services/theme-manager.service.ts`): resuelve
+  `light`/`dark`/`system` a un único valor aplicado como `data-theme` en
+  `<html>`, con una sola suscripción a `matchMedia`. El modo **dark es completo**:
+  paleta oscura en `_variables.scss`, override de variables CSS `--hs-*` en
+  `[data-theme='dark']` y tema M3 oscuro vía `mat.theme(theme-type: dark)`.
+- **Componentes shared** (`shared/components/`): `sidebar`, `topbar`,
+  `breadcrumb`, `page-header`, `loading-overlay` y `empty-state`, todos
+  standalone con `OnPush`.
+- **Rutas:** `app.routes.ts` monta `AdminLayoutComponent` como shell con
+  `dashboard` lazy y un **404 real** lazy (`not-found`) en `**`.
+- **Carga:** `LoadingStore` global no bloqueante mostrado como barra superior
+  fija (`pointer-events-none`).
 
 ### Backend
 

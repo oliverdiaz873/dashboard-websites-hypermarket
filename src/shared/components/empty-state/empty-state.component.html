@@ -1,0 +1,17 @@
+<div class="flex flex-col items-center justify-center gap-5 px-6 py-12 text-center">
+  <span
+    class="grid size-16 place-items-center rounded-full bg-surface-alt text-muted"
+    aria-hidden="true"
+  >
+    <mat-icon class="!size-8 !text-3xl">{{ icon() }}</mat-icon>
+  </span>
+  <div class="space-y-1.5">
+    @if (title()) {
+      <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{{ title() }}</h3>
+    }
+    @if (message()) {
+      <p class="text-sm text-muted">{{ message() }}</p>
+    }
+  </div>
+  <ng-content />
+</div>

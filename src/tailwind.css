@@ -12,10 +12,16 @@
 
 @import 'tailwindcss';
 
+/* Variante dark basada en el atributo data-theme (gestionado por ThemeManagerService). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 @theme {
   /* Tipografía */
   --font-sans: var(--hs-font-sans);
   --font-heading: var(--hs-font-heading);
+
+  /* Breakpoint de escritorio del spec (≥1200px) */
+  --breakpoint-desktop: 75rem;
 
   /* Paleta principal (Hipermercado Superior) */
   --color-brand-50: var(--hs-brand-50);
@@ -54,10 +60,22 @@
   --color-info-600: var(--hs-info-600);
 
   /* Superficies y texto */
+  --color-background: var(--hs-background);
   --color-surface: var(--hs-surface);
   --color-surface-alt: var(--hs-surface-alt);
   --color-border: var(--hs-border);
   --color-muted: var(--hs-muted);
+
+  /* Sidebar y topbar */
+  --color-sidebar: var(--hs-sidebar-bg);
+  --color-sidebar-text: var(--hs-sidebar-text);
+  --color-sidebar-muted: var(--hs-sidebar-muted);
+  --color-sidebar-hover: var(--hs-sidebar-hover);
+  --color-sidebar-active: var(--hs-sidebar-active);
+  --color-sidebar-active-text: var(--hs-sidebar-active-text);
+  --color-sidebar-border: var(--hs-sidebar-border);
+  --color-topbar: var(--hs-topbar-bg);
+  --color-topbar-border: var(--hs-topbar-border);
 
   /* Radios */
   --radius-sm: var(--hs-radius-sm);

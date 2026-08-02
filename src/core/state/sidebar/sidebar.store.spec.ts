@@ -46,4 +46,28 @@ describe('SidebarStore', () => {
     const store = TestBed.inject(SidebarStore);
     expect(store.isCollapsed()).toBe(true);
   });
+
+  it('inicia con viewport desktop y computeds correctos', () => {
+    const store = TestBed.inject(SidebarStore);
+    expect(store.viewport()).toBe('desktop');
+    expect(store.isMobile()).toBe(false);
+    expect(store.isTablet()).toBe(false);
+    expect(store.isDesktop()).toBe(true);
+  });
+
+  it('setViewport actualiza viewport y computeds', () => {
+    const store = TestBed.inject(SidebarStore);
+    store.setViewport('mobile');
+    expect(store.isMobile()).toBe(true);
+    expect(store.isDesktop()).toBe(false);
+    store.setViewport('tablet');
+    expect(store.isTablet()).toBe(true);
+  });
+
+  it('setViewport fuera de móvil cierra el drawer', () => {
+    const store = TestBed.inject(SidebarStore);
+    store.setMobileOpen(true);
+    store.setViewport('desktop');
+    expect(store.isMobileOpen()).toBe(false);
+  });
 });

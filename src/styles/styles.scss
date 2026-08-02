@@ -80,10 +80,30 @@
   --hs-info-600: #{$color-info-600};
 
   // Superficies y texto
+  --hs-background: #{$color-background};
   --hs-surface: #{$color-surface};
   --hs-surface-alt: #{$color-surface-alt};
   --hs-border: #{$color-border};
   --hs-muted: #{$color-text-muted};
+
+  // Sidebar
+  --hs-sidebar-bg: #{$color-sidebar-bg};
+  --hs-sidebar-text: #{$color-sidebar-text};
+  --hs-sidebar-muted: #{$color-sidebar-muted};
+  --hs-sidebar-hover: #{$color-sidebar-hover};
+  --hs-sidebar-active: #{$color-sidebar-active};
+  --hs-sidebar-active-text: #{$color-sidebar-active-text};
+  --hs-sidebar-border: #{$color-sidebar-border};
+
+  // Topbar
+  --hs-topbar-bg: #{$color-topbar-bg};
+  --hs-topbar-border: #{$color-topbar-border};
+
+  // Layout
+  --hs-sidebar-width: #{$sidebar-width};
+  --hs-sidebar-width-collapsed: #{$sidebar-width-collapsed};
+  --hs-header-height: #{$header-height};
+  --hs-content-max-width: #{$content-max-width};
 
   // Radios
   --hs-radius-sm: #{$radius-sm};
@@ -123,12 +143,46 @@ html {
   );
 }
 
-body {
-  // Tema claro por defecto (se podrá cambiar a `dark` o `light dark`).
-  color-scheme: light;
+// --- Dark mode (aplicado por ThemeManagerService vía data-theme) ---------------
+[data-theme='dark'] {
+  color-scheme: dark;
 
+  // Superficies y texto
+  --hs-background: #{$color-background-dark};
+  --hs-surface: #{$color-surface-dark};
+  --hs-surface-alt: #{$color-surface-alt-dark};
+  --hs-border: #{$color-border-dark};
+  --hs-muted: #{$color-text-muted-dark};
+
+  // Sidebar
+  --hs-sidebar-bg: #{$color-sidebar-bg-dark};
+  --hs-sidebar-text: #{$color-sidebar-text-dark};
+  --hs-sidebar-muted: #{$color-sidebar-muted-dark};
+  --hs-sidebar-hover: #{$color-sidebar-hover-dark};
+  --hs-sidebar-active: #{$color-sidebar-active-dark};
+  --hs-sidebar-active-text: #{$color-sidebar-active-text-dark};
+  --hs-sidebar-border: #{$color-sidebar-border-dark};
+
+  // Topbar
+  --hs-topbar-bg: #{$color-topbar-bg-dark};
+  --hs-topbar-border: #{$color-topbar-border-dark};
+
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+        theme-type: dark,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
   // Superficie, tipografía y color base desde las variables del sistema de Material.
-  background-color: var(--mat-sys-surface);
+  background-color: var(--hs-background);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 

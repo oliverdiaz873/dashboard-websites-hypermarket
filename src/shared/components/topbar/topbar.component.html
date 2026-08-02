@@ -1,0 +1,99 @@
+<header class="hs-topbar">
+  <div class="hs-topbar__section">
+    <button
+      type="button"
+      mat-icon-button
+      class="md:hidden"
+      (click)="sidebarStore.setMobileOpen(true)"
+      aria-label="Abrir menú"
+      [attr.aria-expanded]="sidebarStore.isMobileOpen()"
+    >
+      <mat-icon aria-hidden="true">menu</mat-icon>
+    </button>
+    <button
+      type="button"
+      mat-icon-button
+      class="hidden desktop:inline-flex"
+      (click)="sidebarStore.toggleCollapsed()"
+      aria-label="Colapsar menú"
+      [attr.aria-expanded]="!sidebarStore.isCollapsed()"
+    >
+      <mat-icon aria-hidden="true">
+        {{ sidebarStore.isCollapsed() ? 'menu_open' : 'menu' }}
+      </mat-icon>
+    </button>
+    <app-breadcrumb />
+  </div>
+
+  <div class="hs-topbar__section">
+    <label class="hs-topbar__search">
+      <mat-icon class="hs-topbar__search-icon" aria-hidden="true">search</mat-icon>
+      <input
+        type="search"
+        class="hs-topbar__search-input"
+        placeholder="Buscar…"
+        readonly
+        aria-label="Búsqueda"
+      />
+    </label>
+
+    <button
+      type="button"
+      mat-icon-button
+      (click)="themeStore.toggle()"
+      [matTooltip]="themeStore.mode() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+      [attr.aria-label]="
+        themeStore.mode() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+      "
+    >
+      <mat-icon aria-hidden="true">
+        {{ themeStore.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}
+      </mat-icon>
+    </button>
+
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Notificaciones"
+      aria-label="Notificaciones"
+      [matBadge]="notificationsStore.unreadCount()"
+      [matBadgeHidden]="notificationsStore.unreadCount() === 0"
+      (click)="notificationsStore.clear()"
+    >
+      <mat-icon aria-hidden="true">notifications</mat-icon>
+    </button>
+
+    <button
+      type="button"
+      class="flex items-center gap-2 rounded-full p-1 transition-colors hover:bg-surface-alt"
+      [matMenuTriggerFor]="userMenu"
+      aria-label="Menú de usuario"
+    >
+      <span
+        class="grid size-8 place-items-center rounded-full bg-brand-600 text-white"
+        aria-hidden="true"
+      >
+        <mat-icon class="!size-5">person</mat-icon>
+      </span>
+      <span class="hidden text-sm font-medium text-neutral-900 dark:text-neutral-100 lg:block">
+        Administrador
+      </span>
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>
+        <mat-icon aria-hidden="true">account_circle</mat-icon>
+        <span>Mi perfil</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon aria-hidden="true">settings</mat-icon>
+        <span>Configuración</span>
+      </button>
+      <mat-divider />
+      <button mat-menu-item>
+        <mat-icon aria-hidden="true">logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>

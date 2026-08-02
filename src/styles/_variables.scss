@@ -85,6 +85,39 @@ $color-text: $color-neutral-900;
 $color-text-muted: $color-neutral-500;
 $color-text-inverse: #ffffff;
 
+// ----- Superficies y texto (dark) ---------------------------------------------
+$color-background-dark: $color-neutral-900;
+$color-surface-dark: $color-neutral-800;
+$color-surface-alt-dark: $color-neutral-700;
+$color-border-dark: $color-neutral-700;
+$color-text-dark: $color-neutral-100;
+$color-text-muted-dark: $color-neutral-400;
+$color-text-inverse-dark: $color-neutral-900;
+
+// ----- Sidebar (light) --------------------------------------------------------
+$color-sidebar-bg: #ffffff;
+$color-sidebar-text: $color-neutral-800;
+$color-sidebar-muted: $color-neutral-500;
+$color-sidebar-hover: $color-neutral-100;
+$color-sidebar-active: $color-brand-50;
+$color-sidebar-active-text: $color-brand-600;
+$color-sidebar-border: $color-neutral-200;
+
+// ----- Sidebar (dark) ---------------------------------------------------------
+$color-sidebar-bg-dark: $color-neutral-900;
+$color-sidebar-text-dark: $color-neutral-200;
+$color-sidebar-muted-dark: $color-neutral-400;
+$color-sidebar-hover-dark: $color-neutral-800;
+$color-sidebar-active-dark: $color-brand-950;
+$color-sidebar-active-text-dark: $color-brand-300;
+$color-sidebar-border-dark: $color-neutral-800;
+
+// ----- Topbar -----------------------------------------------------------------
+$color-topbar-bg: #ffffff;
+$color-topbar-border: $color-neutral-200;
+$color-topbar-bg-dark: $color-neutral-900;
+$color-topbar-border-dark: $color-neutral-800;
+
 // ----- Espaciado (basado en unidad de 4px) ------------------------------------
 $spacing-0: 0;
 $spacing-1: 0.25rem; // 4px

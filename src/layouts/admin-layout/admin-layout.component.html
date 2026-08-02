@@ -1,0 +1,10 @@
+<app-sidebar />
+<div class="hs-shell__body" [class]="shellState()">
+  <app-topbar />
+  <main class="hs-shell__content">
+    <div class="hs-shell__container">
+      <router-outlet />
+    </div>
+  </main>
+</div>
+<app-loading-overlay />

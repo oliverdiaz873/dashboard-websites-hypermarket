@@ -1,0 +1,17 @@
+<nav aria-label="Miga de pan" class="flex min-w-0 items-center gap-1 text-sm">
+  @for (crumb of crumbs(); track $index) {
+    @if (crumb.route && !$last) {
+      <a
+        [routerLink]="crumb.route"
+        class="shrink-0 text-muted transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
+      >
+        {{ crumb.label }}
+      </a>
+    } @else {
+      <span class="shrink-0 text-muted" aria-current="page">{{ crumb.label }}</span>
+    }
+    @if (!$last) {
+      <mat-icon class="!size-4 shrink-0 text-muted" aria-hidden="true">chevron_right</mat-icon>
+    }
+  }
+</nav>

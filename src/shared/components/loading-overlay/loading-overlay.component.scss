@@ -1,0 +1,26 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Barra de progreso indeterminada, no bloqueante: el contenido sigue usable.
+.hs-loading-bar {
+  width: 40%;
+  height: 100%;
+  border-radius: $radius-full;
+  background-color: $color-brand-600;
+  animation: hs-loading-slide 1.1s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+@keyframes hs-loading-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(350%);
+  }
+}
