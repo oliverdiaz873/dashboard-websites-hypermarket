@@ -40,7 +40,8 @@ export class LoginFormComponent {
 
     try {
       await this.authStore.login({ email: email ?? '', password: password ?? '' });
-      await this.router.navigateByUrl(this.returnUrl ?? '/dashboard');
+      const target = isSafeReturnUrl(this.returnUrl) ? this.returnUrl : '/dashboard';
+      await this.router.navigateByUrl(target);
     } catch (error) {
       this.errorMessage = toMessage(error);
     }
@@ -49,6 +50,11 @@ export class LoginFormComponent {
   private get returnUrl(): string | null {
     return this.route.snapshot.queryParamMap.get('returnUrl');
   }
+}
+
+/** Solo admite rutas internas: `/foo` sí; `//evil.com` o strings raros, no. */
+function isSafeReturnUrl(url: string | null): url is string {
+  return !!url && url.startsWith('/') && !url.startsWith('//');
 }
 
 function toMessage(error: unknown): string {

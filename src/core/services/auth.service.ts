@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import type {
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-} from '@features/auth/models/auth.model';
+import type { LoginRequest, LoginResponse, RegisterRequest } from '../models/auth.model';
 import { API_ENDPOINTS } from '../http/endpoints';
 import { BaseApiService } from '../http/services/base-api.service';
 import type { User } from '../models/user.model';
