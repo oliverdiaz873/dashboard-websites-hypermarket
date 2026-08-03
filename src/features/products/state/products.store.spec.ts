@@ -140,4 +140,30 @@ describe('ProductsStore', () => {
     store.clearSelection();
     expect(store.selectedCount()).toBe(0);
   });
+
+  it('carga subcategorías como opciones de filtro con value = slug de la subcategoría', async () => {
+    const pending = store.loadCategories();
+    httpMock
+      .expectOne((r) => r.url.includes('http://localhost:3000/api/categories'))
+      .flush({
+        success: true,
+        data: [
+          {
+            id: 'alimentos',
+            name: 'Alimentos',
+            slug: 'alimentos',
+            subcategories: [
+              { name: 'Bebidas', slug: 'bebidas' },
+              { name: 'Despensa', slug: 'despensa' },
+            ],
+          },
+        ],
+      });
+    await pending;
+
+    expect(store.categories()).toEqual([
+      { value: 'bebidas', label: 'Alimentos - Bebidas' },
+      { value: 'despensa', label: 'Alimentos - Despensa' },
+    ]);
+  });
 });

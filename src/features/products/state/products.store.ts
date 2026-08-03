@@ -117,9 +117,16 @@ export const ProductsStore = signalStore(
         if (store.categories().length > 0) return;
         try {
           const categories = await firstValueFrom(categoriesService.list());
-          patchState(store, {
-            categories: categories.map((c) => ({ value: c.slug, label: c.name })),
+          const options = categories.flatMap((c) => {
+            if (c.subcategories && c.subcategories.length > 0) {
+              return c.subcategories.map((sub) => ({
+                value: sub.slug,
+                label: `${c.name} - ${sub.name}`,
+              }));
+            }
+            return [{ value: c.slug, label: c.name }];
           });
+          patchState(store, { categories: options });
         } catch {
           /* Sin categorías no bloquea el listado de productos. */
         }
