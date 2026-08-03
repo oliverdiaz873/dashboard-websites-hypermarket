@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ProductsService } from '../services/products.service';
 import type { ProductsQuery } from '../models/products-query';
-import type { Product } from '../models/product.model';
+import type { CreateProductPayload, Product } from '../models/product.model';
 
 const BASE = 'http://localhost:3000/api/products';
 
@@ -69,4 +69,82 @@ describe('ProductsService', () => {
     expect(req.request.params.has('q')).toBe(false);
     req.flush({ success: true, data: [], pagination: { page: 1, limit: 50, total: 0, pages: 1 } });
   });
+
+  it('getById recupera un producto con su id', () => {
+    const product: Product = makeProduct({ id: 'p1' });
+
+    let result: Product | undefined;
+    service.getById('p1').subscribe((res) => (result = res));
+
+    const req = httpMock.expectOne(`${BASE}/p1`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ success: true, data: product });
+
+    expect(result).toEqual(product);
+  });
+
+  it('create hace POST con el payload y devuelve el producto', () => {
+    const payload: CreateProductPayload = {
+      name: 'Café Molido',
+      price: 120,
+      image: 'https://example.com/cafe.png',
+      categoryId: 'c1',
+      brandId: 'b1',
+      stock: 10,
+      minStock: 2,
+    };
+    const created: Product = makeProduct({ id: 'p9' });
+
+    let result: Product | undefined;
+    service.create(payload).subscribe((res) => (result = res));
+
+    const req = httpMock.expectOne(BASE);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush({ success: true, data: created });
+
+    expect(result).toEqual(created);
+  });
+
+  it('update hace PATCH con el id y el payload parcial', () => {
+    const payload = { price: 99 };
+
+    let result: Product | undefined;
+    service.update('p1', payload).subscribe((res) => (result = res));
+
+    const req = httpMock.expectOne(`${BASE}/p1`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(payload);
+    req.flush({ success: true, data: makeProduct({ id: 'p1', price: 99 }) });
+
+    expect(result?.price).toBe(99);
+  });
+
+  it('remove hace DELETE y no espera body', () => {
+    let completed = false;
+    service.remove('p1').subscribe({ complete: () => (completed = true) });
+
+    const req = httpMock.expectOne(`${BASE}/p1`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(completed).toBe(true);
+  });
+
+  function makeProduct(overrides: Partial<Product> = {}): Product {
+    return {
+      id: 'p1',
+      sku: 'SKU-1',
+      name: 'Arroz',
+      price: 80,
+      image: 'arroz.png',
+      categoryId: 'c1',
+      category: { name: 'Granos', slug: 'granos' },
+      status: 'active',
+      isAvailable: true,
+      createdAt: new Date('2026-01-01'),
+      updatedAt: new Date('2026-01-01'),
+      ...overrides,
+    };
+  }
 });

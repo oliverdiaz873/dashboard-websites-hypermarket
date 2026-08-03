@@ -8,7 +8,13 @@ import { getStorageItem, setStorageItem } from '@core/utils/storage.util';
 
 import { ProductsService } from '../services/products.service';
 import { CategoriesService } from '../services/categories.service';
-import type { Product, ProductStatus } from '../models/product.model';
+import { BrandsService } from '../services/brands.service';
+import type {
+  CreateProductPayload,
+  Product,
+  ProductStatus,
+  UpdateProductPayload,
+} from '../models/product.model';
 import {
   DEFAULT_PAGE_SIZE,
   PAGE_SIZE_OPTIONS,
@@ -31,6 +37,9 @@ interface ProductsState {
   error: string | null;
   selectedIds: string[];
   categories: { value: string; label: string }[];
+  categoryOptions: { value: string; label: string }[];
+  brandOptions: { value: string; label: string }[];
+  isSubmitting: boolean;
 }
 
 function initialSortBy(): ProductSortField {
@@ -67,6 +76,9 @@ export const ProductsStore = signalStore(
     error: null,
     selectedIds: [],
     categories: [],
+    categoryOptions: [],
+    brandOptions: [],
+    isSubmitting: false,
   })),
   withComputed(({ products, selectedIds }) => ({
     isEmpty: computed(() => products().length === 0),
@@ -75,6 +87,7 @@ export const ProductsStore = signalStore(
   withMethods((store) => {
     const productsService = inject(ProductsService);
     const categoriesService = inject(CategoriesService);
+    const brandsService = inject(BrandsService);
 
     const load = async (): Promise<void> => {
       if (store.isLoading()) return;
@@ -132,6 +145,36 @@ export const ProductsStore = signalStore(
         }
       },
 
+      async loadFormOptions(): Promise<void> {
+        if (store.categoryOptions().length > 0 && store.brandOptions().length > 0) return;
+        void this.loadCategoryOptions();
+        void this.loadBrandOptions();
+      },
+
+      async loadCategoryOptions(): Promise<void> {
+        if (store.categoryOptions().length > 0) return;
+        try {
+          const categories = await firstValueFrom(categoriesService.list());
+          patchState(store, {
+            categoryOptions: categories.map((c) => ({ value: c.id, label: c.name })),
+          });
+        } catch {
+          /* Sin categorías el formulario no puede crear; el submit lo valida. */
+        }
+      },
+
+      async loadBrandOptions(): Promise<void> {
+        if (store.brandOptions().length > 0) return;
+        try {
+          const brands = await firstValueFrom(brandsService.list());
+          patchState(store, {
+            brandOptions: brands.map((b) => ({ value: b.id, label: b.name })),
+          });
+        } catch {
+          /* Las marcas son opcionales en el formulario. */
+        }
+      },
+
       setPage(page: number): void {
         patchState(store, { page });
         void load();
@@ -171,6 +214,52 @@ export const ProductsStore = signalStore(
         void load();
       },
 
+      async createProduct(payload: CreateProductPayload): Promise<Product> {
+        patchState(store, { isSubmitting: true, error: null });
+        try {
+          const product = await firstValueFrom(productsService.create(payload));
+          patchState(store, { isSubmitting: false });
+          await load();
+          return product;
+        } catch (error) {
+          patchState(store, { isSubmitting: false, error: toErrorMessage(error) });
+          throw error;
+        }
+      },
+
+      async updateProduct(id: string, payload: UpdateProductPayload): Promise<Product> {
+        patchState(store, { isSubmitting: true, error: null });
+        try {
+          const product = await firstValueFrom(productsService.update(id, payload));
+          patchState(store, { isSubmitting: false });
+          await load();
+          return product;
+        } catch (error) {
+          patchState(store, { isSubmitting: false, error: toErrorMessage(error) });
+          throw error;
+        }
+      },
+
+      async deleteProduct(id: string): Promise<void> {
+        patchState(store, { isSubmitting: true, error: null });
+        try {
+          await firstValueFrom(productsService.remove(id));
+          patchState(store, { isSubmitting: false });
+          await load();
+        } catch (error) {
+          patchState(store, { isSubmitting: false, error: toErrorMessage(error) });
+          throw error;
+        }
+      },
+
+      async loadProduct(id: string): Promise<Product | null> {
+        try {
+          return await firstValueFrom(productsService.getById(id));
+        } catch {
+          return null;
+        }
+      },
+
       setSelectedIds(ids: string[]): void {
         patchState(store, { selectedIds: ids });
       },
@@ -181,3 +270,10 @@ export const ProductsStore = signalStore(
     };
   }),
 );
+
+function toErrorMessage(error: unknown): string | null {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+  return null;
+}

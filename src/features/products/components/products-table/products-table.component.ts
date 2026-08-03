@@ -54,7 +54,6 @@ export class ProductsTableComponent {
   ];
 
   protected readonly actions: TableAction<Product>[] = [
-    { id: 'view', label: 'Ver', icon: 'visibility' },
     { id: 'edit', label: 'Editar', icon: 'edit' },
     { id: 'delete', label: 'Eliminar', icon: 'delete' },
   ];

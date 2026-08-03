@@ -1,0 +1,29 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  <app-page-header
+    [title]="isCreate() ? 'Nuevo producto' : 'Editar producto'"
+    [subtitle]="isCreate() ? 'Crea un producto en el catálogo' : 'Actualiza los datos del producto'"
+  />
+
+  @if (isLoadingProduct()) {
+    <div class="grid min-h-64 place-items-center rounded-lg border border-border bg-surface">
+      <div class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"></div>
+    </div>
+  } @else if (!isCreate() && !product()) {
+    <div class="rounded-lg border border-border bg-surface p-6">
+      <p class="text-sm text-muted">El producto no existe o no se pudo cargar.</p>
+    </div>
+  } @else {
+    <div class="rounded-lg border border-border bg-surface p-4 sm:p-6">
+      <app-product-form
+        #productForm
+        [product]="product()"
+        [isCreate]="isCreate()"
+        [submitting]="submitting"
+        [categories]="store.categoryOptions()"
+        [brands]="store.brandOptions()"
+        (submitted)="onSubmitted($event)"
+        (cancelled)="onCancel()"
+      />
+    </div>
+  }
+</div>

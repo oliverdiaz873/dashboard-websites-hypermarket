@@ -1,0 +1,180 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5" novalidate>
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300"> Nombre * </span>
+      <input
+        formControlName="name"
+        type="text"
+        class="hs-input"
+        placeholder="Nombre del producto"
+      />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <span class="text-xs text-red-600">El nombre es obligatorio</span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+        SKU
+        @if (!isCreate()) {
+          <span class="text-muted">(opcional)</span>
+        }
+      </span>
+      <input formControlName="sku" type="text" class="hs-input" placeholder="SKU del producto" />
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Precio *</span>
+      <input
+        formControlName="price"
+        type="number"
+        step="0.01"
+        min="0"
+        class="hs-input"
+        placeholder="0.00"
+      />
+      @if (form.controls.price.invalid && form.controls.price.touched) {
+        <span class="text-xs text-red-600">
+          {{
+            form.controls.price.hasError('required')
+              ? 'El precio es obligatorio'
+              : 'Debe ser mayor o igual a 0'
+          }}
+        </span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+        >URL de imagen *</span
+      >
+      <input formControlName="image" type="url" class="hs-input" placeholder="https://..." />
+      @if (form.controls.image.invalid && form.controls.image.touched) {
+        <span class="text-xs text-red-600">La imagen es obligatoria</span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Categoría *</span>
+      <select formControlName="categoryId" class="hs-input hs-input--select">
+        <option value="" disabled>Selecciona una categoría</option>
+        @for (option of categories(); track option.value) {
+          <option [ngValue]="option.value">{{ option.label }}</option>
+        }
+      </select>
+      @if (form.controls.categoryId.invalid && form.controls.categoryId.touched) {
+        <span class="text-xs text-red-600">Selecciona una categoría</span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+        Marca
+        @if (!isCreate()) {
+          <span class="text-muted">(vacía la limpia)</span>
+        }
+      </span>
+      <select formControlName="brandId" class="hs-input hs-input--select">
+        <option value="">Sin marca</option>
+        @for (option of brands(); track option.value) {
+          <option [ngValue]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Unidad</span>
+      <input formControlName="unit" type="text" class="hs-input" placeholder="kg, unidad, L..." />
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+        >Cantidad por unidad</span
+      >
+      <input
+        formControlName="unitQuantity"
+        type="number"
+        min="1"
+        step="0.01"
+        class="hs-input"
+        placeholder="1"
+      />
+      @if (form.controls.unitQuantity.invalid && form.controls.unitQuantity.touched) {
+        <span class="text-xs text-red-600">Debe ser mayor o igual a 1</span>
+      }
+    </label>
+
+    @if (isCreate()) {
+      <label class="flex flex-col gap-1">
+        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+          >Stock inicial</span
+        >
+        <input
+          formControlName="stock"
+          type="number"
+          min="0"
+          step="1"
+          class="hs-input"
+          placeholder="0"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1">
+        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Stock mínimo</span>
+        <input
+          formControlName="minStock"
+          type="number"
+          min="0"
+          step="1"
+          class="hs-input"
+          placeholder="0"
+        />
+      </label>
+    }
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Estado</span>
+      <select formControlName="status" class="hs-input hs-input--select">
+        @for (option of statusOptions; track option.value) {
+          <option [ngValue]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="flex items-center gap-2 pt-1">
+      <input formControlName="isAvailable" type="checkbox" class="hs-checkbox" />
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Disponible</span>
+    </label>
+  </div>
+
+  <label class="flex flex-col gap-1">
+    <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Descripción</span>
+    <textarea
+      formControlName="description"
+      rows="3"
+      class="hs-input"
+      placeholder="Descripción del producto"
+    ></textarea>
+  </label>
+
+  <div class="flex justify-end gap-3 border-t border-border pt-4">
+    <button
+      type="button"
+      class="hs-btn hs-btn--ghost"
+      (click)="onCancel()"
+      [disabled]="submitting()"
+    >
+      Cancelar
+    </button>
+    <button type="submit" class="hs-btn hs-btn--primary" [disabled]="submitting()">
+      @if (submitting()) {
+        <span
+          class="inline-block size-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
+        ></span>
+        <span>Guardando…</span>
+      } @else {
+        <span>{{ isCreate() ? 'Crear producto' : 'Guardar cambios' }}</span>
+      }
+    </button>
+  </div>
+</form>

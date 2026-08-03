@@ -13,4 +13,24 @@ export const productsRoutes: Routes = [
         (m) => m.ProductsPageComponent,
       ),
   },
+  {
+    path: 'new',
+    title: 'Nuevo producto',
+    canActivate: [roleGuard],
+    data: { roles: ['admin'], mode: 'create' } as RoleRoute['data'] & { mode: 'create' },
+    loadComponent: () =>
+      import('@features/products/pages/product-form/product-form-page.component').then(
+        (m) => m.ProductFormPageComponent,
+      ),
+  },
+  {
+    path: ':id/edit',
+    title: 'Editar producto',
+    canActivate: [roleGuard],
+    data: { roles: ['admin'], mode: 'edit' } as RoleRoute['data'] & { mode: 'edit' },
+    loadComponent: () =>
+      import('@features/products/pages/product-form/product-form-page.component').then(
+        (m) => m.ProductFormPageComponent,
+      ),
+  },
 ];

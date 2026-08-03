@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { ProductsStore } from './products.store';
-import type { Product } from '../models/product.model';
+import type { CreateProductPayload, Product } from '../models/product.model';
 
 const URL = 'http://localhost:3000/api/products';
 
@@ -37,6 +37,8 @@ describe('ProductsStore', () => {
   });
 
   afterEach(() => httpMock.verify());
+
+  const tick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
   it('carga la primera página con los defaults', async () => {
     const flush = (page: number) => {
@@ -165,5 +167,86 @@ describe('ProductsStore', () => {
       { value: 'bebidas', label: 'Alimentos - Bebidas' },
       { value: 'despensa', label: 'Alimentos - Despensa' },
     ]);
+  });
+
+  it('createProduct hace POST, recarga el listado y gestiona isSubmitting', async () => {
+    const payload: CreateProductPayload = {
+      name: 'Café Molido',
+      price: 120,
+      image: 'https://example.com/cafe.png',
+      categoryId: 'c1',
+    };
+
+    const pending = store.createProduct(payload);
+
+    const post = httpMock.expectOne((r) => r.url.includes(URL) && r.method === 'POST');
+    expect(post.request.body).toEqual(payload);
+    expect(store.isSubmitting()).toBe(true);
+    post.flush({ success: true, data: makeProduct() });
+    await tick();
+
+    httpMock
+      .expectOne((r) => r.url.includes(URL) && r.method === 'GET')
+      .flush({
+        success: true,
+        data: [makeProduct()],
+        pagination: { page: 1, limit: 20, total: 1, pages: 1 },
+      });
+
+    await pending;
+    expect(store.isSubmitting()).toBe(false);
+    expect(store.products().length).toBe(1);
+  });
+
+  it('deleteProduct hace DELETE y recarga el listado', async () => {
+    const pending = store.deleteProduct('p1');
+
+    const del = httpMock.expectOne((r) => r.url.includes(URL) && r.method === 'DELETE');
+    expect(del.request.method).toBe('DELETE');
+    del.flush(null, { status: 204, statusText: 'No Content' });
+    await tick();
+
+    httpMock
+      .expectOne((r) => r.url.includes(URL) && r.method === 'GET')
+      .flush({
+        success: true,
+        data: [],
+        pagination: { page: 1, limit: 20, total: 0, pages: 1 },
+      });
+
+    await pending;
+    expect(store.isSubmitting()).toBe(false);
+    expect(store.isEmpty()).toBe(true);
+  });
+
+  it('updateProduct hace PATCH y recarga el listado', async () => {
+    const payload = { price: 99 };
+
+    const pending = store.updateProduct('p1', payload);
+
+    const patch = httpMock.expectOne((r) => r.url.includes(URL) && r.method === 'PATCH');
+    expect(patch.request.body).toEqual(payload);
+    patch.flush({ success: true, data: makeProduct({ price: 99 }) });
+    await tick();
+
+    httpMock
+      .expectOne((r) => r.url.includes(URL) && r.method === 'GET')
+      .flush({
+        success: true,
+        data: [makeProduct({ price: 99 })],
+        pagination: { page: 1, limit: 20, total: 1, pages: 1 },
+      });
+
+    await pending;
+    expect(store.isSubmitting()).toBe(false);
+    expect(store.products()[0]?.price).toBe(99);
+  });
+
+  it('loadProduct recupera un producto por id (o null si falla)', async () => {
+    const pending = store.loadProduct('p1');
+    httpMock
+      .expectOne((r) => r.url.includes(`${URL}/p1`) && r.method === 'GET')
+      .flush({ success: true, data: makeProduct() });
+    await expect(pending).resolves.toMatchObject({ id: 'p1' });
   });
 });
