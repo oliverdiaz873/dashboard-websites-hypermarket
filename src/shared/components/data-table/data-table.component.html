@@ -1,0 +1,113 @@
+<div class="relative overflow-x-auto">
+  @if (loading()) {
+    <div
+      class="absolute inset-0 z-10 grid place-items-center bg-surface/60 backdrop-blur-[1px]"
+      role="status"
+      aria-label="Cargando informaciÃ³n"
+    >
+      <div class="size-8 animate-spin rounded-full border-2 border-border border-t-brand-600"></div>
+    </div>
+  }
+
+  <table class="min-w-full divide-y divide-border text-sm">
+    <thead>
+      <tr class="text-left text-xs uppercase tracking-wide text-muted">
+        @if (selectable()) {
+          <th scope="col" class="w-10 px-4 py-3">
+            <mat-checkbox
+              color="primary"
+              [checked]="isAllSelected()"
+              [indeterminate]="isAllSelected() === false && selectedIds().length > 0"
+              (change)="toggleAll()"
+              [aria-label]="'Seleccionar todas las filas'"
+            ></mat-checkbox>
+          </th>
+        }
+        @for (column of columns(); track columnKey(column)) {
+          <th
+            scope="col"
+            class="whitespace-nowrap px-4 py-3 font-medium"
+            [class.text-right]="column.align === 'right'"
+            [class.hidden]="column.hideOnMobile"
+            [class.sm:table-cell]="column.hideOnMobile"
+          >
+            @if (column.sortable) {
+              <button
+                type="button"
+                class="inline-flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-100"
+                [attr.aria-sort]="sortIndicator(column)"
+                (click)="onSort(column)"
+              >
+                {{ column.header }}
+                <mat-icon class="!size-4 text-base">
+                  {{ sortIcon(column) }}
+                </mat-icon>
+              </button>
+            } @else {
+              <span>{{ column.header }}</span>
+            }
+          </th>
+        }
+        @if (actions().length > 0) {
+          <th scope="col" class="w-24 px-4 py-3 text-right">Acciones</th>
+        }
+      </tr>
+    </thead>
+
+    <tbody class="divide-y divide-border">
+      @for (row of rows(); track row.id) {
+        <tr
+          class="transition-colors hover:bg-surface-alt/60"
+          [class.bg-brand-50]="selectedIds().includes(row.id)"
+        >
+          @if (selectable()) {
+            <td class="px-4 py-3">
+              <mat-checkbox
+                color="primary"
+                [checked]="isSelected(row)"
+                (change)="toggleRow(row)"
+                [aria-label]="'Seleccionar fila'"
+              ></mat-checkbox>
+            </td>
+          }
+          @for (column of columns(); track columnKey(column)) {
+            <td
+              class="whitespace-nowrap px-4 py-3 text-neutral-700 dark:text-neutral-300"
+              [class.text-right]="column.align === 'right'"
+              [class.text-center]="column.align === 'center'"
+              [class.hidden]="column.hideOnMobile"
+            >
+              {{ cellValue(row, column) }}
+            </td>
+          }
+          @if (actions().length > 0) {
+            <td class="px-4 py-3 text-right">
+              <div class="inline-flex items-center justify-end gap-1">
+                @for (action of actionsOf(row); track action.id) {
+                  <button
+                    mat-icon-button
+                    type="button"
+                    [disabled]="action.disabled?.(row)"
+                    [attr.aria-label]="action.label"
+                    [matTooltip]="action.label"
+                    (click)="handleAction(action.id, row)"
+                  >
+                    <mat-icon [class.opacity-40]="action.disabled?.(row)">{{
+                      action.icon
+                    }}</mat-icon>
+                  </button>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (isCurrentlyLoading() === false && rows().length === 0) {
+    <div class="px-6 py-12">
+      <ng-content />
+    </div>
+  }
+</div>

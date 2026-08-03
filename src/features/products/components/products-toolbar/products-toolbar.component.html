@@ -1,0 +1,51 @@
+<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+  <div class="grid w-full gap-3 sm:grid-cols-2 lg:max-w-xl lg:grid-cols-4">
+    <div class="sm:col-span-2 lg:col-span-2">
+      <app-search-input
+        [value]="store.search()"
+        placeholder="Buscar por nombre…"
+        (searchChange)="onSearch($event)"
+      />
+    </div>
+
+    <app-filter-select
+      label="Categoría"
+      [options]="store.categories()"
+      [value]="store.category()"
+      allLabel="Todas"
+      (valueChange)="onCategory($event)"
+    />
+
+    <app-filter-select
+      label="Estado"
+      [options]="statusOptions"
+      [value]="store.status()"
+      allLabel="Todos"
+      (valueChange)="onStatus($event)"
+    />
+  </div>
+
+  <div class="flex items-center gap-2">
+    <app-filter-select
+      label="Ordenar"
+      [options]="sortOptions"
+      [value]="store.sortBy()"
+      allLabel=""
+      (valueChange)="onSortBy($event)"
+    />
+
+    <button
+      mat-icon-button
+      type="button"
+      (click)="toggleDirection()"
+      [attr.aria-label]="'Cambiar dirección del orden'"
+      [matTooltip]="store.sortOrder() === 'asc' ? 'Orden ascendente' : 'Orden descendente'"
+    >
+      <mat-icon>{{ store.sortOrder() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+    </button>
+
+    <button mat-icon-button type="button" (click)="store.refresh()" aria-label="Actualizar lista">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+</div>

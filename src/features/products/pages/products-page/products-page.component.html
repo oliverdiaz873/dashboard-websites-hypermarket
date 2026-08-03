@@ -1,0 +1,75 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  <app-page-header title="Products" subtitle="Gestión y consulta del catálogo de productos" />
+
+  @if (!loading()) {
+    <app-products-toolbar />
+  }
+
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center rounded-lg border border-border bg-surface">
+      <div class="flex items-center gap-3 text-muted">
+        <div
+          class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
+        ></div>
+        <span class="text-sm">Cargando productos…</span>
+      </div>
+    </div>
+  } @else if (showError()) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="error_outline"
+        title="No se pudo cargar el catálogo"
+        [message]="store.error() ?? ''"
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          (click)="retry()"
+        >
+          Reintentar
+        </button>
+      </app-empty-state>
+    </div>
+  } @else if (showTable()) {
+    <app-products-table
+      [products]="store.products()"
+      [loading]="store.isLoading()"
+      [sort]="currentSort()"
+      [selectable]="true"
+      [selectedIds]="store.selectedIds()"
+      (sortChange)="store.onSortChange($event)"
+      (selectionChange)="store.setSelectedIds([...$event])"
+      (actionClicked)="onAction($event)"
+    />
+
+    <div class="mt-auto rounded-lg border border-border bg-surface">
+      <app-pagination
+        [page]="store.page()"
+        [pageSize]="store.pageSize()"
+        [total]="store.total()"
+        (pageChange)="store.setPage($event)"
+        (pageSizeChange)="store.setPageSize($event)"
+      />
+    </div>
+  } @else {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="inventory_2"
+        title="Sin productos"
+        message="No hay productos que coincidan con los filtros actuales."
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700"
+          (click)="store.refresh()"
+        >
+          Recargar
+        </button>
+      </app-empty-state>
+    </div>
+  }
+</div>

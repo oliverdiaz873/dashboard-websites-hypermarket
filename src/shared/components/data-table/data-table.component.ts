@@ -1,0 +1,110 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatCheckbox } from '@angular/material/checkbox';
+
+import type {
+  TableAction,
+  TableActionEvent,
+  TableColumn,
+  TableSort,
+} from '../../models/table.model';
+
+function resolveCellValue<T>(row: T, key: string): unknown {
+  return key.split('.').reduce<unknown>((acc, part) => {
+    if (acc === null || acc === undefined) return undefined;
+    return (acc as Record<string, unknown>)[part];
+  }, row as unknown);
+}
+
+@Component({
+  selector: 'app-data-table',
+  templateUrl: './data-table.component.html',
+  styleUrl: './data-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatIcon, MatIconButton, MatTooltip, MatCheckbox],
+})
+export class DataTableComponent<T extends { id: string }> {
+  readonly columns = input<TableColumn<T>[]>([]);
+  readonly rows = input<T[]>([]);
+  readonly loading = input<boolean>(false);
+  readonly sort = input<TableSort | null>(null);
+  readonly actions = input<TableAction<T>[]>([]);
+  readonly selectable = input<boolean>(false);
+  readonly selectedIds = input<readonly string[]>([]);
+
+  readonly actionClicked = output<TableActionEvent<T>>();
+  readonly sortChange = output<TableSort>();
+  readonly selectionChange = output<readonly string[]>();
+
+  cellValue(row: T, column: TableColumn<T>): string {
+    if (column.cell) return String(column.cell(row));
+    const value = resolveCellValue(row, String(column.key));
+    return value === null || value === undefined ? '' : String(value);
+  }
+
+  onSort(column: TableColumn<T>): void {
+    if (!column.sortable) return;
+    const key = String(column.key);
+    const current = this.sort();
+    const direction = current?.key === key && current.direction === 'asc' ? 'desc' : 'asc';
+    this.sortChange.emit({ key, direction });
+  }
+
+  isSelected(row: T): boolean {
+    return this.selectedIds().includes(row.id);
+  }
+
+  isAllSelected(): boolean {
+    const rows = this.rows();
+    return rows.length > 0 && rows.every((row) => this.selectedIds().includes(row.id));
+  }
+
+  toggleRow(row: T): void {
+    const current = this.selectedIds();
+    const next = current.includes(row.id)
+      ? current.filter((id) => id !== row.id)
+      : [...current, row.id];
+    this.selectionChange.emit(next);
+  }
+
+  toggleAll(): void {
+    const rows = this.rows();
+    const next = this.isAllSelected() ? [] : rows.map((row) => row.id);
+    this.selectionChange.emit(next);
+  }
+
+  handleAction(actionId: string, row: T): void {
+    this.actionClicked.emit({ actionId, row });
+  }
+
+  isCurrentlyLoading(): boolean {
+    return this.loading();
+  }
+
+  columnKey(column: TableColumn<T>): string {
+    return String(column.key);
+  }
+
+  actionsOf(row: T): TableAction<T>[] {
+    return this.actions().filter((action) => action.visible?.(row) ?? true);
+  }
+
+  sortIndicator(column: TableColumn<T>): 'ascending' | 'descending' | 'none' {
+    const current = this.sort();
+    const key = String(column.key);
+    if (current?.key === key && current.direction === 'asc') return 'ascending';
+    if (current?.key === key && current.direction === 'desc') return 'descending';
+    return 'none';
+  }
+
+  sortIcon(column: TableColumn<T>): string {
+    const current = this.sort();
+    const key = String(column.key);
+    if (current?.key === key) {
+      return current.direction === 'asc' ? 'arrow_upward' : 'arrow_downward';
+    }
+    return 'unfold_more';
+  }
+}

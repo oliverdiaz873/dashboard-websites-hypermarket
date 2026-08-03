@@ -25,6 +25,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@features/stats/stats-page.component').then((m) => m.StatsPageComponent),
       },
+      {
+        path: 'products',
+        loadChildren: () =>
+          import('@features/products/products.routes').then((m) => m.productsRoutes),
+      },
     ],
   },
   {

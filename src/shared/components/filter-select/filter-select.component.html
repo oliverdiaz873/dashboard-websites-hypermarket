@@ -1,0 +1,16 @@
+<div class="flex items-center gap-2">
+  <label class="text-sm font-medium text-muted" [for]="selectId">{{ label() }}</label>
+  <select
+    [id]="selectId"
+    class="rounded-md border border-border bg-surface px-2.5 py-2 text-sm text-neutral-800 focus:border-brand-600 focus:outline-none dark:text-neutral-200"
+    [value]="value()"
+    (change)="onSelect($event)"
+  >
+    @if (allLabel()) {
+      <option value="">{{ allLabel() }}</option>
+    }
+    @for (option of options(); track option.value) {
+      <option [value]="option.value">{{ option.label }}</option>
+    }
+  </select>
+</div>

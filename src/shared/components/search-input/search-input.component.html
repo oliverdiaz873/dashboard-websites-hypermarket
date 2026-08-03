@@ -1,0 +1,26 @@
+<div class="relative">
+  <mat-icon
+    class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+    aria-hidden="true"
+  >
+    search
+  </mat-icon>
+  <input
+    type="search"
+    class="w-full rounded-md border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-neutral-800 placeholder:text-muted focus:border-brand-600 focus:outline-none dark:text-neutral-200"
+    [placeholder]="placeholder()"
+    [value]="text()"
+    (input)="onInput($event)"
+    [attr.aria-label]="placeholder()"
+  />
+  @if (text()) {
+    <button
+      type="button"
+      class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-neutral-900 dark:hover:text-neutral-100"
+      aria-label="Limpiar búsqueda"
+      (click)="clearText()"
+    >
+      <mat-icon class="!size-4">close</mat-icon>
+    </button>
+  }
+</div>

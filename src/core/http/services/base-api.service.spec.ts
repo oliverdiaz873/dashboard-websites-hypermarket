@@ -36,6 +36,10 @@ class TestApiService extends BaseApiService {
       skipAuth: true,
     });
   }
+
+  getPaginatedProducts() {
+    return this.getPaginated<{ id: number }[]>('/products');
+  }
 }
 
 describe('BaseApiService', () => {
@@ -64,6 +68,24 @@ describe('BaseApiService', () => {
     req.flush({ success: true, data: [{ id: 1 }] });
 
     expect(result).toEqual([{ id: 1 }]);
+  });
+
+  it('getPaginated devuelve data y pagination del envelope', () => {
+    let result: { data: { id: number }[]; pagination: { page: number } } | undefined;
+    service.getPaginatedProducts().subscribe((res) => (result = res));
+
+    const req = httpMock.expectOne('http://localhost:3000/api/products');
+    expect(req.request.method).toBe('GET');
+    req.flush({
+      success: true,
+      data: [{ id: 1 }],
+      pagination: { page: 2, limit: 20, total: 3, pages: 2 },
+    });
+
+    expect(result).toEqual({
+      data: [{ id: 1 }],
+      pagination: { page: 2, limit: 20, total: 3, pages: 2 },
+    });
   });
 
   it('POST envía el body y desempaqueta data', () => {

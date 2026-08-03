@@ -5,6 +5,8 @@ import { Observable, map, retry, timeout } from 'rxjs';
 import type { ApiResponse } from '../../models/api-response';
 import { API_CONFIG } from '../config/api.config';
 import type { ApiRequestOptions } from '../models/api-request-options';
+import type { PaginatedResponse } from '../../models/paginated-response';
+import type { PaginationMeta } from '../../models/paginated-response';
 import {
   REQUEST_TIMEOUT_MS,
   RETRY_ATTEMPTS,
@@ -45,6 +47,18 @@ export class BaseApiService {
     return this.request<T>('DELETE', path, options);
   }
 
+  /**
+   * Variante paginada de `get`: además de desempaquetar `data`, expone el
+   * objeto `pagination` (`{ page, limit, total, pages }`). Pensada para
+   * listados server-side (Products, y futuros Orders/Users/Inventory).
+   */
+  protected getPaginated<T>(
+    path: string,
+    options: ApiRequestOptions = {},
+  ): Observable<PaginatedResponse<T>> {
+    return this.request<PaginatedResponse<T>>('GET', path, options, { keepPagination: true });
+  }
+
   protected buildUrl(path: string): string {
     return `${this.apiConfig.baseUrl}${path}`;
   }
@@ -53,6 +67,7 @@ export class BaseApiService {
     method: string,
     path: string,
     { body, params, headers, timeoutMs, retryAttempts, skipLoading, skipAuth }: ApiRequestOptions,
+    flags: { keepPagination?: boolean } = {},
   ): Observable<T> {
     const requestTimeoutMs = timeoutMs ?? this.apiConfig.timeoutMs;
     const requestRetryAttempts = retryAttempts ?? this.apiConfig.retryAttempts;
@@ -78,7 +93,13 @@ export class BaseApiService {
 
     return request$.pipe(
       timeout(requestTimeoutMs),
-      map((response) => response?.data as T),
+      map((response) => {
+        if (flags?.keepPagination) {
+          const { pagination } = response as ApiResponse<T> & { pagination: PaginationMeta };
+          return { data: response?.data, pagination } as T;
+        }
+        return response?.data as T;
+      }),
     );
   }
 }

@@ -1,0 +1,50 @@
+<div
+  class="flex flex-col items-stretch justify-between gap-3 px-4 py-3 sm:flex-row sm:items-center"
+>
+  <div class="text-sm text-muted">
+    Mostrando <strong class="text-neutral-900 dark:text-neutral-100">{{ from() }}</strong> a
+    <strong class="text-neutral-900 dark:text-neutral-100">{{ to() }}</strong> de
+    <strong class="text-neutral-900 dark:text-neutral-100">{{ total() }}</strong>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-3">
+    <label class="flex items-center gap-2 text-sm text-muted">
+      Por página
+      <select
+        class="rounded-md border border-border bg-surface px-2 py-1 text-sm text-neutral-800 dark:text-neutral-200"
+        [attr.aria-label]="'Productos por página'"
+        (change)="onPageSize($event)"
+      >
+        @for (opt of pageSizeOptions(); track opt.value) {
+          <option [value]="opt.value" [selected]="opt.value === pageSize()">{{ opt.label }}</option>
+        }
+      </select>
+    </label>
+
+    <nav class="flex items-center gap-1" aria-label="Paginación">
+      <button
+        mat-icon-button
+        type="button"
+        (click)="shift(-1)"
+        [disabled]="!hasPrev()"
+        aria-label="Página anterior"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <span class="px-2 text-sm text-neutral-800 dark:text-neutral-200">
+        {{ page() }} / {{ totalPages() }}
+      </span>
+
+      <button
+        mat-icon-button
+        type="button"
+        (click)="shift(1)"
+        [disabled]="!hasNext()"
+        aria-label="Página siguiente"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </nav>
+  </div>
+</div>
