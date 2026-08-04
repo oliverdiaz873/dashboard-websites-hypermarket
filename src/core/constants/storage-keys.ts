@@ -10,6 +10,9 @@ export const STORAGE_KEYS = {
   inventoryPageSize: `${STORAGE_PREFIX}.inventory.page-size`,
   inventorySortBy: `${STORAGE_PREFIX}.inventory.sort-by`,
   inventorySortOrder: `${STORAGE_PREFIX}.inventory.sort-order`,
+  ordersPageSize: `${STORAGE_PREFIX}.orders.page-size`,
+  ordersSortBy: `${STORAGE_PREFIX}.orders.sort-by`,
+  ordersSortOrder: `${STORAGE_PREFIX}.orders.sort-order`,
 } as const;
 
 export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];

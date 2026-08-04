@@ -12,6 +12,7 @@ describe('API_ENDPOINTS', () => {
       inventoryMovements: '/inventory-movements',
       offers: '/offers',
       orders: '/orders',
+      adminOrders: '/admin/orders',
       contacts: '/contact',
       stats: '/admin/stats',
     });
