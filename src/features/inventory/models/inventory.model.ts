@@ -51,7 +51,6 @@ export interface AdjustPayload {
   operation: InventoryAdjustOperation;
   quantity: number;
   reason: AdjustmentReason;
-  reference?: string;
 }
 
 /** Payload de PATCH /inventory/:id/min-stock. */
