@@ -1,0 +1,68 @@
+<div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+    <div class="grid w-full gap-3 sm:grid-cols-2 lg:max-w-xl lg:grid-cols-4">
+      <div class="sm:col-span-2 lg:col-span-2">
+        <app-search-input
+          [value]="store.search()"
+          placeholder="Buscar por nombre o SKU…"
+          (searchChange)="onSearch($event)"
+        />
+      </div>
+
+      <app-filter-select
+        label="Estado"
+        [options]="statusOptions"
+        [value]="store.status()"
+        allLabel="Todos"
+        (valueChange)="onStatus($event)"
+      />
+
+      <app-filter-select
+        label="Ordenar"
+        [options]="sortOptions"
+        [value]="store.sortBy()"
+        allLabel=""
+        (valueChange)="onSortBy($event)"
+      />
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        mat-icon-button
+        type="button"
+        (click)="toggleDirection()"
+        [attr.aria-label]="'Cambiar dirección del orden'"
+        [matTooltip]="store.sortOrder() === 'asc' ? 'Orden ascendente' : 'Orden descendente'"
+      >
+        <mat-icon>{{ store.sortOrder() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+
+      <button mat-icon-button type="button" (click)="store.refresh()" aria-label="Actualizar lista">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-neutral-700 dark:text-neutral-300"
+    >
+      Total
+      <strong>{{ store.total() }}</strong>
+    </span>
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 dark:border-amber-900/40 dark:bg-amber-900/40 dark:text-amber-300"
+    >
+      <span class="size-1.5 rounded-full bg-amber-500"></span>
+      Bajo stock
+      <strong>{{ store.lowStockCount() }}</strong>
+    </span>
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700 dark:border-rose-900/40 dark:bg-rose-900/40 dark:text-rose-300"
+    >
+      <span class="size-1.5 rounded-full bg-rose-500"></span>
+      Agotados
+      <strong>{{ store.outOfStockCount() }}</strong>
+    </span>
+  </div>
+</div>

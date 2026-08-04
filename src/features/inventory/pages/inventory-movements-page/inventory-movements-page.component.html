@@ -1,0 +1,65 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  <div class="flex items-center gap-2">
+    <button
+      mat-icon-button
+      type="button"
+      (click)="goBack()"
+      aria-label="Volver al inventario"
+      [matTooltip]="'Volver al inventario'"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <app-page-header
+      title="Historial de movimientos"
+      [subtitle]="
+        inventory()?.product?.name
+          ? `Movimientos de ${inventory()?.product?.name}`
+          : 'Movimientos del inventario'
+      "
+    />
+  </div>
+
+  @if (isLoading()) {
+    <div class="grid min-h-64 place-items-center rounded-lg border border-border bg-surface">
+      <div class="flex items-center gap-3 text-muted">
+        <div
+          class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
+        ></div>
+        <span class="text-sm">Cargando movimientos…</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="error_outline"
+        title="No se pudo cargar el historial"
+        [message]="error() ?? ''"
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          (click)="loadAll()"
+        >
+          Reintentar
+        </button>
+      </app-empty-state>
+    </div>
+  } @else {
+    <app-inventory-movements-table
+      [movements]="movements()"
+      [loading]="isLoading()"
+      [productName]="inventory()?.product?.name ?? ''"
+    />
+
+    <div class="mt-auto rounded-lg border border-border bg-surface">
+      <app-pagination
+        [page]="page()"
+        [pageSize]="20"
+        [total]="total()"
+        (pageChange)="setPage($event)"
+      />
+    </div>
+  }
+</div>

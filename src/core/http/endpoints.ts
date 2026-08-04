@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
   categories: '/categories',
   brands: '/brands',
   inventory: '/inventory',
+  inventoryMovements: '/inventory-movements',
   offers: '/offers',
   orders: '/orders',
   contacts: '/contact',

@@ -7,6 +7,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import type {
   TableAction,
   TableActionEvent,
+  TableBadge,
   TableColumn,
   TableSort,
 } from '../../models/table.model';
@@ -42,6 +43,33 @@ export class DataTableComponent<T extends { id: string }> {
     if (column.cell) return String(column.cell(row));
     const value = resolveCellValue(row, String(column.key));
     return value === null || value === undefined ? '' : String(value);
+  }
+
+  cellBadge(row: T, column: TableColumn<T>): TableBadge | null {
+    const badge = column.badge?.(row);
+    return badge ?? null;
+  }
+
+  badgeClasses(tone: TableBadge['tone']): string {
+    switch (tone) {
+      case 'ok':
+        return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300';
+      case 'low':
+        return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
+      case 'out':
+        return 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300';
+    }
+  }
+
+  badgeDotClasses(tone: TableBadge['tone']): string {
+    switch (tone) {
+      case 'ok':
+        return 'bg-emerald-500';
+      case 'low':
+        return 'bg-amber-500';
+      case 'out':
+        return 'bg-rose-500';
+    }
   }
 
   onSort(column: TableColumn<T>): void {

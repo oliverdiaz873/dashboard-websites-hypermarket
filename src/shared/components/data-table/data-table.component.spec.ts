@@ -82,4 +82,20 @@ describe('DataTableComponent', () => {
     const cell = comp.cellValue(rows[1], columns[1]);
     expect(cell).toBe('$40');
   });
+
+  it('devuelve el badge de la celda y null cuando no hay badge', async () => {
+    const { fixture, comp } = await setup();
+    const badgeColumn: TableColumn<Row> = {
+      key: 'name',
+      header: 'Estado',
+      badge: (r) => (r.name === 'Arroz' ? { label: 'En stock', tone: 'ok' } : null),
+    };
+
+    fixture.componentRef.setInput('columns', [badgeColumn]);
+    fixture.detectChanges();
+
+    expect(comp.cellBadge(rows[0], badgeColumn)).toEqual({ label: 'En stock', tone: 'ok' });
+    expect(comp.cellBadge(rows[1], badgeColumn)).toBeNull();
+    expect(comp.badgeClasses('ok')).toContain('emerald');
+  });
 });

@@ -9,6 +9,14 @@ export interface TableAction<T> {
   disabled?: (row: T) => boolean;
 }
 
+export type TableBadgeTone = 'ok' | 'low' | 'out';
+
+/** Badge de celda: label + tono visual. Devuelto por `TableColumn.badge` o `null` para ocultarlo. */
+export interface TableBadge {
+  label: string;
+  tone: TableBadgeTone;
+}
+
 export interface TableColumn<T> {
   key: keyof T | string;
   header: string;
@@ -16,6 +24,8 @@ export interface TableColumn<T> {
   align?: 'left' | 'center' | 'right';
   /** Formateador opcional para celdas que no son el valor crudo. */
   cell?: (row: T) => string;
+  /** Renderiza un badge en la celda en lugar del valor/`cell` cuando devuelve un valor. */
+  badge?: (row: T) => TableBadge | null | undefined;
   /** Oculta la columna en pantallas pequeñas (responsive). */
   hideOnMobile?: boolean;
 }
