@@ -46,7 +46,9 @@ describe('OrdersToolbarComponent', () => {
   it('expone las opciones de status y orden derivadas de los enums', () => {
     expect(component['statusOptions'].map((o) => o.value)).toEqual([
       'pending',
+      'confirmed',
       'processing',
+      'shipped',
       'completed',
       'cancelled',
     ]);

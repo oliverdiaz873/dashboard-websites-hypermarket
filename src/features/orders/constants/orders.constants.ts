@@ -1,4 +1,11 @@
-export const ORDER_STATUSES = ['pending', 'processing', 'completed', 'cancelled'] as const;
+export const ORDER_STATUSES = [
+  'pending',
+  'confirmed',
+  'processing',
+  'shipped',
+  'completed',
+  'cancelled',
+] as const;
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
@@ -8,7 +15,9 @@ export type OrderSortField = (typeof ORDER_SORT_FIELDS)[number];
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pending: 'Pendiente',
+  confirmed: 'Confirmado',
   processing: 'En proceso',
+  shipped: 'Enviado',
   completed: 'Completado',
   cancelled: 'Cancelado',
 };
@@ -33,8 +42,10 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
 
 /** Transiciones de estado permitidas para admin (espejo del backend). */
 export const ADMIN_ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
-  pending: ['processing', 'cancelled'],
-  processing: ['completed', 'cancelled'],
+  pending: ['confirmed', 'cancelled'],
+  confirmed: ['processing', 'cancelled'],
+  processing: ['shipped', 'cancelled'],
+  shipped: ['completed'],
   completed: [],
   cancelled: [],
 };

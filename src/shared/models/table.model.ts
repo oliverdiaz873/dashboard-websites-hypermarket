@@ -9,7 +9,7 @@ export interface TableAction<T> {
   disabled?: (row: T) => boolean;
 }
 
-export type TableBadgeTone = 'ok' | 'low' | 'out';
+export type TableBadgeTone = 'ok' | 'low' | 'out' | 'info';
 
 /** Badge de celda: label + tono visual. Devuelto por `TableColumn.badge` o `null` para ocultarlo. */
 export interface TableBadge {

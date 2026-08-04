@@ -43,17 +43,17 @@ describe('OrderStatusDialogComponent', () => {
   });
 
   it('deriva los estados destino válidos desde el estado actual', () => {
-    expect(component.statusOptions.map((o) => o.value)).toEqual(['processing', 'cancelled']);
+    expect(component.statusOptions.map((o) => o.value)).toEqual(['confirmed', 'cancelled']);
   });
 
   it('submit cierra el diálogo con status y nota recortada', () => {
-    component['status'].setValue('processing');
+    component['status'].setValue('confirmed');
     component['note'].setValue('  Aprobado por admin  ');
 
     component.submit();
 
     expect(dialogRef.close).toHaveBeenCalledWith({
-      status: 'processing',
+      status: 'confirmed',
       note: 'Aprobado por admin',
     });
   });

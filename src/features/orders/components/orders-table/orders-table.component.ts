@@ -17,7 +17,9 @@ import { hasOrderStatusTransition, ORDER_STATUS_LABELS } from '../../constants/o
 
 const STATUS_TONES: Record<OrderStatus, TableBadge['tone']> = {
   pending: 'low',
-  processing: 'ok',
+  confirmed: 'info',
+  processing: 'info',
+  shipped: 'info',
   completed: 'ok',
   cancelled: 'out',
 };

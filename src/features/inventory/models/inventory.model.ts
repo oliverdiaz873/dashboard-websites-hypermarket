@@ -65,10 +65,13 @@ export interface InventoryMovement {
   id: string;
   inventoryId: string;
   productId: string;
+  orderId?: string;
   type: InventoryMovementType;
   quantity: number;
   previousStock: number;
   newStock: number;
+  previousReservedStock: number;
+  newReservedStock: number;
   reason: AdjustmentReason;
   createdBy?: string;
   createdAt: Date;

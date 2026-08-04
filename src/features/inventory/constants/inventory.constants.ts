@@ -4,6 +4,9 @@ export const INVENTORY_ADJUSTMENT_REASONS = [
   'damaged_products',
   'supplier_adjustment',
   'inventory_count',
+  'order_reserved',
+  'order_release',
+  'order_completed',
 ] as const;
 
 export type AdjustmentReason = (typeof INVENTORY_ADJUSTMENT_REASONS)[number];
@@ -13,6 +16,9 @@ export const INVENTORY_MOVEMENT_TYPES = [
   'decrease',
   'set',
   'min_stock_change',
+  'reserve',
+  'release_reservation',
+  'complete_sale',
 ] as const;
 
 export type InventoryMovementType = (typeof INVENTORY_MOVEMENT_TYPES)[number];
@@ -32,6 +38,9 @@ export const ADJUSTMENT_REASON_LABELS: Record<AdjustmentReason, string> = {
   damaged_products: 'Productos dañados',
   supplier_adjustment: 'Ajuste de proveedor',
   inventory_count: 'Conteo de inventario',
+  order_reserved: 'Reserva de pedido',
+  order_release: 'Liberación de pedido',
+  order_completed: 'Venta completada',
 };
 
 export const MOVEMENT_TYPE_LABELS: Record<InventoryMovementType, string> = {
@@ -39,6 +48,9 @@ export const MOVEMENT_TYPE_LABELS: Record<InventoryMovementType, string> = {
   decrease: 'Disminución',
   set: 'Corrección',
   min_stock_change: 'Cambio de mínimo',
+  reserve: 'Reserva',
+  release_reservation: 'Liberación de reserva',
+  complete_sale: 'Venta completada',
 };
 
 export const INVENTORY_STATUS_LABELS: Record<InventoryStatus, string> = {

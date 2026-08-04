@@ -33,15 +33,19 @@ describe('orders.constants', () => {
   });
 
   it('define las transiciones de estado permitidas para admin', () => {
-    expect(ADMIN_ORDER_TRANSITIONS.pending).toEqual(['processing', 'cancelled']);
-    expect(ADMIN_ORDER_TRANSITIONS.processing).toEqual(['completed', 'cancelled']);
+    expect(ADMIN_ORDER_TRANSITIONS.pending).toEqual(['confirmed', 'cancelled']);
+    expect(ADMIN_ORDER_TRANSITIONS.confirmed).toEqual(['processing', 'cancelled']);
+    expect(ADMIN_ORDER_TRANSITIONS.processing).toEqual(['shipped', 'cancelled']);
+    expect(ADMIN_ORDER_TRANSITIONS.shipped).toEqual(['completed']);
     expect(ADMIN_ORDER_TRANSITIONS.completed).toEqual([]);
     expect(ADMIN_ORDER_TRANSITIONS.cancelled).toEqual([]);
   });
 
   it('hasOrderStatusTransition detecta si hay un destino válido', () => {
     expect(hasOrderStatusTransition('pending')).toBe(true);
+    expect(hasOrderStatusTransition('confirmed')).toBe(true);
     expect(hasOrderStatusTransition('processing')).toBe(true);
+    expect(hasOrderStatusTransition('shipped')).toBe(true);
     expect(hasOrderStatusTransition('completed')).toBe(false);
     expect(hasOrderStatusTransition('cancelled')).toBe(false);
   });

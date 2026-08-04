@@ -7,6 +7,21 @@ import type { TableColumn } from '@shared/models/table.model';
 import type { InventoryMovement } from '../../models/inventory.model';
 import { MOVEMENT_TYPE_LABELS } from '../../constants/inventory.constants';
 
+const RESERVED_MOVEMENT_TYPES: readonly InventoryMovement['type'][] = [
+  'reserve',
+  'release_reservation',
+  'complete_sale',
+];
+
+const changeLabel = (row: InventoryMovement): string => {
+  if (RESERVED_MOVEMENT_TYPES.includes(row.type)) {
+    return `${row.previousStock} → ${row.newStock} · R: ${row.previousReservedStock} → ${row.newReservedStock}`;
+  }
+  return `${row.previousStock} → ${row.newStock}`;
+};
+
+const orderLabel = (row: InventoryMovement): string => row.orderId ?? '—';
+
 @Component({
   selector: 'app-inventory-movements-table',
   templateUrl: './inventory-movements-table.component.html',
@@ -33,9 +48,14 @@ export class InventoryMovementsTableComponent {
     { key: 'quantity', header: 'Cantidad', align: 'right' },
     {
       key: 'change',
-      header: 'Stock anterior → nuevo',
-      cell: (row) => `${row.previousStock} → ${row.newStock}`,
+      header: 'Stock → nuevo',
+      cell: changeLabel,
+    },
+    {
+      key: 'orderId',
+      header: 'Pedido',
       hideOnMobile: true,
+      cell: orderLabel,
     },
     {
       key: 'reason',

@@ -24,14 +24,18 @@ import {
 
 const STATUS_BADGE_CLASSES: Record<OrderStatus, string> = {
   pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-  processing: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+  confirmed: 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
+  processing: 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
+  shipped: 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
   completed: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
   cancelled: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
 };
 
 const STATUS_DOT_CLASSES: Record<OrderStatus, string> = {
   pending: 'bg-amber-500',
-  processing: 'bg-emerald-500',
+  confirmed: 'bg-sky-500',
+  processing: 'bg-sky-500',
+  shipped: 'bg-sky-500',
   completed: 'bg-emerald-500',
   cancelled: 'bg-rose-500',
 };

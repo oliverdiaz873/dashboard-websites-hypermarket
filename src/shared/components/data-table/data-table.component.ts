@@ -58,6 +58,8 @@ export class DataTableComponent<T extends { id: string }> {
         return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
       case 'out':
         return 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300';
+      case 'info':
+        return 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300';
     }
   }
 
@@ -69,6 +71,8 @@ export class DataTableComponent<T extends { id: string }> {
         return 'bg-amber-500';
       case 'out':
         return 'bg-rose-500';
+      case 'info':
+        return 'bg-sky-500';
     }
   }
 
