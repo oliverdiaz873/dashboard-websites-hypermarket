@@ -13,6 +13,9 @@ export interface ApiConfig {
 export const API_DEFAULTS: ApiConfig = {
   baseUrl: environment.apiBaseUrl,
   timeoutMs: 10_000,
+  // El reintento de GET es opt-in (por petición, vía `retryAttempts`), no el
+  // default: activarlo globalmente rompe el contrato de los specs que simulan
+  // un fallo de red (status 0) y esperan una única petición.
   retryAttempts: 0,
   retryDelayMs: 300,
   defaultHeaders: {

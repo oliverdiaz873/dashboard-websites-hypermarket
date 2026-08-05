@@ -133,21 +133,40 @@ describe('BaseApiService', () => {
     req.flush({ success: true, data: { id: 1 } });
   });
 
-  it('reintenta la petición según retryAttempts', () => {
+  it('reintenta GET solo ante fallos de red (status 0)', () => {
+    const errors: unknown[] = [];
+    let result: { id: number } | undefined;
+    service.getWithOptions().subscribe({ next: (r) => (result = r), error: (e) => errors.push(e) });
+
+    const first = httpMock.expectOne('http://localhost:3000/api/products?page=1&sort=name');
+    first.error(new ProgressEvent('NetworkError'));
+
+    const second = httpMock.expectOne('http://localhost:3000/api/products?page=1&sort=name');
+    second.flush({ success: true, data: { id: 1 } });
+
+    expect(errors).toHaveLength(0);
+    expect(result).toEqual({ id: 1 });
+  });
+
+  it('no reintenta un GET que falla por HTTP (p. ej. 500)', () => {
     const errors: unknown[] = [];
     service.getWithOptions().subscribe({ error: (e) => errors.push(e) });
 
-    const first = httpMock.expectOne('http://localhost:3000/api/products?page=1&sort=name');
-    first.flush(
+    const req = httpMock.expectOne('http://localhost:3000/api/products?page=1&sort=name');
+    req.flush(
       { success: false, message: 'fail', statusCode: 500 },
       { status: 500, statusText: 'Server Error' },
     );
 
-    const second = httpMock.expectOne('http://localhost:3000/api/products?page=1&sort=name');
-    second.flush(
-      { success: false, message: 'fail', statusCode: 500 },
-      { status: 500, statusText: 'Server Error' },
-    );
+    expect(errors).toHaveLength(1);
+  });
+
+  it('no reintenta mutaciones (POST) aunque el fallo sea de red', () => {
+    const errors: unknown[] = [];
+    service.createProduct().subscribe({ error: (e) => errors.push(e) });
+
+    const req = httpMock.expectOne('http://localhost:3000/api/products');
+    req.error(new Error('NetworkError'));
 
     expect(errors).toHaveLength(1);
   });

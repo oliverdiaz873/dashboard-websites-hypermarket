@@ -6,9 +6,15 @@ administradores, construido sobre la API REST del backend
 
 > **Project Status**
 >
-> - **Current Phase:** `Phase 3 — Authentication & Authorization` 🔒 (en progreso)
-> - **Completed:** `Phase 0 — Init` · `Phase 1 — Core` · `Phase 2 — Admin Layout`
-> - **Upcoming:** `Phase 4+ — Productos, Órdenes, Estadísticas…`
+> - **Current Phase:** `Phase 11.2 — Release Candidate Audit` ✅ (preparando el proyecto para mostrarlo profesionalmente)
+> - **Completed:** Fases `0 — Init` · `1 — Core` · `2 — Admin Layout` · `3 — Authentication & RBAC` · `4+ — Productos, Órdenes, Estadísticas, Inventario, Auditoría, Carrito y Direcciones`
+> - **Auditorías:** `Fase 11.1 — Production Readiness` (seguridad, operaciones, offline, UX de errores) · `Fase 11.2 — Release Candidate`
+>
+> El dashboard implementa hoy: shell responsivo con dark theme, autenticación
+> JWT + RBAC, CRUDs de producto/inventario, pedidos, estadísticas, auditoría,
+> buzón de contacto, manejo de sesión expirada, estado offline con reintento de
+> GETs y notificaciones globales (snackbar). **303 tests, lint y build de
+> producción en verde.**
 >
 > **Phase 3 — Authentication & Authorization** — login real contra el backend,
 > persistencia del JWT, guards de ruta, RBAC por roles y cerrado de sesión.
@@ -100,7 +106,7 @@ src/
 ├─ features/             # Módulos de negocio (auth, products, orders, stats…)
 ├─ layouts/              # Layouts de la aplicación (admin-layout)
 ├─ assets/               # fonts/, images/, icons/
-├─ environments/         # environment.ts + environment.development.ts
+├─ environments/         # environment.ts + environment.development.ts + environment.production.ts
 └─ styles/               # Design system SCSS (tokens, mixins, resets, …)
 ```
 
@@ -217,12 +223,51 @@ Flujo de autenticación completo contra el backend
 - El CORS del backend ya permite `http://localhost:4200`.
 - Configurable desde `src/environments/` (`apiBaseUrl`).
 
-> **Nota sobre producción:** `environment.ts` contiene
-> `apiBaseUrl: "http://localhost:3000/api"` **únicamente para desarrollo
-> local** (actúa como placeholder). Antes del primer despliegue deberá
-> configurarse la URL pública del backend en el entorno de producción.
+> **Nota sobre producción:** el build `--configuration production` usa
+> `src/environments/environment.production.ts` (vía `fileReplacements` en
+> `angular.json`). Contiene `apiBaseUrl: "https://REPLACE_WITH_PRODUCTION_API/api"`
+> como placeholder: **reemplazar ese valor antes del build de producción** o
+> integrarlo con el sistema CI/CD del hosting.
 
 ---
+
+## Decisiones de arquitectura
+
+Resumen de las decisiones registradas durante la auditoría de producción
+(detalle en el repo del backend):
+
+| Decisión                                                                                                                                                                                                                          | Estado   |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| **Límites de módulos**: cada feature es autocontenida; `stats` es transversal y de **solo lectura** (agrega modelos de otros módulos sin escribirlos ni reutilizar su lógica). Ver `docs/ADR-011-module-boundaries.md` (backend). | Aceptada |
+| **Envelope de errores**: `{ success, message, statusCode, code, requestId }` en toda la API; `requestId` para correlacionar con logs.                                                                                             | Aceptada |
+| **Offline + reintentos**: reintento de peticiones **solo GET** y únicamente ante fallos transitorios (status 0 / timeout); las mutaciones nunca se reintentan.                                                                    | Aceptada |
+| **Sesión expirada**: 401 fuera del login cierra sesión y redirige a `/login?returnUrl=` con aviso al usuario.                                                                                                                     | Aceptada |
+| **Retry opt-in**: el reintento es por petición (`retryAttempts`), no global, para no alterar el contrato de errores.                                                                                                              | Aceptada |
+
+---
+
+## Instalación limpia
+
+Requisitos: **Node.js ≥ 22** (pínchalo con `.nvmrc`) y el backend Express
+(`backend-advanced-websites-hypermarket-express-mongodb`) corriendo en
+`http://localhost:3000`.
+
+```bash
+# 1. Instalar dependencias (bloquea versiones desde package-lock.json)
+npm ci
+
+# 2. Servidor de desarrollo
+npm start
+```
+
+Para producción:
+
+```bash
+# Antes de desplegar: apuntar apiBaseUrl en src/environments/environment.production.ts
+npm run build              # ng build (configuración production)
+npm test                   # 303 tests
+npm run lint               # ESLint
+```
 
 ## Requisitos
 
@@ -264,3 +309,10 @@ sean rápidos.
 
 Los mismos alias están espejados en `jest.config.js` (`moduleNameMapper`) y en
 los `includePaths` de SCSS.
+
+---
+
+## Screenshots
+
+Capturas del panel para el portfolio en [`docs/screenshots/`](docs/screenshots/README.md)
+(vistas de dashboard, productos, auditoría, pedidos, estadísticas y login).

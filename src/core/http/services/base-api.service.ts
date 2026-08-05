@@ -1,6 +1,6 @@
-import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, retry, timeout } from 'rxjs';
+import { Observable, TimeoutError, map, mergeMap, of, retryWhen, throwError, timeout } from 'rxjs';
 
 import type { ApiResponse } from '../../models/api-response';
 import { API_CONFIG } from '../config/api.config';
@@ -81,17 +81,37 @@ export class BaseApiService {
     const paramsValue =
       params instanceof HttpParams ? params : new HttpParams({ fromObject: params ?? {} });
 
-    const request$ = this.http
-      .request<ApiResponse<T>>(method, this.buildUrl(path), {
-        body,
-        params: paramsValue,
-        headers: headers ?? this.apiConfig.defaultHeaders,
-        context,
-        observe: 'body',
-      })
-      .pipe(retry(requestRetryAttempts));
+    const request$ = this.http.request<ApiResponse<T>>(method, this.buildUrl(path), {
+      body,
+      params: paramsValue,
+      headers: headers ?? this.apiConfig.defaultHeaders,
+      context,
+      observe: 'body',
+    });
 
-    return request$.pipe(
+    // Retry SOLO en GET (idempotente) y únicamente ante fallos transitorios de
+    // red/timeout. Nunca reintentamos mutaciones (POST/PUT/PATCH/DELETE) para
+    // evitar duplicados o inconsistencias.
+    //
+    // Se usa `retryWhen` (no `retry`) porque en RxJS 7 el operador `retry` no
+    // acepta un filtro por error: habría reintentado incluso respuestas HTTP
+    // 4xx/5xx. Aquí decidimos por error si re-disparar o propagar.
+    const retried$ =
+      method === 'GET' && requestRetryAttempts > 0
+        ? request$.pipe(
+            retryWhen((errors) =>
+              errors.pipe(
+                mergeMap((error: unknown, attempt: number) =>
+                  attempt < requestRetryAttempts && isRetryable(error)
+                    ? of(error)
+                    : throwError(() => error),
+                ),
+              ),
+            ),
+          )
+        : request$;
+
+    return retried$.pipe(
       timeout(requestTimeoutMs),
       map((response) => {
         if (flags?.keepPagination) {
@@ -102,4 +122,10 @@ export class BaseApiService {
       }),
     );
   }
+}
+
+function isRetryable(error: unknown): boolean {
+  if (error instanceof TimeoutError) return true;
+  if (error instanceof HttpErrorResponse) return error.status === 0;
+  return false;
 }

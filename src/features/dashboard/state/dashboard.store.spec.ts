@@ -159,7 +159,7 @@ describe('DashboardStore', () => {
     expect(store.range()).toBe(30);
   });
 
-  it('propaga error si falla la carga de KPIs', async () => {
+  it('degrada el widget de KPIs sin tumbar el resto si /dashboard falla', async () => {
     const pending = store.load();
 
     httpMock.expectOne(byUrl('/dashboard')).error({ status: 500, statusText: 'Server Error' });
@@ -168,6 +168,26 @@ describe('DashboardStore', () => {
     flushTop();
     flushCategories();
     flushInventory();
+
+    await pending;
+    expect(store.kpis()).toBeNull();
+    expect(store.revenueTrend().length).toBe(1);
+    expect(store.hasLoaded()).toBe(true);
+    expect(store.error()).toBeNull();
+    expect(store.isLoading()).toBe(false);
+  });
+
+  it('propaga error global solo si TODAS las métricas fallan', async () => {
+    const pending = store.load();
+
+    httpMock.expectOne(byUrl('/dashboard')).error({ status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(byUrl('/revenue')).error({ status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(byUrl('/orders-status')).error({ status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(byUrl('/top-products')).error({ status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(byUrl('/category-sales')).error({ status: 500, statusText: 'Server Error' });
+    httpMock
+      .expectOne(byUrl('/inventory-summary'))
+      .error({ status: 500, statusText: 'Server Error' });
 
     await pending;
     expect(store.error()).toBeTruthy();

@@ -7,6 +7,7 @@ import type { User } from '../../models/user.model';
 import type { UserRole } from '../../models/user-role';
 import { AuthService } from '../../services/auth.service';
 import { AuthTokenService } from '../../services/auth-token.service';
+import { isTokenExpired } from '../../utils/token.util';
 
 interface AuthState {
   user: User | null;
@@ -87,6 +88,13 @@ export const AuthStore = signalStore(
       const token = authTokenService.getToken();
       try {
         if (!token) return;
+        // Proactivo: si el token ya expiró (según su claim `exp`) no llamamos al
+        // backend; dejamos la sesión limpia y que el guard redirija a /login.
+        if (isTokenExpired(token)) {
+          authTokenService.removeToken();
+          patchState(store, { token: null });
+          return;
+        }
         const user = await firstValueFrom(authService.getProfile());
         patchState(store, { user, token });
       } catch {

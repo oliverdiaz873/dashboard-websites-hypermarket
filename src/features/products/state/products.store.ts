@@ -215,39 +215,41 @@ export const ProductsStore = signalStore(
       },
 
       async createProduct(payload: CreateProductPayload): Promise<Product> {
-        patchState(store, { isSubmitting: true, error: null });
+        patchState(store, { isSubmitting: true });
         try {
           const product = await firstValueFrom(productsService.create(payload));
           patchState(store, { isSubmitting: false });
           await load();
           return product;
         } catch (error) {
-          patchState(store, { isSubmitting: false, error: toErrorMessage(error) });
+          // El error de mutación se notifica vía el toast (ErrorInterceptor);
+          // no debe pintarse como error de carga del catálogo.
+          patchState(store, { isSubmitting: false });
           throw error;
         }
       },
 
       async updateProduct(id: string, payload: UpdateProductPayload): Promise<Product> {
-        patchState(store, { isSubmitting: true, error: null });
+        patchState(store, { isSubmitting: true });
         try {
           const product = await firstValueFrom(productsService.update(id, payload));
           patchState(store, { isSubmitting: false });
           await load();
           return product;
         } catch (error) {
-          patchState(store, { isSubmitting: false, error: toErrorMessage(error) });
+          patchState(store, { isSubmitting: false });
           throw error;
         }
       },
 
       async deleteProduct(id: string): Promise<void> {
-        patchState(store, { isSubmitting: true, error: null });
+        patchState(store, { isSubmitting: true });
         try {
           await firstValueFrom(productsService.remove(id));
           patchState(store, { isSubmitting: false });
           await load();
         } catch (error) {
-          patchState(store, { isSubmitting: false, error: toErrorMessage(error) });
+          patchState(store, { isSubmitting: false });
           throw error;
         }
       },
@@ -270,10 +272,3 @@ export const ProductsStore = signalStore(
     };
   }),
 );
-
-function toErrorMessage(error: unknown): string | null {
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-  return null;
-}

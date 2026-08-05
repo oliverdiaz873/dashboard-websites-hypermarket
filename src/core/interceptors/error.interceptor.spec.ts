@@ -1,6 +1,7 @@
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { NOTIFICATION_TYPE } from '../enums/notification-type';
@@ -20,6 +21,7 @@ describe('errorInterceptor', () => {
       providers: [
         provideHttpClient(withInterceptors([errorInterceptor])),
         provideHttpClientTesting(),
+        provideRouter([]),
       ],
     });
     http = TestBed.inject(HttpClient);
@@ -70,7 +72,32 @@ describe('errorInterceptor', () => {
     expect(notificationsStore.notifications()[0].message).toBe('boom');
   });
 
-  it('un 401 fuera del login cierra la sesión del usuario', async () => {
+  it('mapea code y requestId del envelope y los expone en la notificación', async () => {
+    const errorPromise = firstValueFrom(http.get('/users')).catch((e) => e);
+
+    const req = httpMock.expectOne('/users');
+    req.flush(
+      {
+        success: false,
+        message: 'Too many requests',
+        statusCode: 429,
+        code: 'RATE_LIMITED',
+        requestId: 'req-abc-123',
+      },
+      { status: 429, statusText: 'Too Many Requests' },
+    );
+
+    const error = await errorPromise;
+    expect(isApiError(error)).toBe(true);
+    expect(error.code).toBe('RATE_LIMITED');
+    expect(error.requestId).toBe('req-abc-123');
+
+    expect(notificationsStore.notifications()[0].message).toBe(
+      'Too many requests (Request req-abc-123)',
+    );
+  });
+
+  it('un 401 fuera del login cierra la sesión, avisa y navega a login', async () => {
     const authStore = TestBed.inject(AuthStore);
     authStore.setAuthenticated({
       token: 'token-x',
@@ -93,6 +120,9 @@ describe('errorInterceptor', () => {
 
     expect(authStore.isAuthenticated()).toBe(false);
     expect(window.localStorage.getItem(STORAGE_KEYS.authToken)).toBeNull();
+    expect(notificationsStore.notifications()[0].message).toBe(
+      'Tu sesión expiró. Inicia sesión de nuevo.',
+    );
   });
 
   it('no cierra la sesión en un 401 del propio login', async () => {

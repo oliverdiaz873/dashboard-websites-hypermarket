@@ -89,8 +89,10 @@ export const DashboardStore = signalStore(
       patchState(store, { isLoading: true, error: null });
       const range = store.range();
       try {
+        // Carga independiente por métrica: un fallo en una serie NO tumba el
+        // dashboard completo. El error global solo aparece si TODAS fallan.
         const [kpis, revenueTrend, ordersByStatus, topProducts, categorySales, inventorySummary] =
-          await Promise.all([
+          await Promise.allSettled([
             firstValueFrom(dashboardService.getDashboard(range)),
             firstValueFrom(dashboardService.getRevenueSeries({ days: range })),
             firstValueFrom(dashboardService.getOrdersByStatus({ days: range })),
@@ -104,14 +106,25 @@ export const DashboardStore = signalStore(
             firstValueFrom(dashboardService.getInventorySummary()),
           ]);
         patchState(store, {
+          kpis: kpis.status === 'fulfilled' ? kpis.value : null,
+          revenueTrend: revenueTrend.status === 'fulfilled' ? revenueTrend.value : [],
+          ordersByStatus: ordersByStatus.status === 'fulfilled' ? ordersByStatus.value : null,
+          topProducts: topProducts.status === 'fulfilled' ? topProducts.value : [],
+          categorySales: categorySales.status === 'fulfilled' ? categorySales.value : [],
+          inventorySummary: inventorySummary.status === 'fulfilled' ? inventorySummary.value : null,
+          hasLoaded: true,
+        });
+        const allFailed = [
           kpis,
           revenueTrend,
           ordersByStatus,
           topProducts,
           categorySales,
           inventorySummary,
-          hasLoaded: true,
-        });
+        ].every((result) => result.status === 'rejected');
+        if (allFailed) {
+          patchState(store, { error: 'No se pudieron cargar las estadísticas.' });
+        }
       } catch {
         patchState(store, { error: 'No se pudieron cargar las estadísticas.' });
       } finally {

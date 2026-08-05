@@ -2,6 +2,8 @@ export interface ApiError {
   success: false;
   message: string;
   statusCode: number;
+  code?: string;
+  requestId?: string;
   timestamp?: string;
 }
 
