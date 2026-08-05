@@ -1,0 +1,70 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  <app-page-header title="Auditoría" subtitle="Registro de actividad y cambios en el sistema" />
+
+  @if (!loading()) {
+    <app-audit-log-toolbar />
+  }
+
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center rounded-lg border border-border bg-surface">
+      <div class="flex items-center gap-3 text-muted">
+        <div
+          class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
+        ></div>
+        <span class="text-sm">Cargando registros…</span>
+      </div>
+    </div>
+  } @else if (showError()) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="error_outline"
+        title="No se pudieron cargar los registros"
+        [message]="store.error() ?? ''"
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          (click)="retry()"
+        >
+          Reintentar
+        </button>
+      </app-empty-state>
+    </div>
+  } @else if (showTable()) {
+    <app-audit-log-table
+      [items]="store.items()"
+      [loading]="store.isLoading()"
+      (actionClicked)="onAction($event)"
+    />
+
+    <div class="mt-auto rounded-lg border border-border bg-surface">
+      <app-pagination
+        [page]="store.page()"
+        [pageSize]="store.pageSize()"
+        [total]="store.total()"
+        (pageChange)="store.setPage($event)"
+        (pageSizeChange)="store.setPageSize($event)"
+      />
+    </div>
+  } @else {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="history"
+        title="Sin registros"
+        message="No hay registros que coincidan con los filtros actuales."
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700"
+          (click)="store.refresh()"
+        >
+          Recargar
+        </button>
+      </app-empty-state>
+    </div>
+  }
+</div>

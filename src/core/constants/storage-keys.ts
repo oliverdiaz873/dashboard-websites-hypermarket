@@ -13,6 +13,7 @@ export const STORAGE_KEYS = {
   ordersPageSize: `${STORAGE_PREFIX}.orders.page-size`,
   ordersSortBy: `${STORAGE_PREFIX}.orders.sort-by`,
   ordersSortOrder: `${STORAGE_PREFIX}.orders.sort-order`,
+  auditLogsPageSize: `${STORAGE_PREFIX}.audit-logs.page-size`,
   dashboardRange: `${STORAGE_PREFIX}.dashboard.range`,
 } as const;
 

@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>Detalle del registro de auditoría</h2>
+<mat-dialog-content class="flex flex-col gap-4 pt-2">
+  <div class="grid gap-2 rounded-lg border border-border bg-surface-alt/50 px-4 py-3 text-sm">
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Fecha</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ createdAt() }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Usuario</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ data.log.userName ?? data.log.userId ?? '—' }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Acción</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ actionLabel() }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Entidad</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ entityLabel() }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Entidad ID</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ data.log.entityId ?? '—' }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Estado</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ data.log.success ? 'Éxito' : 'Fallo' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <span class="text-xs font-medium uppercase tracking-wide text-muted">Detalles</span>
+    @if (detailsJson()) {
+      <pre
+        class="max-h-64 overflow-auto rounded-lg border border-border bg-surface-alt/50 p-3 text-xs leading-relaxed text-neutral-700 dark:text-neutral-300"
+      ><code>{{ detailsJson() }}</code></pre>
+    } @else {
+      <p class="text-sm text-muted">Sin detalles adicionales.</p>
+    }
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Cerrar</button>
+</mat-dialog-actions>

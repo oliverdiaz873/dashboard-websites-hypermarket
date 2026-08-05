@@ -15,6 +15,7 @@ describe('API_ENDPOINTS', () => {
       adminOrders: '/admin/orders',
       contacts: '/contact',
       stats: '/admin/stats',
+      auditLogs: '/admin/audit-logs',
     });
   });
 

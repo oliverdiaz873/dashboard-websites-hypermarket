@@ -20,5 +20,6 @@ export const NAVIGATION_ITEMS: readonly NavigationItem[] = [
   { label: 'Clientes', icon: 'group', route: '/users' },
   { label: 'Contactos', icon: 'mail', route: '/contacts' },
   { label: 'Estadísticas', icon: 'bar_chart', route: '/stats', roles: ['admin'] },
+  { label: 'Auditoría', icon: 'history', route: '/audit-logs', roles: ['admin'] },
   { label: 'Configuración', icon: 'settings', route: '/settings' },
 ];

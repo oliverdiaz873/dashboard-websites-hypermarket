@@ -1,0 +1,76 @@
+<div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+    <div class="grid w-full gap-3 sm:grid-cols-2 lg:max-w-2xl lg:grid-cols-4">
+      <div class="sm:col-span-2 lg:col-span-2">
+        <app-search-input
+          [value]="store.search()"
+          placeholder="Buscar por acción, usuario o entidad ID…"
+          (searchChange)="onSearch($event)"
+        />
+      </div>
+
+      <app-filter-select
+        label="Acción"
+        [options]="actionOptions"
+        [value]="store.action()"
+        allLabel="Todas"
+        (valueChange)="onAction($event)"
+      />
+
+      <app-filter-select
+        label="Entidad"
+        [options]="entityOptions"
+        [value]="store.entity()"
+        allLabel="Todas"
+        (valueChange)="onEntity($event)"
+      />
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        mat-icon-button
+        type="button"
+        (click)="store.clearFilters()"
+        aria-label="Limpiar filtros"
+        [matTooltip]="'Limpiar filtros'"
+      >
+        <mat-icon>filter_alt_off</mat-icon>
+      </button>
+
+      <button mat-icon-button type="button" (click)="store.refresh()" aria-label="Actualizar lista">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="grid w-full gap-3 sm:grid-cols-2 lg:max-w-md lg:grid-cols-2">
+    <label class="flex flex-col gap-1">
+      <span class="text-xs font-medium text-neutral-600 dark:text-neutral-400">Desde</span>
+      <input
+        type="date"
+        [value]="store.from()"
+        class="rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-brand-600"
+        (change)="onFrom($event)"
+      />
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-xs font-medium text-neutral-600 dark:text-neutral-400">Hasta</span>
+      <input
+        type="date"
+        [value]="store.to()"
+        class="rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-brand-600"
+        (change)="onTo($event)"
+      />
+    </label>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-neutral-700 dark:text-neutral-300"
+    >
+      Total
+      <strong>{{ store.total() }}</strong>
+    </span>
+  </div>
+</div>
