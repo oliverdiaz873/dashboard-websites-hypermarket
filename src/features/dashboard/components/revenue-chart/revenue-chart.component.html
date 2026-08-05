@@ -1,0 +1,10 @@
+<app-chart-container
+  [title]="'Ingresos por día'"
+  [subtitle]="'Últimos ' + days() + ' días'"
+  [loading]="loading()"
+  [isEmpty]="points().length === 0"
+>
+  <div class="h-64">
+    <canvas baseChart [type]="type" [data]="data()" [options]="options"></canvas>
+  </div>
+</app-chart-container>

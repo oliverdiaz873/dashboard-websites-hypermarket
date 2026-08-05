@@ -1,0 +1,11 @@
+<app-chart-container
+  [title]="'Pedidos por estado'"
+  [subtitle]="'Distribución del pipeline'"
+  [loading]="loading()"
+  [isEmpty]="!hasData()"
+  emptyMessage="No hay pedidos en este período."
+>
+  <div class="h-64">
+    <canvas baseChart [type]="type" [data]="data()" [options]="options"></canvas>
+  </div>
+</app-chart-container>

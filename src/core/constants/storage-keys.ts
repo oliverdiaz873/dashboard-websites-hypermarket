@@ -13,6 +13,7 @@ export const STORAGE_KEYS = {
   ordersPageSize: `${STORAGE_PREFIX}.orders.page-size`,
   ordersSortBy: `${STORAGE_PREFIX}.orders.sort-by`,
   ordersSortOrder: `${STORAGE_PREFIX}.orders.sort-order`,
+  dashboardRange: `${STORAGE_PREFIX}.dashboard.range`,
 } as const;
 
 export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];

@@ -1,0 +1,11 @@
+<app-chart-container
+  [title]="'Ventas por categoría'"
+  [subtitle]="'Ingresos por categoría'"
+  [loading]="loading()"
+  [isEmpty]="categories().length === 0"
+  emptyMessage="Sin ventas por categoría en el período."
+>
+  <div class="h-64">
+    <canvas baseChart [type]="type" [data]="data()" [options]="options"></canvas>
+  </div>
+</app-chart-container>

@@ -1,0 +1,11 @@
+<app-chart-container
+  [title]="'Productos más vendidos'"
+  [subtitle]="'Top por unidades, últimos ' + days() + ' días'"
+  [loading]="loading()"
+  [isEmpty]="products().length === 0"
+  emptyMessage="Sin ventas registradas en el período."
+>
+  <div class="h-64">
+    <canvas baseChart [type]="type" [data]="data()" [options]="options"></canvas>
+  </div>
+</app-chart-container>

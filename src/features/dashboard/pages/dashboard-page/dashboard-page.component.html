@@ -1,0 +1,80 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  <app-page-header title="Dashboard" subtitle="Resumen general del hipermercado">
+    <div class="inline-flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+      @for (range of ranges; track range) {
+        <button
+          type="button"
+          class="rounded px-3 py-1.5 text-sm font-medium transition-colors"
+          [ngClass]="
+            store.range() === range ? 'bg-brand-600 text-white' : 'text-muted hover:text-foreground'
+          "
+          (click)="onRangeChange(range)"
+        >
+          {{ range }}d
+        </button>
+      }
+    </div>
+  </app-page-header>
+
+  @if (loading() && !showError()) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <div class="flex items-center gap-3 text-muted">
+        <div
+          class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
+        ></div>
+        <span class="text-sm">Cargando métricas…</span>
+      </div>
+    </div>
+  } @else if (showError()) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="error_outline"
+        title="No se pudieron cargar las estadísticas"
+        [message]="store.error() ?? ''"
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          (click)="retry()"
+        >
+          Reintentar
+        </button>
+      </app-empty-state>
+    </div>
+  } @else {
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      @for (card of store.kpiCards(); track card.key) {
+        <app-stat-card
+          [title]="card.title"
+          [value]="card.value"
+          [icon]="card.icon"
+          [unit]="card.unit ?? ''"
+          [trend]="card.key === 'revenue' ? store.kpis()?.growthPercent : undefined"
+          [trendLabel]="card.key === 'revenue' ? 'vs mes anterior' : ''"
+        />
+      }
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <app-revenue-chart
+        [points]="store.revenueTrend()"
+        [days]="store.range()"
+        [loading]="store.isLoading()"
+      />
+      <app-orders-by-status-chart [status]="store.ordersByStatus()" [loading]="store.isLoading()" />
+      <app-top-products-chart
+        [products]="store.topProducts()"
+        [days]="store.range()"
+        [loading]="store.isLoading()"
+      />
+      <app-category-sales-chart
+        [categories]="store.categorySales()"
+        [loading]="store.isLoading()"
+      />
+    </div>
+  }
+</div>
