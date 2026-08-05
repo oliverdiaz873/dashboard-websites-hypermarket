@@ -33,7 +33,7 @@ export class SidebarComponent {
   protected readonly sidebarStore = inject(SidebarStore);
   protected readonly authStore = inject(AuthStore);
   protected readonly navItems = computed(() =>
-    NAVIGATION_ITEMS.filter((item) => this.authStore.hasRole(item.roles ?? [])),
+    NAVIGATION_ITEMS.filter((item) => item.enabled && this.authStore.hasRole(item.roles ?? [])),
   );
 
   private readonly router = inject(Router);

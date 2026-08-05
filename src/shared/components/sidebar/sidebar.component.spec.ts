@@ -48,7 +48,9 @@ describe('SidebarComponent', () => {
     authenticate(adminUser);
     const fixture = create();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelectorAll('.hs-sidebar__item').length).toBe(NAVIGATION_ITEMS.length);
+    expect(el.querySelectorAll('.hs-sidebar__item').length).toBe(
+      NAVIGATION_ITEMS.filter((item) => item.enabled).length,
+    );
     expect(el.textContent).toContain('Hipermercado Superior');
     expect(el.textContent).toContain('Productos');
   });

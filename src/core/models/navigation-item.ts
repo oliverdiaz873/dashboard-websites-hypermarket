@@ -4,5 +4,6 @@ export interface NavigationItem {
   label: string;
   icon: string;
   route: string;
+  enabled: boolean;
   roles?: UserRole[];
 }

@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>{{ isEditing ? 'Editar categoría' : 'Nueva categoría' }}</h2>
+<mat-dialog-content class="flex flex-col gap-4 pt-2">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput [formControl]="form.controls.name" placeholder="Ej. Alimentos" />
+    <mat-hint>El slug se genera automáticamente desde el nombre.</mat-hint>
+  </mat-form-field>
+
+  <div class="flex items-center justify-between">
+    <span class="text-sm font-medium text-neutral-800 dark:text-neutral-200">Subcategorías</span>
+    <button
+      mat-icon-button
+      type="button"
+      (click)="addSubcategory()"
+      aria-label="Añadir subcategoría"
+    >
+      <mat-icon aria-hidden="true">add</mat-icon>
+    </button>
+  </div>
+
+  @for (control of subcategories.controls; track trackIndex($index)) {
+    <div class="flex items-center gap-2">
+      <mat-form-field appearance="outline" class="min-w-0 flex-1">
+        <mat-label>Subcategoría</mat-label>
+        <input matInput [formControl]="control" placeholder="Ej. Frutas y Verduras" />
+      </mat-form-field>
+      <button
+        mat-icon-button
+        type="button"
+        (click)="removeSubcategory($index)"
+        aria-label="Eliminar subcategoría"
+      >
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </div>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancelar</button>
+  <button mat-flat-button color="primary" type="button" (click)="submit()">
+    {{ isEditing ? 'Guardar cambios' : 'Crear categoría' }}
+  </button>
+</mat-dialog-actions>

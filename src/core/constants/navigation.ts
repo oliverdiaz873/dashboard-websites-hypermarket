@@ -8,18 +8,22 @@ import type { NavigationItem } from '../models/navigation-item';
  * `roles` restringe el item a ciertos roles (RBAC). Solo lo relacionado con
  * autorización puede aparecer aquí; el resto de la navegación es pública para
  * cualquier usuario autenticado.
+ *
+ * `enabled` controla si el item se renderiza en el menú. Los módulos aún no
+ * implementados se mantienen en la estructura con `enabled: false` para
+ * conservar el roadmap del dashboard: reactivarlos es cambiar el booleano.
  */
 export const NAVIGATION_ITEMS: readonly NavigationItem[] = [
-  { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-  { label: 'Productos', icon: 'inventory_2', route: '/products' },
-  { label: 'Categorías', icon: 'category', route: '/categories' },
-  { label: 'Marcas', icon: 'local_offer', route: '/brands' },
-  { label: 'Ofertas', icon: 'sale', route: '/offers' },
-  { label: 'Inventario', icon: 'warehouse', route: '/inventory' },
-  { label: 'Pedidos', icon: 'receipt_long', route: '/orders' },
-  { label: 'Clientes', icon: 'group', route: '/users' },
-  { label: 'Contactos', icon: 'mail', route: '/contacts' },
-  { label: 'Estadísticas', icon: 'bar_chart', route: '/stats', roles: ['admin'] },
-  { label: 'Auditoría', icon: 'history', route: '/audit-logs', roles: ['admin'] },
-  { label: 'Configuración', icon: 'settings', route: '/settings' },
+  { label: 'Dashboard', icon: 'dashboard', route: '/dashboard', enabled: true },
+  { label: 'Productos', icon: 'inventory_2', route: '/products', enabled: true },
+  { label: 'Categorías', icon: 'category', route: '/categories', enabled: true },
+  { label: 'Marcas', icon: 'local_offer', route: '/brands', enabled: false },
+  { label: 'Ofertas', icon: 'sale', route: '/offers', enabled: false },
+  { label: 'Inventario', icon: 'warehouse', route: '/inventory', enabled: true },
+  { label: 'Pedidos', icon: 'receipt_long', route: '/orders', enabled: true },
+  { label: 'Clientes', icon: 'group', route: '/users', enabled: false },
+  { label: 'Contactos', icon: 'mail', route: '/contacts', enabled: false },
+  { label: 'Estadísticas', icon: 'bar_chart', route: '/stats', enabled: true, roles: ['admin'] },
+  { label: 'Auditoría', icon: 'history', route: '/audit-logs', enabled: true, roles: ['admin'] },
+  { label: 'Configuración', icon: 'settings', route: '/settings', enabled: false },
 ];

@@ -7,7 +7,7 @@ import { SORT_DIRECTION, type SortDirection } from '@core/enums/sort-direction';
 import { getStorageItem, setStorageItem } from '@core/utils/storage.util';
 
 import { ProductsService } from '../services/products.service';
-import { CategoriesService } from '../services/categories.service';
+import { CategoriesService } from '@features/categories/services/categories.service';
 import { BrandsService } from '../services/brands.service';
 import type {
   CreateProductPayload,
