@@ -1,0 +1,5 @@
+@use 'mixins' as *;
+
+th button mat-icon {
+  @include hs-mat-icon(1rem);
+}

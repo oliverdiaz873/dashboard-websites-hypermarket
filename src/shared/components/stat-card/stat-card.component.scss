@@ -1,3 +1,13 @@
+@use 'mixins' as *;
+
 :host {
   display: block;
+}
+
+.stat-card__tone-icon {
+  @include hs-mat-icon(1.25rem);
+}
+
+.stat-card__trend-icon {
+  @include hs-mat-icon(0.875rem);
 }

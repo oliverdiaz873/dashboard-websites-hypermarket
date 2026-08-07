@@ -100,3 +100,17 @@
     background-color: transparent;
   }
 }
+
+/// Ajusta un `mat-icon` a un tamaño exacto (caja, glifo y line-height).
+/// Aplicar siempre scoped, p. ej. `.selector mat-icon { @include hs-mat-icon(1rem); }`,
+/// para no afectar a otros iconos del componente.
+@mixin hs-mat-icon($size) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: $size;
+  height: $size;
+  font-size: $size;
+  line-height: $size;
+}

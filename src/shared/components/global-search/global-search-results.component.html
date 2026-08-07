@@ -1,0 +1,71 @@
+<div class="hs-search-results" role="listbox" aria-label="Resultados de búsqueda">
+  @switch (searchStore.status()) {
+    @case ('idle') {
+      <div class="hs-search-results__message">
+        <mat-icon aria-hidden="true">search</mat-icon>
+        <span>Escribe para buscar productos, órdenes y secciones</span>
+      </div>
+    }
+    @case ('loading') {
+      <div class="hs-search-results__message">
+        <mat-spinner class="hs-search-results__spinner" [diameter]="20" aria-label="Buscando" />
+        <span>Buscando…</span>
+      </div>
+    }
+    @case ('error') {
+      <div class="hs-search-results__message">
+        <mat-icon class="text-danger-500" aria-hidden="true">error_outline</mat-icon>
+        <span>{{ searchStore.error() }}</span>
+        <button type="button" class="hs-search-results__retry" (click)="onRetry()">
+          Reintentar
+        </button>
+      </div>
+    }
+    @case ('success') {
+      @if (searchStore.isEmpty()) {
+        <div class="hs-search-results__message">
+          <mat-icon aria-hidden="true">search_off</mat-icon>
+          <span>Sin resultados para «{{ searchStore.query() }}»</span>
+        </div>
+      } @else {
+        @for (group of groups(); track group.type) {
+          <section class="hs-search-results__group">
+            <h3 class="hs-search-results__group-title">
+              <mat-icon aria-hidden="true">{{ group.icon }}</mat-icon>
+              <span>{{ group.title }}</span>
+            </h3>
+            <ul class="hs-search-results__list">
+              @for (item of group.items; track item.id) {
+                <li>
+                  <button
+                    type="button"
+                    role="option"
+                    [id]="optionId(item.index)"
+                    class="hs-search-results__item"
+                    [class.hs-search-results__item--active]="isActive(item.index)"
+                    [attr.aria-selected]="isActive(item.index)"
+                    (click)="onItemClick(item)"
+                    (mouseenter)="onItemHover(item)"
+                  >
+                    <mat-icon class="hs-search-results__item-icon" aria-hidden="true">
+                      {{ group.icon }}
+                    </mat-icon>
+                    <span class="hs-search-results__item-body">
+                      <span class="hs-search-results__item-label">{{ item.label }}</span>
+                      @if (item.subtitle) {
+                        <span class="hs-search-results__item-subtitle">{{ item.subtitle }}</span>
+                      }
+                    </span>
+                    <mat-icon class="hs-search-results__item-arrow" aria-hidden="true">
+                      chevron_right
+                    </mat-icon>
+                  </button>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      }
+    }
+  }
+</div>

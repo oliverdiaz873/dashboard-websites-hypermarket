@@ -1,0 +1,99 @@
+<div class="hs-global-search" (appClickOutside)="searchStore.close()">
+  <!-- Trigger desktop: pill con input -->
+  <label class="hs-global-search__trigger hs-global-search__trigger--desktop">
+    <mat-icon class="hs-global-search__icon" aria-hidden="true">search</mat-icon>
+    <input
+      type="search"
+      class="hs-global-search__input"
+      placeholder="Buscar…"
+      role="combobox"
+      aria-label="Búsqueda global"
+      [attr.aria-expanded]="showDropdown()"
+      aria-controls="hs-global-search-dropdown"
+      [attr.aria-activedescendant]="activeDescendantId()"
+      [value]="searchStore.query()"
+      (input)="onInput($event)"
+      (keydown)="onKeyDown($event)"
+      (focus)="searchStore.open()"
+    />
+    @if (searchStore.query()) {
+      <button
+        type="button"
+        class="hs-global-search__clear"
+        aria-label="Limpiar búsqueda"
+        (click)="clear()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </label>
+
+  <!-- Dropdown desktop -->
+  @if (showDropdown()) {
+    <div id="hs-global-search-dropdown" class="hs-global-search__dropdown" role="presentation">
+      <app-global-search-results />
+    </div>
+  }
+
+  <!-- Trigger móvil: icono que abre la palette -->
+  <button
+    type="button"
+    mat-icon-button
+    class="hs-global-search__mobile-trigger"
+    aria-label="Buscar"
+    [attr.aria-expanded]="showPalette()"
+    (click)="openPalette()"
+  >
+    <mat-icon aria-hidden="true">search</mat-icon>
+  </button>
+
+  <!-- Palette móvil a pantalla completa -->
+  @if (showPalette()) {
+    <div class="hs-global-search__backdrop" (click)="searchStore.close()" aria-hidden="true"></div>
+    <div
+      class="hs-global-search__palette"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Búsqueda global"
+    >
+      <div class="hs-global-search__palette-header">
+        <mat-icon class="hs-global-search__icon" aria-hidden="true">search</mat-icon>
+        <input
+          type="search"
+          #paletteInput
+          class="hs-global-search__palette-input"
+          placeholder="Buscar productos, órdenes, secciones…"
+          role="combobox"
+          aria-label="Búsqueda global"
+          aria-expanded="true"
+          aria-controls="hs-global-search-palette-results"
+          [attr.aria-activedescendant]="activeDescendantId()"
+          [value]="searchStore.query()"
+          (input)="onInput($event)"
+          (keydown)="onKeyDown($event)"
+          (focus)="searchStore.open()"
+        />
+        @if (searchStore.query()) {
+          <button
+            type="button"
+            class="hs-global-search__clear"
+            aria-label="Limpiar búsqueda"
+            (click)="clear()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </div>
+
+      <div id="hs-global-search-palette-results" class="hs-global-search__palette-results">
+        <app-global-search-results />
+      </div>
+
+      <div class="hs-global-search__palette-footer">
+        <span><kbd>↑</kbd> <kbd>↓</kbd> Navegar</span>
+        <span><kbd>Enter</kbd> Seleccionar</span>
+        <span><kbd>Esc</kbd> Cerrar</span>
+      </div>
+    </div>
+  }
+</div>

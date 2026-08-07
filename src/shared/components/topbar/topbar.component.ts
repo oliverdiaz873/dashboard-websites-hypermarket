@@ -14,6 +14,7 @@ import { SidebarStore } from '@core/state/sidebar/sidebar.store';
 import { ThemeStore } from '@core/state/theme/theme.store';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
+import { GlobalSearchComponent } from '../global-search/global-search.component';
 
 @Component({
   selector: 'app-topbar',
@@ -22,6 +23,7 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BreadcrumbComponent,
+    GlobalSearchComponent,
     MatBadge,
     MatDivider,
     MatIcon,

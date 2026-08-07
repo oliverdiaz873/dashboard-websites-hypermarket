@@ -1,16 +1,19 @@
 <div class="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 shadow-sm">
   <div class="flex items-center justify-between gap-2">
     <span class="text-sm font-medium text-muted">{{ title() }}</span>
-    <mat-icon class="!size-5 text-brand-600" [ngClass]="toneClass()" aria-hidden="true">{{
-      icon()
-    }}</mat-icon>
+    <mat-icon
+      class="stat-card__tone-icon text-brand-600"
+      [ngClass]="toneClass()"
+      aria-hidden="true"
+      >{{ icon() }}</mat-icon
+    >
   </div>
 
   <div class="flex flex-col gap-1">
     <span class="text-2xl font-semibold text-foreground">{{ formattedValue() }}</span>
     @if (trendLabelText()) {
       <span class="inline-flex items-center gap-1 text-xs font-medium" [ngClass]="trendToneClass()">
-        <mat-icon class="!size-3.5" aria-hidden="true">{{
+        <mat-icon class="stat-card__trend-icon" aria-hidden="true">{{
           trend() !== undefined && trend()! >= 0 ? 'trending_up' : 'trending_down'
         }}</mat-icon>
         {{ trendLabelText() }}

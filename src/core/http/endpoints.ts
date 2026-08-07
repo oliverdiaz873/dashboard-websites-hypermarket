@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   contacts: '/contact',
   stats: '/admin/stats',
   auditLogs: '/admin/audit-logs',
+  search: '/search',
 } as const;
 
 export type ApiEndpoint = (typeof API_ENDPOINTS)[keyof typeof API_ENDPOINTS];

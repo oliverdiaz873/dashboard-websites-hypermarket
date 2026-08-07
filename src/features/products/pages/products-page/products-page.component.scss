@@ -1,0 +1,5 @@
+@use 'mixins' as *;
+
+.page-header-add mat-icon {
+  @include hs-mat-icon(1.25rem);
+}

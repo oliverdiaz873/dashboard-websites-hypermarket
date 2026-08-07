@@ -15,17 +15,7 @@
   </div>
 
   <div class="hs-topbar__section">
-    <label class="hs-topbar__search">
-      <mat-icon class="hs-topbar__search-icon" aria-hidden="true">search</mat-icon>
-      <input
-        type="search"
-        class="hs-topbar__search-input"
-        placeholder="Buscar…"
-        readonly
-        aria-label="Búsqueda"
-      />
-    </label>
-
+    <app-global-search />
     <button
       type="button"
       mat-icon-button
@@ -64,7 +54,7 @@
         class="grid size-8 place-items-center rounded-full bg-brand-600 text-white"
         aria-hidden="true"
       >
-        <mat-icon class="!size-5">person</mat-icon>
+        <mat-icon class="hs-topbar__avatar-icon">person</mat-icon>
       </span>
       <span class="hidden text-sm font-medium text-neutral-900 dark:text-neutral-100 lg:block">
         {{ authStore.currentUser()?.name ?? 'Administrador' }}

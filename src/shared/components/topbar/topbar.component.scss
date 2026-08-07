@@ -24,37 +24,7 @@
     min-width: 0;
   }
 
-  &__search {
-    display: none;
-    align-items: center;
-    gap: $spacing-2;
-    height: 2.25rem;
-    padding-inline: $spacing-3;
-    border: 1px solid var(--hs-border);
-    border-radius: $radius-full;
-    background-color: var(--hs-surface);
-    color: var(--hs-muted);
-
-    @include media('md') {
-      display: flex;
-    }
-  }
-
-  &__search-icon {
-    flex-shrink: 0;
-    color: var(--hs-muted);
-  }
-
-  &__search-input {
-    width: 12rem;
-    background: transparent;
-    border: 0;
-    outline: none;
-    color: inherit;
-    font-size: $font-size-sm;
-
-    &::placeholder {
-      color: var(--hs-muted);
-    }
+  &__avatar-icon {
+    @include hs-mat-icon(1.25rem);
   }
 }
