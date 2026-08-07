@@ -1,4 +1,4 @@
-<nav aria-label="Miga de pan" class="flex min-w-0 items-center gap-1 text-sm">
+<nav aria-label="Miga de pan" class="flex min-w-0 items-center gap-1 text-sm leading-none">
   @for (crumb of crumbs(); track $index) {
     @if (crumb.route && !$last) {
       <a
@@ -13,7 +13,7 @@
       <span class="shrink-0 text-muted">{{ crumb.label }}</span>
     }
     @if (!$last) {
-      <mat-icon class="!size-4 shrink-0 text-muted" aria-hidden="true">chevron_right</mat-icon>
+      <mat-icon class="shrink-0 text-muted" aria-hidden="true">chevron_right</mat-icon>
     }
   }
 </nav>
