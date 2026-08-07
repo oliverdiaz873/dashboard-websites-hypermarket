@@ -1,1 +1,103 @@
-// Los estilos son principalmente utilidades Tailwind en la plantilla.
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.login-form__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-1;
+  margin-bottom: $spacing-2;
+  text-align: center;
+}
+
+.login-form__logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: $spacing-2;
+  object-fit: cover;
+  border-radius: $radius-lg;
+}
+
+.login-form__title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+}
+
+.login-form__subtitle {
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+}
+
+.login-form__field {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form__field-icon {
+  @include hs-mat-icon(1.125rem);
+  color: var(--hs-muted);
+}
+
+.login-form__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  margin-right: 0.25rem;
+  color: var(--hs-muted);
+  cursor: pointer;
+  transition: color $transition-fast;
+  @include focus-visible;
+
+  mat-icon {
+    @include hs-mat-icon(1.125rem);
+  }
+
+  &:hover {
+    color: var(--hs-sidebar-text);
+  }
+}
+
+.login-form__error {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.login-form__error-icon {
+  @include hs-mat-icon(1.125rem);
+  flex-shrink: 0;
+}
+
+.login-form__options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-2;
+  margin-top: $spacing-1;
+}
+
+.login-form__forgot {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-brand-600;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-brand-700;
+  }
+}

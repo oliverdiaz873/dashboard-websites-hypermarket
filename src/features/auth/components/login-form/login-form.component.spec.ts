@@ -96,4 +96,43 @@ describe('LoginFormComponent', () => {
     );
     expect(TestBed.inject(AuthStore).isAuthenticated()).toBe(false);
   });
+
+  it('alterna la visibilidad de la contraseña', () => {
+    const fixture = TestBed.createComponent(LoginFormComponent);
+    fixture.detectChanges();
+
+    const password = fixture.nativeElement.querySelector('input[type="password"]');
+    expect(password).toBeTruthy();
+
+    const toggle = fixture.nativeElement.querySelector(
+      'button[aria-label="Mostrar contraseña"]',
+    ) as HTMLButtonElement;
+    toggle.click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('input[type="text"]')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('input[type="password"]')).toBeFalsy();
+
+    const hideToggle = fixture.nativeElement.querySelector(
+      'button[aria-label="Ocultar contraseña"]',
+    ) as HTMLButtonElement;
+    hideToggle.click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('input[type="password"]')).toBeTruthy();
+  });
+
+  it('muestra las opciones visuales de recordar sesión y olvidé contraseña', () => {
+    const fixture = TestBed.createComponent(LoginFormComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    const checkbox = el.querySelector('mat-checkbox');
+    expect(checkbox).toBeTruthy();
+    expect((checkbox?.textContent ?? '').includes('Recordar sesión')).toBe(true);
+
+    const forgot = el.querySelector('a.login-form__forgot');
+    expect(forgot).toBeTruthy();
+    expect(forgot?.getAttribute('aria-disabled')).toBe('true');
+  });
 });

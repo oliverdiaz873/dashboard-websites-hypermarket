@@ -1,1 +1,146 @@
-// Los estilos son principalmente utilidades Tailwind en la plantilla.
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.login-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100dvh;
+  background-color: var(--hs-background);
+
+  @include media('lg') {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+}
+
+// --- Panel branding (solo desktop) -------------------------------------------
+.login-page__branding {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    $color-brand-600 0%,
+    $color-brand-800 55%,
+    $color-brand-950 100%
+  );
+
+  @include media('lg') {
+    display: flex;
+  }
+}
+
+.login-page__branding-glow {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 22% 18%, rgb(255 255 255 / 0.14), transparent 42%);
+}
+
+.login-page__blob {
+  position: absolute;
+  border-radius: $radius-full;
+  filter: blur(64px);
+
+  &--1 {
+    top: -6rem;
+    right: -6rem;
+    width: 28rem;
+    height: 28rem;
+    background-color: $color-brand-400;
+    opacity: 0.4;
+  }
+
+  &--2 {
+    bottom: -5rem;
+    left: -5rem;
+    width: 24rem;
+    height: 24rem;
+    background-color: $color-brand-300;
+    opacity: 0.28;
+  }
+}
+
+.login-page__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 1) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+.login-page__branding-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-12;
+  text-align: center;
+  animation: fade-in-up $transition-slow both;
+  animation-delay: 0.12s;
+}
+
+.login-page__logo {
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-bottom: $spacing-4;
+  object-fit: contain;
+  border-radius: $radius-xl;
+  filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.3));
+}
+
+.login-page__eyebrow {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-brand-200;
+}
+
+.login-page__branding-title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  color: #ffffff;
+}
+
+.login-page__branding-tagline {
+  max-width: 22rem;
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  color: $color-brand-100;
+  opacity: 0.92;
+}
+
+// --- Panel formulario ----------------------------------------------------------
+.login-page__form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: $spacing-6;
+
+  @include media('sm') {
+    padding: $spacing-10;
+  }
+}
+
+.login-page__card {
+  width: 100%;
+  max-width: 28rem;
+  padding: $spacing-8 $spacing-6;
+  background-color: var(--hs-surface);
+  border: 1px solid var(--hs-border);
+  border-radius: $radius-xl;
+  box-shadow: $shadow-xl;
+  animation: scale-in $transition-slow both;
+
+  @include media('sm') {
+    padding: $spacing-10;
+  }
+}

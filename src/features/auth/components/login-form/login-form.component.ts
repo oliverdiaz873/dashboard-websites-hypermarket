@@ -1,12 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
+import {
+  MatError,
+  MatFormField,
+  MatLabel,
+  MatPrefix,
+  MatSuffix,
+} from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { APP_CONFIG } from '@core/config/app.config';
 import { AuthStore } from '@core/state/auth/auth.store';
 
 @Component({
@@ -14,12 +22,26 @@ import { AuthStore } from '@core/state/auth/auth.store';
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatButton, MatIcon, MatFormField, MatLabel, MatError, MatInput],
+  imports: [
+    ReactiveFormsModule,
+    MatButton,
+    MatIconButton,
+    MatCheckbox,
+    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatError,
+    MatPrefix,
+    MatSuffix,
+    MatInput,
+  ],
 })
 export class LoginFormComponent {
   private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+
+  protected readonly appConfig = inject(APP_CONFIG);
 
   protected readonly form = new FormGroup({
     email: new FormControl('', { validators: [Validators.required, Validators.email] }),
@@ -28,6 +50,14 @@ export class LoginFormComponent {
 
   protected readonly loading = this.authStore.isLoading;
   protected errorMessage: string | null = null;
+
+  /** Preferencias puramente visuales (no alteran la persistencia de la sesión). */
+  protected readonly showPassword = signal(false);
+  protected readonly rememberMe = signal(true);
+
+  protected togglePasswordVisibility(): void {
+    this.showPassword.update((visible) => !visible);
+  }
 
   protected async onSubmit(): Promise<void> {
     this.form.markAllAsTouched();

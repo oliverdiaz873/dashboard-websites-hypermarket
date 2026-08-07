@@ -1,20 +1,28 @@
 <div class="login-page">
-  <div class="login-page__card">
-    <div class="login-page__brand">
-      <span
-        class="grid size-12 shrink-0 place-items-center rounded-xl bg-brand-600 text-white"
-        aria-hidden="true"
-      >
-        <mat-icon class="!size-6">storefront</mat-icon>
-      </span>
-      <h1 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
-        {{ appConfig.appName }}
-      </h1>
+  <aside class="login-page__branding" aria-hidden="true">
+    <div class="login-page__branding-glow"></div>
+    <div class="login-page__blob login-page__blob--1"></div>
+    <div class="login-page__blob login-page__blob--2"></div>
+    <div class="login-page__grid"></div>
+
+    <div class="login-page__branding-content">
+      <img
+        src="/assets/images/logo/logo-original.png"
+        [alt]="appConfig.appName"
+        class="login-page__logo"
+        width="120"
+        height="120"
+        loading="eager"
+      />
+      <p class="login-page__eyebrow">Panel administrativo</p>
+      <h1 class="login-page__branding-title">{{ appConfig.appName }}</h1>
+      <p class="login-page__branding-tagline">Gestiona tu ecommerce desde un solo lugar</p>
     </div>
+  </aside>
 
-    <h2 class="login-page__title">Inicia sesión</h2>
-    <p class="login-page__subtitle">Accede a tu panel de administración</p>
-
-    <app-login-form />
-  </div>
+  <main class="login-page__form">
+    <div class="login-page__card">
+      <app-login-form />
+    </div>
+  </main>
 </div>

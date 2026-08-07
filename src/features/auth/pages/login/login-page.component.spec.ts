@@ -39,6 +39,15 @@ describe('LoginPageComponent', () => {
     expect((el.textContent ?? '').includes('Inicia sesión')).toBe(true);
   });
 
+  it('muestra el logo oficial en el panel de branding y en el formulario', () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const logos = Array.from(el.querySelectorAll('img'));
+    expect(logos.some((img) => img.getAttribute('src')?.includes('logo-original.png'))).toBe(true);
+    expect(logos.some((img) => img.getAttribute('loading') === 'eager')).toBe(true);
+  });
+
   it('valida los campos obligatorios antes de llamar a la API', async () => {
     const authStore = TestBed.inject(AuthStore);
     const fixture = TestBed.createComponent(LoginPageComponent);
