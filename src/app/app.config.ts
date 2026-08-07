@@ -13,6 +13,8 @@ import { loadingInterceptor } from '@core/interceptors/loading.interceptor';
 import { SEARCH_GLOBAL_SOURCE } from '@core/search/services/global-search-source';
 
 import { LocalSearchAdapterSource } from '@features/search/local-search-adapter.source';
+import { CUSTOMER_DATA_SOURCE } from '@features/customers/data/customer-data-source.token';
+import { MockCustomerDataSource } from '@features/customers/data/mock-customer-data-source';
 
 import { routes } from './app.routes';
 
@@ -29,6 +31,13 @@ export const appConfig: ApplicationConfig = {
       // `ApiSearchAdapterSource` sin tocar componentes ni stores.
       provide: SEARCH_GLOBAL_SOURCE,
       useClass: LocalSearchAdapterSource,
+    },
+    {
+      // Composition root de clientes: mock en memoria por defecto. Para consumir
+      // el backend Express basta con registrar `ApiCustomerDataSource` aquí,
+      // sin tocar servicios, stores ni componentes.
+      provide: CUSTOMER_DATA_SOURCE,
+      useClass: MockCustomerDataSource,
     },
   ],
 };

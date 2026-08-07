@@ -11,6 +11,7 @@ const results: GlobalSearchResults = {
     { id: 'p1', type: 'product', label: 'Coca Cola Original 2L', route: '/products/p1/edit' },
   ],
   orders: [],
+  customers: [],
   users: [],
   navigation: [
     {

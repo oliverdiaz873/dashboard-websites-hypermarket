@@ -1,0 +1,103 @@
+<h2 mat-dialog-title>{{ isEditing ? 'Editar cliente' : 'Nuevo cliente' }}</h2>
+<mat-dialog-content class="flex flex-col gap-4 pt-2">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      [formControl]="form.controls.name"
+      placeholder="Ej. Juan Pérez"
+      autocomplete="off"
+    />
+    @if (form.controls.name.invalid && form.controls.name.touched) {
+      <mat-error>El nombre es obligatorio.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Correo electrónico</mat-label>
+    <input
+      matInput
+      type="email"
+      [formControl]="form.controls.email"
+      placeholder="Ej. juan.perez@correo.com"
+      autocomplete="off"
+    />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+      @if (form.controls.email.hasError('required')) {
+        <mat-error>El correo es obligatorio.</mat-error>
+      } @else {
+        <mat-error>Ingresa un correo válido.</mat-error>
+      }
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Teléfono</mat-label>
+    <input
+      matInput
+      [formControl]="form.controls.phone"
+      placeholder="Ej. (809) 555-0101"
+      autocomplete="off"
+    />
+  </mat-form-field>
+
+  <fieldset class="rounded-md border border-border p-3">
+    <legend class="px-1 text-xs font-medium uppercase tracking-wide text-muted">Dirección</legend>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <mat-form-field appearance="outline" class="sm:col-span-2">
+        <mat-label>Calle</mat-label>
+        <input
+          matInput
+          [formControl]="form.controls.address.controls.street"
+          placeholder="Ej. Av. 27 de Febrero 123"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ciudad</mat-label>
+        <input
+          matInput
+          [formControl]="form.controls.address.controls.city"
+          placeholder="Ej. Santo Domingo"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Código postal</mat-label>
+        <input
+          matInput
+          [formControl]="form.controls.address.controls.zipCode"
+          placeholder="Ej. 10101"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="sm:col-span-2">
+        <mat-label>País</mat-label>
+        <input
+          matInput
+          [formControl]="form.controls.address.controls.country"
+          placeholder="Ej. República Dominicana"
+          autocomplete="off"
+        />
+      </mat-form-field>
+    </div>
+  </fieldset>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancelar</button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    [disabled]="form.invalid"
+    (click)="submit()"
+  >
+    <mat-icon aria-hidden="true" class="hs-form-icon">{{
+      isEditing ? 'save' : 'person_add'
+    }}</mat-icon>
+    {{ isEditing ? 'Guardar cambios' : 'Crear cliente' }}
+  </button>
+</mat-dialog-actions>

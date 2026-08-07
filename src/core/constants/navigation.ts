@@ -21,7 +21,7 @@ export const NAVIGATION_ITEMS: readonly NavigationItem[] = [
   { label: 'Ofertas', icon: 'sale', route: '/offers', enabled: false },
   { label: 'Inventario', icon: 'warehouse', route: '/inventory', enabled: true },
   { label: 'Pedidos', icon: 'receipt_long', route: '/orders', enabled: true },
-  { label: 'Clientes', icon: 'group', route: '/users', enabled: false },
+  { label: 'Clientes', icon: 'group', route: '/customers', enabled: true, roles: ['admin'] },
   { label: 'Contactos', icon: 'mail', route: '/contacts', enabled: false },
   { label: 'Estadísticas', icon: 'bar_chart', route: '/stats', enabled: true, roles: ['admin'] },
   { label: 'Auditoría', icon: 'history', route: '/audit-logs', enabled: true, roles: ['admin'] },

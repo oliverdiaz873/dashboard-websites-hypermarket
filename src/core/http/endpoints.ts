@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   offers: '/offers',
   orders: '/orders',
   adminOrders: '/admin/orders',
+  customers: '/admin/customers',
   contacts: '/contact',
   stats: '/admin/stats',
   auditLogs: '/admin/audit-logs',

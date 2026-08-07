@@ -1,3 +1,5 @@
+import type { TemplateRef } from '@angular/core';
+
 import type { SortDirection } from '@core/enums/sort-direction';
 
 /** Acción configurable de fila. La tabla solo la muestra y emite `actionClicked`; el padre resuelve. */
@@ -24,7 +26,13 @@ export interface TableColumn<T> {
   align?: 'left' | 'center' | 'right';
   /** Formateador opcional para celdas que no son el valor crudo. */
   cell?: (row: T) => string;
-  /** Renderiza un badge en la celda en lugar del valor/`cell` cuando devuelve un valor. */
+  /**
+   * Template opcional de la celda (mayor precedencia que `cell`). El contexto
+   * expone la fila como `$implicit` (`<ng-template let-row>`). Pensado para
+   * celdas compuestas (avatar + texto, chips, etc.).
+   */
+  cellTemplate?: TemplateRef<{ $implicit: T }>;
+  /** Renderiza un badge en la celda en lugar del valor/`cell`/`cellTemplate` cuando devuelve un valor. */
   badge?: (row: T) => TableBadge | null | undefined;
   /** Oculta la columna en pantallas pequeñas (responsive). */
   hideOnMobile?: boolean;

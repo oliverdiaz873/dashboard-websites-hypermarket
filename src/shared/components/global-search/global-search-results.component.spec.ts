@@ -22,6 +22,7 @@ const results: GlobalSearchResults = {
     },
   ],
   orders: [],
+  customers: [],
   users: [],
   navigation: [
     {

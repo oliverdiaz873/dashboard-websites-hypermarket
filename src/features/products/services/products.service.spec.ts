@@ -62,7 +62,7 @@ describe('ProductsService', () => {
     expect(result?.pagination.total).toBe(1);
   });
 
-  it('list omite filtros vacÃ­os', () => {
+  it('list omite filtros vacíos', () => {
     service.list({ page: 1, limit: 50 }).subscribe();
 
     const req = httpMock.expectOne(`${BASE}?page=1&limit=50`);

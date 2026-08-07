@@ -1,0 +1,9 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.hs-form-icon {
+  @include hs-mat-icon(1.25rem);
+}

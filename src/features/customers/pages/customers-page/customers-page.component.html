@@ -1,0 +1,90 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  <app-page-header title="Clientes" subtitle="Gestión de clientes y estados de cuenta">
+    <button
+      type="button"
+      class="page-header-add inline-flex items-center gap-2 rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700"
+      (click)="openCreate()"
+    >
+      <mat-icon aria-hidden="true">add</mat-icon>
+      <span>Nuevo cliente</span>
+    </button>
+  </app-page-header>
+
+  @if (store.stats(); as stats) {
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <app-stat-card title="Total clientes" [value]="stats.total" icon="group" tone="brand" />
+      <app-stat-card title="Activos" [value]="stats.active" icon="check_circle" tone="success" />
+      <app-stat-card title="Bloqueados" [value]="stats.blocked" icon="block" tone="danger" />
+      <app-stat-card title="Pendientes" [value]="stats.pending" icon="schedule" tone="warning" />
+    </div>
+  }
+
+  @if (!loading()) {
+    <app-customers-toolbar />
+  }
+
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center rounded-lg border border-border bg-surface">
+      <div class="flex items-center gap-3 text-muted">
+        <div
+          class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
+        ></div>
+        <span class="text-sm">Cargando clientes…</span>
+      </div>
+    </div>
+  } @else if (showError()) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="error_outline"
+        title="No se pudieron cargar los clientes"
+        [message]="store.error() ?? ''"
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          (click)="retry()"
+        >
+          Reintentar
+        </button>
+      </app-empty-state>
+    </div>
+  } @else if (showTable()) {
+    <app-customers-table
+      [customers]="store.customers()"
+      [loading]="store.isLoading()"
+      [sort]="currentSort()"
+      (sortChange)="store.onSortChange($event)"
+      (actionClicked)="onAction($event)"
+    />
+
+    <div class="mt-auto rounded-lg border border-border bg-surface">
+      <app-pagination
+        [page]="store.page()"
+        [pageSize]="store.pageSize()"
+        [total]="store.total()"
+        (pageChange)="store.setPage($event)"
+        (pageSizeChange)="store.setPageSize($event)"
+      />
+    </div>
+  } @else {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="group"
+        title="Sin clientes"
+        message="No hay clientes que coincidan con los filtros actuales."
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700"
+          (click)="openCreate()"
+        >
+          Crear cliente
+        </button>
+      </app-empty-state>
+    </div>
+  }
+</div>

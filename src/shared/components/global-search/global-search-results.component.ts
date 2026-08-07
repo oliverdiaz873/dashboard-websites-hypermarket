@@ -29,7 +29,8 @@ const SECTION_META: readonly {
 }[] = [
   { type: 'product', key: 'products', title: 'Productos', icon: 'inventory_2' },
   { type: 'order', key: 'orders', title: 'Órdenes', icon: 'receipt_long' },
-  { type: 'user', key: 'users', title: 'Usuarios', icon: 'group' },
+  { type: 'customer', key: 'customers', title: 'Clientes', icon: 'group' },
+  { type: 'user', key: 'users', title: 'Usuarios', icon: 'person' },
   { type: 'navigation', key: 'navigation', title: 'Navegación', icon: 'north_east' },
 ];
 

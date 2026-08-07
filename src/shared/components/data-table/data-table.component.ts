@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -24,7 +25,7 @@ function resolveCellValue<T>(row: T, key: string): unknown {
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIcon, MatIconButton, MatTooltip, MatCheckbox],
+  imports: [MatIcon, MatIconButton, MatTooltip, MatCheckbox, NgTemplateOutlet],
 })
 export class DataTableComponent<T extends { id: string }> {
   readonly columns = input<TableColumn<T>[]>([]);

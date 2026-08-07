@@ -3,7 +3,7 @@
     <div
       class="absolute inset-0 z-10 grid place-items-center bg-surface/60 backdrop-blur-[1px]"
       role="status"
-      aria-label="Cargando informaciÃ³n"
+      aria-label="Cargando información"
     >
       <div class="size-8 animate-spin rounded-full border-2 border-border border-t-brand-600"></div>
     </div>
@@ -85,6 +85,11 @@
                   <span class="size-1.5 rounded-full" [class]="badgeDotClasses(badge.tone)"></span>
                   {{ badge.label }}
                 </span>
+              } @else if (column.cellTemplate; as template) {
+                <ng-container
+                  [ngTemplateOutlet]="template"
+                  [ngTemplateOutletContext]="{ $implicit: row }"
+                ></ng-container>
               } @else {
                 {{ cellValue(row, column) }}
               }

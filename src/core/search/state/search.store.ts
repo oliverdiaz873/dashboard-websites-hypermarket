@@ -50,7 +50,7 @@ export const SearchStore = signalStore(
   withComputed((store) => {
     const flatItems = computed<GlobalSearchItem[]>(() => {
       const r = store.results();
-      return [...r.products, ...r.orders, ...r.users, ...r.navigation];
+      return [...r.products, ...r.orders, ...r.customers, ...r.users, ...r.navigation];
     });
 
     return {

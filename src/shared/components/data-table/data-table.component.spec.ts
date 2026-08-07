@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Component, ViewChild } from '@angular/core';
+import type { OnInit, TemplateRef } from '@angular/core';
 
 import { DataTableComponent } from './data-table.component';
 import type { TableAction, TableColumn } from '../../models/table.model';
@@ -97,5 +99,51 @@ describe('DataTableComponent', () => {
     expect(comp.cellBadge(rows[0], badgeColumn)).toEqual({ label: 'En stock', tone: 'ok' });
     expect(comp.cellBadge(rows[1], badgeColumn)).toBeNull();
     expect(comp.badgeClasses('ok')).toContain('emerald');
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [DataTableComponent],
+  template: `
+    <app-data-table [columns]="columns" [rows]="rows">
+      <ng-template #avatarCell let-row>
+        <span class="tpl-cell">{{ row.name }} · {{ row.price }}</span>
+      </ng-template>
+    </app-data-table>
+  `,
+})
+class CellTemplateHostComponent implements OnInit {
+  @ViewChild('avatarCell', { static: true }) avatarCell?: TemplateRef<{ $implicit: Row }>;
+
+  columns: TableColumn<Row>[] = [];
+  rows: Row[] = [{ id: '1', name: 'Arroz', price: 80 }];
+
+  ngOnInit(): void {
+    this.columns = [{ key: 'name', header: 'Cliente', cellTemplate: this.avatarCell }];
+  }
+}
+
+describe('DataTableComponent cellTemplate', () => {
+  async function setupHost() {
+    await TestBed.configureTestingModule({
+      imports: [CellTemplateHostComponent, NoopAnimationsModule],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(CellTemplateHostComponent);
+    fixture.detectChanges();
+    return { fixture };
+  }
+
+  it('renderiza el template de celda con la fila como contexto', async () => {
+    const { fixture } = await setupHost();
+    const tpl = (fixture.nativeElement as HTMLElement).querySelector('.tpl-cell');
+    expect(tpl?.textContent).toBe('Arroz · 80');
+  });
+
+  it('el template prevalece sobre el formateador y el valor crudo', async () => {
+    const { fixture } = await setupHost();
+    const cell = (fixture.nativeElement as HTMLElement).querySelector('.tpl-cell');
+    expect(cell?.textContent).toContain('Arroz');
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('$80');
   });
 });

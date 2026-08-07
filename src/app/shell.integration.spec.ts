@@ -117,6 +117,32 @@ describe('Shell integration', () => {
     expect(el.querySelector('.hs-shell__body.hs-shell--desktop')).toBeTruthy();
   });
 
+  it('navega a /customers y redirige /customers/:id al listado (fase 2)', async () => {
+    installMatchMedia({ '(min-width: 1200px)': true, '(prefers-color-scheme: dark)': false });
+
+    await TestBed.configureTestingModule({
+      imports: [App],
+      providers: setupProviders(),
+    }).compileComponents();
+
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    // Sesión admin: authGuard restaura y roleGuard (roles: ['admin']) autoriza.
+    TestBed.inject(AuthTokenService).setToken('token-valid');
+
+    // `/customers/:id` es un redirect puro (sin guards) hasta la fase 2.
+    await router.navigateByUrl('/customers/CUS-0001');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(router.url).toBe('/customers');
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-customers-page')).toBeTruthy();
+    expect(el.textContent).toContain('Clientes');
+  });
+
   it('redirige a /login un usuario sin sesión y conserva returnUrl', async () => {
     installMatchMedia({ '(min-width: 1200px)': true, '(prefers-color-scheme: dark)': false });
 
