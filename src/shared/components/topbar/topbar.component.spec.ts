@@ -35,6 +35,7 @@ describe('TopbarComponent', () => {
 
   it('abre el menú móvil', () => {
     const sidebarStore = TestBed.inject(SidebarStore);
+    sidebarStore.setViewport('mobile');
     const fixture = TestBed.createComponent(TopbarComponent);
     fixture.detectChanges();
     const openBtn = (fixture.nativeElement as HTMLElement).querySelector(

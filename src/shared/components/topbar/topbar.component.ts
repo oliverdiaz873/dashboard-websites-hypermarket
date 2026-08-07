@@ -7,7 +7,6 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 
-import { APP_CONFIG } from '@core/config/app.config';
 import { ThemeManagerService } from '@core/services/theme-manager.service';
 import { AuthStore } from '@core/state/auth/auth.store';
 import { NotificationsStore } from '@core/state/notifications/notifications.store';
@@ -34,7 +33,6 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
   ],
 })
 export class TopbarComponent {
-  protected readonly appConfig = inject(APP_CONFIG);
   protected readonly sidebarStore = inject(SidebarStore);
   protected readonly themeStore = inject(ThemeStore);
   protected readonly themeManager = inject(ThemeManagerService);

@@ -1,27 +1,16 @@
 <header class="hs-topbar">
   <div class="hs-topbar__section">
-    <button
-      type="button"
-      mat-icon-button
-      class="md:hidden"
-      (click)="sidebarStore.setMobileOpen(true)"
-      aria-label="Abrir menú"
-      [attr.aria-expanded]="sidebarStore.isMobileOpen()"
-    >
-      <mat-icon aria-hidden="true">menu</mat-icon>
-    </button>
-    <button
-      type="button"
-      mat-icon-button
-      class="hidden desktop:inline-flex"
-      (click)="sidebarStore.toggleCollapsed()"
-      aria-label="Colapsar menú"
-      [attr.aria-expanded]="!sidebarStore.isCollapsed()"
-    >
-      <mat-icon aria-hidden="true">
-        {{ sidebarStore.isCollapsed() ? 'menu_open' : 'menu' }}
-      </mat-icon>
-    </button>
+    @if (sidebarStore.isMobile()) {
+      <button
+        type="button"
+        mat-icon-button
+        (click)="sidebarStore.setMobileOpen(true)"
+        aria-label="Abrir menú"
+        [attr.aria-expanded]="sidebarStore.isMobileOpen()"
+      >
+        <mat-icon aria-hidden="true">menu</mat-icon>
+      </button>
+    }
     <app-breadcrumb />
   </div>
 

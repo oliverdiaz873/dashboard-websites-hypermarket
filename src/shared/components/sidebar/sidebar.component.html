@@ -6,14 +6,13 @@
   aria-label="Menú lateral"
 >
   <div class="hs-sidebar__brand">
+    <img
+      src="/assets/images/logo/logo-with-background.jpeg"
+      [alt]="appConfig.appName"
+      class="size-11 shrink-0 object-cover rounded-lg"
+    />
     <span
-      class="grid size-9 shrink-0 place-items-center rounded-lg bg-brand-600 text-white"
-      aria-hidden="true"
-    >
-      <mat-icon class="!size-5">storefront</mat-icon>
-    </span>
-    <span
-      class="hs-sidebar__brand-name truncate font-semibold text-neutral-900 dark:text-neutral-100"
+      class="hs-sidebar__brand-name truncate font-semibold text-base text-neutral-900 dark:text-neutral-100"
     >
       {{ appConfig.appName }}
     </span>
@@ -39,12 +38,14 @@
       type="button"
       class="hs-sidebar__collapse-btn hidden desktop:flex"
       (click)="sidebarStore.toggleCollapsed()"
-      matTooltip="{{ sidebarStore.isCollapsed() ? 'Expandir menú' : 'Colapsar menú' }}"
-      matTooltipPosition="right"
       aria-label="Alternar colapso del menú"
       [attr.aria-expanded]="!sidebarStore.isCollapsed()"
     >
-      <mat-icon aria-hidden="true">
+      <mat-icon
+        aria-hidden="true"
+        [matTooltip]="sidebarStore.isCollapsed() ? 'Expandir menú' : 'Colapsar menú'"
+        matTooltipPosition="right"
+      >
         {{ sidebarStore.isCollapsed() ? 'chevron_right' : 'chevron_left' }}
       </mat-icon>
     </button>

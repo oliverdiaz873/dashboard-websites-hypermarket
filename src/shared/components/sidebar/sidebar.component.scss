@@ -79,8 +79,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 2.5rem;
     height: 2.5rem;
+    margin-inline: auto;
     border-radius: $radius-md;
     color: var(--hs-sidebar-muted);
     transition:
