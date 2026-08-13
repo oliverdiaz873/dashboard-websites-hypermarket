@@ -34,6 +34,10 @@ export const routes: Routes = [
           import('@features/categories/categories.routes').then((m) => m.categoriesRoutes),
       },
       {
+        path: 'brands',
+        loadChildren: () => import('@features/brands/brands.routes').then((m) => m.brandsRoutes),
+      },
+      {
         path: 'inventory',
         loadChildren: () =>
           import('@features/inventory/inventory.routes').then((m) => m.inventoryRoutes),
@@ -43,9 +47,18 @@ export const routes: Routes = [
         loadChildren: () => import('@features/orders/orders.routes').then((m) => m.ordersRoutes),
       },
       {
+        path: 'offers',
+        loadChildren: () => import('@features/offers/offers.routes').then((m) => m.offersRoutes),
+      },
+      {
         path: 'customers',
         loadChildren: () =>
           import('@features/customers/customers.routes').then((m) => m.customersRoutes),
+      },
+      {
+        path: 'contacts',
+        loadChildren: () =>
+          import('@features/contacts/contacts.routes').then((m) => m.contactRoutes),
       },
       {
         path: 'audit-logs',
