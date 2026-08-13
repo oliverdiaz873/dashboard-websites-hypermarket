@@ -223,7 +223,7 @@ describe('LocalSearchAdapterSource', () => {
     customersService.list.mockReturnValue(of(paginated([])));
 
     let result: GlobalSearchResults | undefined;
-    source.search('marcas').subscribe((r) => (result = r));
+    source.search('configuración').subscribe((r) => (result = r));
 
     expect(result?.navigation).toEqual([]);
   });
