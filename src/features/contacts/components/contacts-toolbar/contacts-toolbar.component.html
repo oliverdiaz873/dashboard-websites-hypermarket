@@ -1,0 +1,13 @@
+<div class="flex flex-wrap items-center justify-between gap-3">
+  <app-filter-select
+    label="Estado"
+    [options]="statusOptions"
+    [value]="store.statusFilter()"
+    allLabel="Todos"
+    (valueChange)="onStatus($event)"
+  />
+
+  <button mat-icon-button (click)="store.refresh()" matTooltip="Recargar mensajes" type="button">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>

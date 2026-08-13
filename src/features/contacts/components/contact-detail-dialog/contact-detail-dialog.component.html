@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Detalle del mensaje</h2>
+<mat-dialog-content class="flex flex-col gap-4 pt-2">
+  <div class="grid gap-2 rounded-lg border border-border bg-surface-alt/50 px-4 py-3 text-sm">
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Fecha</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ createdAt() }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Nombre</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ data.message.name }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Correo</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ data.message.email }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Teléfono</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ data.message.phone ?? '—' }}
+      </span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <span class="text-muted">Estado</span>
+      <span class="text-right font-medium text-neutral-800 dark:text-neutral-200">
+        {{ statusLabel() }}
+      </span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <span class="text-xs font-medium uppercase tracking-wide text-muted">Mensaje</span>
+    <p
+      class="max-h-64 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-surface-alt/50 p-3 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
+    >
+      {{ data.message.message }}
+    </p>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Cerrar</button>
+</mat-dialog-actions>
