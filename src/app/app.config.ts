@@ -14,7 +14,7 @@ import { SEARCH_GLOBAL_SOURCE } from '@core/search/services/global-search-source
 
 import { LocalSearchAdapterSource } from '@features/search/local-search-adapter.source';
 import { CUSTOMER_DATA_SOURCE } from '@features/customers/data/customer-data-source.token';
-import { MockCustomerDataSource } from '@features/customers/data/mock-customer-data-source';
+import { ApiCustomerDataSource } from '@features/customers/data/api-customer-data-source';
 
 import { routes } from './app.routes';
 
@@ -33,11 +33,11 @@ export const appConfig: ApplicationConfig = {
       useClass: LocalSearchAdapterSource,
     },
     {
-      // Composition root de clientes: mock en memoria por defecto. Para consumir
-      // el backend Express basta con registrar `ApiCustomerDataSource` aquí,
-      // sin tocar servicios, stores ni componentes.
+      // Composition root de clientes: fuente real del backend Express
+      // (GET/PATCH /api/admin/customers). Servicios, stores y componentes no
+      // conocen la implementación concreta.
       provide: CUSTOMER_DATA_SOURCE,
-      useClass: MockCustomerDataSource,
+      useClass: ApiCustomerDataSource,
     },
   ],
 };

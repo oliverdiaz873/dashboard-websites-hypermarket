@@ -32,7 +32,6 @@ describe('CustomersStore', () => {
     list: jest.Mock;
     findById: jest.Mock;
     stats: jest.Mock;
-    create: jest.Mock;
     update: jest.Mock;
     updateStatus: jest.Mock;
   };
@@ -44,7 +43,6 @@ describe('CustomersStore', () => {
       list: jest.fn(),
       findById: jest.fn(),
       stats: jest.fn(),
-      create: jest.fn(),
       update: jest.fn(),
       updateStatus: jest.fn(),
     };
@@ -139,22 +137,6 @@ describe('CustomersStore', () => {
 
     expect(store.customers()[0]?.id).toBe('CUS-NEW');
     expect(store.isLoading()).toBe(false);
-  });
-
-  it('crea un cliente, recarga el listado y refresca los stats', async () => {
-    customersService.create.mockReturnValue(of(makeCustomer()));
-    customersService.list.mockReturnValue(of(pageOf([makeCustomer()])));
-    customersService.stats.mockReturnValue(of(STATS));
-
-    const pending = store.createCustomer({ name: 'Nuevo', email: 'nuevo@correo.com' });
-    expect(store.isSubmitting()).toBe(true);
-
-    await pending;
-    await tick();
-
-    expect(store.isSubmitting()).toBe(false);
-    expect(customersService.stats).toHaveBeenCalled();
-    expect(store.customers().length).toBe(1);
   });
 
   it('actualiza un cliente y recarga el listado', async () => {

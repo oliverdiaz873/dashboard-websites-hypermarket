@@ -1,14 +1,5 @@
 <div class="flex h-full flex-col gap-5 p-4 sm:p-6">
-  <app-page-header title="Clientes" subtitle="Gestión de clientes y estados de cuenta">
-    <button
-      type="button"
-      class="page-header-add inline-flex items-center gap-2 rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700"
-      (click)="openCreate()"
-    >
-      <mat-icon aria-hidden="true">add</mat-icon>
-      <span>Nuevo cliente</span>
-    </button>
-  </app-page-header>
+  <app-page-header title="Clientes" subtitle="Gestión de clientes y estados de cuenta" />
 
   @if (store.stats(); as stats) {
     <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -76,15 +67,7 @@
         icon="group"
         title="Sin clientes"
         message="No hay clientes que coincidan con los filtros actuales."
-      >
-        <button
-          type="button"
-          class="rounded-md bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700"
-          (click)="openCreate()"
-        >
-          Crear cliente
-        </button>
-      </app-empty-state>
+      />
     </div>
   }
 </div>

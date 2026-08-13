@@ -6,7 +6,6 @@ import { BaseApiService } from '@core/http/services/base-api.service';
 import type { PaginatedResponse } from '@core/models/paginated-response';
 
 import type {
-  CreateCustomerPayload,
   Customer,
   CustomerQuery,
   CustomerStats,
@@ -16,7 +15,7 @@ import type {
 import type { CustomerDataSource } from './customer-data-source';
 
 /**
- * Adaptador HTTP del contrato de clientes (GET/POST/PATCH /admin/customers).
+ * Adaptador HTTP del contrato de clientes (GET/PATCH /admin/customers).
  * Se activa registrando `ApiCustomerDataSource` en `CUSTOMER_DATA_SOURCE`.
  */
 @Injectable()
@@ -29,10 +28,6 @@ export class ApiCustomerDataSource extends BaseApiService implements CustomerDat
 
   findById(id: string): Observable<Customer> {
     return this.get<Customer>(`${API_ENDPOINTS.customers}/${id}`);
-  }
-
-  create(payload: CreateCustomerPayload): Observable<Customer> {
-    return this.post<Customer>(API_ENDPOINTS.customers, payload);
   }
 
   update(id: string, payload: UpdateCustomerPayload): Observable<Customer> {

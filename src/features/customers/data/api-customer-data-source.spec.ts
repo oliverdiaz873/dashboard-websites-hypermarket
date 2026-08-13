@@ -87,20 +87,6 @@ describe('ApiCustomerDataSource', () => {
     expect(result?.email).toBe('anamaria.rodriguez@gmail.com');
   });
 
-  it('create hace POST con el payload', () => {
-    const payload = { name: 'Nuevo', email: 'nuevo@correo.com', phone: '(809) 555-0101' };
-
-    let result: Customer | undefined;
-    source.create(payload).subscribe((res) => (result = res));
-
-    const req = httpMock.expectOne(`${BASE}`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(payload);
-    req.flush({ success: true, data: makeCustomer() });
-
-    expect(result?.id).toBe('CUS-0001');
-  });
-
   it('update hace PATCH parcial', () => {
     const payload = { phone: '(809) 555-9999' };
 

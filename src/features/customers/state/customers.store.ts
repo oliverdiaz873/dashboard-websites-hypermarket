@@ -13,7 +13,6 @@ import {
   type CustomerSortField,
 } from '../constants/customers.constants';
 import type {
-  CreateCustomerPayload,
   Customer,
   CustomerStats,
   CustomerStatus,
@@ -163,22 +162,6 @@ export const CustomersStore = signalStore(
 
       refresh(): void {
         void load();
-      },
-
-      async createCustomer(payload: CreateCustomerPayload): Promise<Customer> {
-        patchState(store, { isSubmitting: true });
-        try {
-          const customer = await firstValueFrom(customersService.create(payload));
-          patchState(store, { isSubmitting: false });
-          await load();
-          void loadStats();
-          return customer;
-        } catch (error) {
-          // El error de mutación se notifica vía el toast (ErrorInterceptor);
-          // no debe pintarse como error de carga del listado.
-          patchState(store, { isSubmitting: false });
-          throw error;
-        }
       },
 
       async updateCustomer(id: string, payload: UpdateCustomerPayload): Promise<Customer> {

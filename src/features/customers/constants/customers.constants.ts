@@ -35,15 +35,14 @@ export const PAGE_SIZE_OPTIONS = [20, 50, 100];
 /**
  * Eventos de auditoría del módulo de clientes (fase 2). Se dejan definidos como
  * placeholders para que `CustomersService` los referencie sin acoplarse a la
- * implementación del registro de auditoría.
+ * implementación del registro de auditoría. La creación de clientes ocurre en el
+ * storefront (registro), no en el dashboard.
  */
-export const ADMIN_CREATE_CUSTOMER = 'admin.create_customer' as const;
 export const ADMIN_UPDATE_CUSTOMER = 'admin.update_customer' as const;
 export const ADMIN_BLOCK_CUSTOMER = 'admin.block_customer' as const;
 export const ADMIN_UNBLOCK_CUSTOMER = 'admin.unblock_customer' as const;
 
 export const CUSTOMER_AUDIT_EVENTS = {
-  create: ADMIN_CREATE_CUSTOMER,
   update: ADMIN_UPDATE_CUSTOMER,
   block: ADMIN_BLOCK_CUSTOMER,
   unblock: ADMIN_UNBLOCK_CUSTOMER,

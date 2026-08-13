@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -12,13 +12,10 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 
-import { STORAGE_KEYS } from '@core/constants/storage-keys';
-import { getStorageItem, removeStorageItem, setStorageItem } from '@core/utils/storage.util';
-
 import type { Customer, CustomerAddress } from '../../models/customer.model';
 
 export interface CustomerFormDialogData {
-  customer?: Customer;
+  customer: Customer;
 }
 
 export interface CustomerFormResult {
@@ -28,6 +25,10 @@ export interface CustomerFormResult {
   address: CustomerAddress;
 }
 
+/**
+ * Diálogo de edición de cliente (PATCH /admin/customers/:id). La creación de
+ * clientes ocurre en el storefront (registro), no en el dashboard.
+ */
 @Component({
   selector: 'app-customer-form-dialog',
   templateUrl: './customer-form-dialog.component.html',
@@ -46,23 +47,22 @@ export interface CustomerFormResult {
     MatInput,
   ],
 })
-export class CustomerFormDialogComponent implements OnDestroy {
+export class CustomerFormDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<CustomerFormDialogComponent>);
   protected readonly data = inject<CustomerFormDialogData>(MAT_DIALOG_DATA);
 
-  protected readonly isEditing = this.data.customer !== undefined;
-  protected readonly address = this.data.customer?.address ?? {};
+  protected readonly address = this.data.customer.address ?? {};
 
   protected readonly form = new FormGroup({
-    name: new FormControl<string>(this.data.customer?.name ?? '', {
+    name: new FormControl<string>(this.data.customer.name, {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    email: new FormControl<string>(this.data.customer?.email ?? '', {
+    email: new FormControl<string>(this.data.customer.email, {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    phone: new FormControl<string>(this.data.customer?.phone ?? '', { nonNullable: true }),
+    phone: new FormControl<string>(this.data.customer.phone ?? '', { nonNullable: true }),
     address: new FormGroup({
       street: new FormControl<string>(this.address.street ?? '', { nonNullable: true }),
       city: new FormControl<string>(this.address.city ?? '', { nonNullable: true }),
@@ -71,35 +71,8 @@ export class CustomerFormDialogComponent implements OnDestroy {
     }),
   });
 
-  private submitted = false;
-  private readonly initialValue: string;
-
-  constructor() {
-    if (!this.isEditing) {
-      const draft = getStorageItem<CustomerFormResult>(STORAGE_KEYS.customerForm);
-      if (draft) {
-        this.form.patchValue({ ...draft, address: draft.address ?? {} });
-      }
-    }
-    this.initialValue = JSON.stringify(this.form.getRawValue());
-  }
-
-  ngOnDestroy(): void {
-    // Guarda el borrador solo en creación: si el usuario cancela con cambios,
-    // se recuperan la próxima vez. Nunca se pisan datos de un cliente existente.
-    if (!this.isEditing && !this.submitted && this.hasChanges()) {
-      setStorageItem<CustomerFormResult>(STORAGE_KEYS.customerForm, this.form.getRawValue());
-    }
-  }
-
-  private hasChanges(): boolean {
-    return JSON.stringify(this.form.getRawValue()) !== this.initialValue;
-  }
-
   protected submit(): void {
     if (this.form.invalid) return;
-    this.submitted = true;
-    removeStorageItem(STORAGE_KEYS.customerForm);
     this.dialogRef.close(this.form.getRawValue() as CustomerFormResult);
   }
 

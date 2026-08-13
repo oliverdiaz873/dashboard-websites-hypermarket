@@ -1,0 +1,158 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center rounded-lg border border-border bg-surface">
+      <div class="flex items-center gap-3 text-muted">
+        <div
+          class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
+        ></div>
+        <span class="text-sm">Cargando cliente…</span>
+      </div>
+    </div>
+  } @else if (error(); as error) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state icon="error_outline" title="No se pudo cargar el cliente" [message]="error">
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          (click)="goBack()"
+        >
+          Volver a clientes
+        </button>
+      </app-empty-state>
+    </div>
+  } @else if (customer(); as customer) {
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <button
+          mat-icon-button
+          type="button"
+          (click)="goBack()"
+          aria-label="Volver a clientes"
+          [matTooltip]="'Volver a clientes'"
+        >
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <p class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+            {{ customer.name }}
+          </p>
+          <p class="text-sm text-muted">{{ customer.email }} · {{ date(customer.createdAt) }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span
+          class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
+          [class]="statusBadgeClasses(customer.status)"
+        >
+          <span class="size-1.5 rounded-full" [class]="statusDotClasses(customer.status)"></span>
+          {{ statusLabel(customer.status) }}
+        </span>
+
+        @if (customer.status === 'active' || customer.status === 'blocked') {
+          <button
+            type="button"
+            class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+            (click)="requestToggleStatus(customer)"
+          >
+            {{ customer.status === 'active' ? 'Bloquear' : 'Desbloquear' }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="grid gap-5 lg:grid-cols-3">
+      <div class="flex flex-col gap-5 lg:col-span-1">
+        <section
+          class="flex flex-col items-center gap-3 rounded-lg border border-border bg-surface p-5"
+        >
+          <div
+            class="flex size-20 items-center justify-center rounded-full text-2xl font-semibold text-white"
+            [style.background]="avatarColor(customer.name)"
+          >
+            {{ initialsOf(customer.name) }}
+          </div>
+          <div class="text-center">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+              {{ customer.name }}
+            </h2>
+            <p class="text-sm text-muted">{{ customer.email }}</p>
+          </div>
+          <button
+            type="button"
+            class="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            (click)="openEdit(customer)"
+          >
+            Editar
+          </button>
+        </section>
+
+        <section class="rounded-lg border border-border bg-surface p-4">
+          <h2 class="mb-3 text-sm font-semibold text-neutral-800 dark:text-neutral-200">Cuenta</h2>
+          <dl class="space-y-2 text-sm">
+            <div class="flex justify-between gap-4">
+              <dt class="text-muted">ID</dt>
+              <dd class="truncate text-right font-medium">{{ customer.id }}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-muted">Registrado</dt>
+              <dd class="text-right font-medium">{{ date(customer.createdAt) }}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-muted">Actualizado</dt>
+              <dd class="text-right font-medium">{{ date(customer.updatedAt) }}</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+
+      <div class="flex flex-col gap-5 lg:col-span-2">
+        <section class="rounded-lg border border-border bg-surface p-4">
+          <h2 class="mb-3 text-sm font-semibold text-neutral-800 dark:text-neutral-200">
+            Contacto
+          </h2>
+          <dl class="space-y-2 text-sm">
+            <div class="flex justify-between gap-4">
+              <dt class="text-muted">Teléfono</dt>
+              <dd class="text-right font-medium">{{ customer.phone || '—' }}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-muted">Correo</dt>
+              <dd class="text-right font-medium">{{ customer.email }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="rounded-lg border border-border bg-surface p-4">
+          <h2 class="mb-3 text-sm font-semibold text-neutral-800 dark:text-neutral-200">
+            Dirección
+          </h2>
+          @if (customer.address; as address) {
+            <dl class="space-y-2 text-sm">
+              <div class="flex justify-between gap-4">
+                <dt class="text-muted">Calle</dt>
+                <dd class="text-right font-medium">{{ address.street ?? '—' }}</dd>
+              </div>
+              <div class="flex justify-between gap-4">
+                <dt class="text-muted">Ciudad</dt>
+                <dd class="text-right font-medium">
+                  {{ address.city ?? '—' }}{{ address.state ? ', ' + address.state : '' }}
+                </dd>
+              </div>
+              <div class="flex justify-between gap-4">
+                <dt class="text-muted">País / CP</dt>
+                <dd class="text-right font-medium">
+                  {{ address.country ?? '—' }}{{ address.zipCode ? ' · ' + address.zipCode : '' }}
+                </dd>
+              </div>
+            </dl>
+          } @else {
+            <p class="text-sm text-muted">Sin dirección registrada.</p>
+          }
+        </section>
+      </div>
+    </div>
+  }
+</div>

@@ -43,6 +43,15 @@ describe('CustomersTableComponent', () => {
     expect(nameColumn?.cellTemplate).toBeTruthy();
   });
 
+  it('ofrece la acción ver detalle para cualquier cliente', async () => {
+    const { fixture } = await setup();
+    const view = actionsOf(fixture.componentInstance).find((a) => a.id === 'view');
+
+    expect(view).toBeDefined();
+    expect(view?.label).toBe('Ver detalle');
+    expect(view?.icon).toBe('visibility');
+  });
+
   it('ofrece bloquear solo a clientes activos', async () => {
     const { fixture } = await setup();
     const actions = actionsOf(fixture.componentInstance);

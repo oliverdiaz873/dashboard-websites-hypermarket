@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
@@ -36,13 +36,13 @@ import type { Customer } from '../../models/customer.model';
     StatCardComponent,
     CustomersToolbarComponent,
     CustomersTableComponent,
-    MatIcon,
   ],
 })
 export class CustomersPageComponent {
   protected readonly store = inject(CustomersStore);
   private readonly notificationsStore = inject(NotificationsStore);
   private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
 
   protected readonly currentSort = computed(() => ({
     key: this.store.sortBy(),
@@ -61,6 +61,10 @@ export class CustomersPageComponent {
   }
 
   protected onAction(event: TableActionEvent<Customer>): void {
+    if (event.actionId === 'view') {
+      void this.router.navigate(['/customers', event.row.id]);
+      return;
+    }
     if (event.actionId === 'edit') {
       this.openFormDialog(event.row);
       return;
@@ -70,15 +74,11 @@ export class CustomersPageComponent {
     }
   }
 
-  protected openCreate(): void {
-    this.openFormDialog();
-  }
-
   protected retry(): void {
     void this.store.load();
   }
 
-  private openFormDialog(customer?: Customer): void {
+  private openFormDialog(customer: Customer): void {
     const dialogRef = this.dialog.open<
       CustomerFormDialogComponent,
       CustomerFormDialogData,
@@ -90,17 +90,12 @@ export class CustomersPageComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
-      const pending = customer
-        ? this.store.updateCustomer(customer.id, result)
-        : this.store.createCustomer(result);
-      void pending.then(
+      void this.store.updateCustomer(customer.id, result).then(
         () => {
           this.notificationsStore.add({
             type: NOTIFICATION_TYPE.SUCCESS,
-            title: customer ? 'Cliente actualizado' : 'Cliente creado',
-            message: customer
-              ? 'Los datos del cliente se actualizaron correctamente.'
-              : 'El cliente se creó correctamente.',
+            title: 'Cliente actualizado',
+            message: 'Los datos del cliente se actualizaron correctamente.',
           });
         },
         () => {

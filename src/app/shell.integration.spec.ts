@@ -7,6 +7,8 @@ import { AuthService } from '@core/services/auth.service';
 import { ThemeManagerService } from '@core/services/theme-manager.service';
 import { AuthTokenService } from '@core/services/auth-token.service';
 import { ThemeStore } from '@core/state/theme/theme.store';
+import { CUSTOMER_DATA_SOURCE } from '@features/customers/data/customer-data-source.token';
+import type { Customer } from '@features/customers/models/customer.model';
 
 import { routes } from './app.routes';
 import { App } from './app';
@@ -18,6 +20,26 @@ const adminUser = {
   role: 'admin',
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
+};
+
+const customer: Customer = {
+  id: 'CUS-0001',
+  name: 'Ana María Rodríguez',
+  email: 'anamaria.rodriguez@gmail.com',
+  phone: '(809) 555-0101',
+  status: 'active',
+  createdAt: new Date('2026-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+};
+
+const fakeCustomerDataSource = {
+  list: jest.fn(() =>
+    of({ data: [customer], pagination: { page: 1, limit: 20, total: 1, pages: 1 } }),
+  ),
+  findById: jest.fn(() => of(customer)),
+  update: jest.fn(() => of(customer)),
+  updateStatus: jest.fn(() => of(customer)),
+  stats: jest.fn(() => of({ total: 1, active: 1, blocked: 0, pending: 0, newThisMonth: 1 })),
 };
 
 function installMatchMedia(pairs: Record<string, boolean>): void {
@@ -52,6 +74,7 @@ describe('Shell integration', () => {
           getProfile: jest.fn(() => of(adminUser)),
         },
       },
+      { provide: CUSTOMER_DATA_SOURCE, useValue: fakeCustomerDataSource },
     ];
   }
 
@@ -117,7 +140,7 @@ describe('Shell integration', () => {
     expect(el.querySelector('.hs-shell__body.hs-shell--desktop')).toBeTruthy();
   });
 
-  it('navega a /customers y redirige /customers/:id al listado (fase 2)', async () => {
+  it('navega a /customers (lista) y a /customers/:id (detalle real)', async () => {
     installMatchMedia({ '(min-width: 1200px)': true, '(prefers-color-scheme: dark)': false });
 
     await TestBed.configureTestingModule({
@@ -132,15 +155,25 @@ describe('Shell integration', () => {
     // Sesión admin: authGuard restaura y roleGuard (roles: ['admin']) autoriza.
     TestBed.inject(AuthTokenService).setToken('token-valid');
 
-    // `/customers/:id` es un redirect puro (sin guards) hasta la fase 2.
-    await router.navigateByUrl('/customers/CUS-0001');
+    // Listado de clientes.
+    await router.navigateByUrl('/customers');
     await fixture.whenStable();
     fixture.detectChanges();
 
     expect(router.url).toBe('/customers');
-    const el = fixture.nativeElement as HTMLElement;
+    let el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('app-customers-page')).toBeTruthy();
     expect(el.textContent).toContain('Clientes');
+
+    // Detalle real de cliente (GET /api/admin/customers/:id vía findById).
+    await router.navigateByUrl('/customers/CUS-0001');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(router.url).toBe('/customers/CUS-0001');
+    el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-customer-detail-page')).toBeTruthy();
+    expect(el.textContent).toContain('Ana María Rodríguez');
   });
 
   it('redirige a /login un usuario sin sesión y conserva returnUrl', async () => {

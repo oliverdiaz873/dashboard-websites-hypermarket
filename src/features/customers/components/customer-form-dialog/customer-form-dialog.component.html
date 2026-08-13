@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ isEditing ? 'Editar cliente' : 'Nuevo cliente' }}</h2>
+<h2 mat-dialog-title>Editar cliente</h2>
 <mat-dialog-content class="flex flex-col gap-4 pt-2">
   <mat-form-field appearance="outline">
     <mat-label>Nombre</mat-label>
@@ -95,9 +95,7 @@
     [disabled]="form.invalid"
     (click)="submit()"
   >
-    <mat-icon aria-hidden="true" class="hs-form-icon">{{
-      isEditing ? 'save' : 'person_add'
-    }}</mat-icon>
-    {{ isEditing ? 'Guardar cambios' : 'Crear cliente' }}
+    <mat-icon aria-hidden="true" class="hs-form-icon">save</mat-icon>
+    Guardar cambios
   </button>
 </mat-dialog-actions>

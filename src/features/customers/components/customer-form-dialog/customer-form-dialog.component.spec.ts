@@ -2,9 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { STORAGE_KEYS } from '@core/constants/storage-keys';
-import { getStorageItem } from '@core/utils/storage.util';
-
 import type { Customer } from '../../models/customer.model';
 import { CustomerFormDialogComponent } from './customer-form-dialog.component';
 
@@ -36,7 +33,7 @@ const EXPECTED_RESULT = {
 describe('CustomerFormDialogComponent', () => {
   let dialogRef: { close: jest.Mock };
 
-  function setup(customer?: Customer) {
+  function setup(customer: Customer = makeCustomer()) {
     dialogRef = { close: jest.fn() };
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
@@ -51,9 +48,16 @@ describe('CustomerFormDialogComponent', () => {
     return fixture;
   }
 
-  beforeEach(() => window.localStorage.clear());
+  it('edita prellenando los datos del cliente', () => {
+    const fixture = setup();
+    const component = fixture.componentInstance;
 
-  it('crea un cliente con los datos del formulario', () => {
+    expect(component.form.controls.name.value).toBe('Ana María Rodríguez');
+    expect(component.form.controls.email.value).toBe('anamaria.rodriguez@gmail.com');
+    expect(component.form.controls.address.controls.city.value).toBe('');
+  });
+
+  it('guarda los cambios con los datos del formulario', () => {
     const fixture = setup();
     fixture.componentInstance.form.setValue(EXPECTED_RESULT);
 
@@ -71,44 +75,11 @@ describe('CustomerFormDialogComponent', () => {
     expect(dialogRef.close).not.toHaveBeenCalled();
   });
 
-  it('edita prellenando los datos del cliente', () => {
-    const fixture = setup(makeCustomer());
-
-    expect(fixture.componentInstance.isEditing).toBe(true);
-    expect(fixture.componentInstance.form.controls.name.value).toBe('Ana María Rodríguez');
-    expect(fixture.componentInstance.form.controls.email.value).toBe(
-      'anamaria.rodriguez@gmail.com',
-    );
-  });
-
-  it('guarda el borrador al cancelar con cambios y lo restaura en el próximo alta', () => {
-    const first = setup();
-    first.componentInstance.form.controls.name.setValue('Borrador');
-    first.destroy();
-
-    const draft = getStorageItem<{ name: string }>(STORAGE_KEYS.customerForm);
-    expect(draft).toEqual(expect.objectContaining({ name: 'Borrador' }));
-
-    const second = setup();
-    expect(second.componentInstance.form.controls.name.value).toBe('Borrador');
-  });
-
-  it('no guarda borrador al cancelar en modo edición', () => {
-    const fixture = setup(makeCustomer());
-    fixture.componentInstance.form.controls.name.setValue('Cambio');
-
-    fixture.destroy();
-
-    expect(getStorageItem(STORAGE_KEYS.customerForm)).toBeNull();
-  });
-
-  it('no guarda borrador tras un alta exitosa', () => {
+  it('cancela sin devolver datos', () => {
     const fixture = setup();
-    fixture.componentInstance.form.setValue(EXPECTED_RESULT);
-    fixture.componentInstance.submit();
 
-    fixture.destroy();
+    fixture.componentInstance.cancel();
 
-    expect(getStorageItem(STORAGE_KEYS.customerForm)).toBeNull();
+    expect(dialogRef.close).toHaveBeenCalledWith(undefined);
   });
 });

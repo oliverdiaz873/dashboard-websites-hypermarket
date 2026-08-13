@@ -14,12 +14,13 @@ export const customersRoutes: Routes = [
       ),
   },
   {
-    // Fase 2: aquí se montará customer-detail-page cuando exista integración con
-    // pedidos/analítica. Por ahora la ruta se conserva como redirect puro para que
-    // los resultados de la búsqueda global no caigan en 404. Sin guards: Angular
-    // ejecuta los redirects antes que `canActivate` (NG04014 si se mezclan).
     path: ':id',
-    redirectTo: '/customers',
-    pathMatch: 'full',
+    title: 'Detalle de cliente',
+    canActivate: [roleGuard],
+    data: { roles: ['admin'] } as RoleRoute['data'],
+    loadComponent: () =>
+      import('@features/customers/pages/customer-detail-page/customer-detail-page.component').then(
+        (m) => m.CustomerDetailPageComponent,
+      ),
   },
 ];

@@ -59,6 +59,7 @@ export class CustomersTableComponent implements OnInit {
   protected columns: TableColumn<Customer>[] = [];
 
   protected readonly actions: TableAction<Customer>[] = [
+    { id: 'view', label: 'Ver detalle', icon: 'visibility' },
     { id: 'edit', label: 'Editar', icon: 'edit' },
     {
       id: 'block',

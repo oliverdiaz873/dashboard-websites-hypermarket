@@ -24,7 +24,6 @@ describe('CustomersService', () => {
   let dataSource: {
     list: jest.Mock;
     findById: jest.Mock;
-    create: jest.Mock;
     update: jest.Mock;
     updateStatus: jest.Mock;
     stats: jest.Mock;
@@ -35,7 +34,6 @@ describe('CustomersService', () => {
     dataSource = {
       list: jest.fn(),
       findById: jest.fn(),
-      create: jest.fn(),
       update: jest.fn(),
       updateStatus: jest.fn(),
       stats: jest.fn(),
@@ -69,18 +67,6 @@ describe('CustomersService', () => {
 
     expect(dataSource.findById).toHaveBeenCalledWith('CUS-0001');
     expect(result).toBe(customer);
-  });
-
-  it('delega create', () => {
-    const payload = { name: 'Nuevo', email: 'nuevo@correo.com' };
-    const created = makeCustomer();
-    dataSource.create.mockReturnValue(of(created));
-
-    let result: Customer | undefined;
-    service.create(payload).subscribe((r) => (result = r));
-
-    expect(dataSource.create).toHaveBeenCalledWith(payload);
-    expect(result).toBe(created);
   });
 
   it('delega update con el payload parcial', () => {

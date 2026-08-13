@@ -3,9 +3,9 @@ import type { SortDirection } from '@core/enums/sort-direction';
 import type { CustomerSortField } from '../constants/customers.constants';
 
 /**
- * Estado de cuenta de un cliente. `pending` queda preparado para el backend real
- * (registro incompleto, correo sin verificar, cuenta sospechosa, invitación):
- * la UI de fase 1 solo bloquea/desbloquea `active`/`blocked`.
+ * Estado de cuenta de un cliente. El dashboard bloquea/desbloquea `active`/
+ * `blocked`; `pending` (registro incompleto, correo sin verificar) se muestra y
+ * filtra pero no ofrece acciones de mutación.
  */
 export type CustomerStatus = 'active' | 'blocked' | 'pending';
 
@@ -58,15 +58,6 @@ export interface CustomerQuery {
   status?: CustomerStatus | '';
   sortBy?: CustomerSortField;
   sortOrder?: SortDirection;
-}
-
-/** Payload de POST /admin/customers. */
-export interface CreateCustomerPayload {
-  name: string;
-  email: string;
-  phone?: string;
-  address?: CustomerAddress;
-  status?: CustomerStatus;
 }
 
 /** Payload de PATCH /admin/customers/:id. Los cambios de estado van por `/status`. */

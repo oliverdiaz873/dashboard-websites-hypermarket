@@ -1,6 +1,5 @@
 import {
   ADMIN_BLOCK_CUSTOMER,
-  ADMIN_CREATE_CUSTOMER,
   ADMIN_UNBLOCK_CUSTOMER,
   ADMIN_UPDATE_CUSTOMER,
   CUSTOMER_AUDIT_EVENTS,
@@ -29,12 +28,10 @@ describe('customers.constants', () => {
   });
 
   it('define los placeholders de auditoría del módulo', () => {
-    expect(ADMIN_CREATE_CUSTOMER).toBe('admin.create_customer');
     expect(ADMIN_UPDATE_CUSTOMER).toBe('admin.update_customer');
     expect(ADMIN_BLOCK_CUSTOMER).toBe('admin.block_customer');
     expect(ADMIN_UNBLOCK_CUSTOMER).toBe('admin.unblock_customer');
     expect(CUSTOMER_AUDIT_EVENTS).toEqual({
-      create: ADMIN_CREATE_CUSTOMER,
       update: ADMIN_UPDATE_CUSTOMER,
       block: ADMIN_BLOCK_CUSTOMER,
       unblock: ADMIN_UNBLOCK_CUSTOMER,

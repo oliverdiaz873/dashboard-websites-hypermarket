@@ -5,7 +5,6 @@ import type { PaginatedResponse } from '@core/models/paginated-response';
 
 import { CUSTOMER_DATA_SOURCE } from '../data/customer-data-source.token';
 import type {
-  CreateCustomerPayload,
   Customer,
   CustomerQuery,
   CustomerStats,
@@ -28,11 +27,6 @@ export class CustomersService {
 
   findById(id: string): Observable<Customer> {
     return this.dataSource.findById(id);
-  }
-
-  create(payload: CreateCustomerPayload): Observable<Customer> {
-    // Auditoría (fase 2): emitir ADMIN_CREATE_CUSTOMER con la sesión del admin.
-    return this.dataSource.create(payload);
   }
 
   update(id: string, payload: UpdateCustomerPayload): Observable<Customer> {

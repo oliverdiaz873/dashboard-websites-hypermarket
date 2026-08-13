@@ -2,11 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { provideRouter } from '@angular/router';
+import { Component } from '@angular/core';
 
 import type { Customer, CustomerStats } from '../../models/customer.model';
 import { CustomersService } from '../../services/customers.service';
 import { CustomersPageComponent } from './customers-page.component';
 import type { TableActionEvent } from '@shared/models/table.model';
+
+@Component({ template: '', standalone: true })
+class DetailRouteStubComponent {}
 
 function makeCustomer(overrides: Partial<Customer> = {}): Customer {
   return {
@@ -27,7 +31,6 @@ describe('CustomersPageComponent', () => {
   let customersService: {
     list: jest.Mock;
     stats: jest.Mock;
-    create: jest.Mock;
     update: jest.Mock;
     updateStatus: jest.Mock;
   };
@@ -38,7 +41,6 @@ describe('CustomersPageComponent', () => {
     customersService = {
       list: jest.fn(),
       stats: jest.fn(),
-      create: jest.fn(),
       update: jest.fn(),
       updateStatus: jest.fn(),
     };
@@ -52,7 +54,10 @@ describe('CustomersPageComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, CustomersPageComponent],
-      providers: [provideRouter([]), { provide: CustomersService, useValue: customersService }],
+      providers: [
+        provideRouter([{ path: 'customers/:id', component: DetailRouteStubComponent }]),
+        { provide: CustomersService, useValue: customersService },
+      ],
     }).compileComponents();
   });
 
@@ -122,14 +127,15 @@ describe('CustomersPageComponent', () => {
     expect(spy).toHaveBeenCalledWith(customer);
   });
 
-  it('openCreate abre el formulario sin cliente', () => {
+  it('onAction view navega al detalle del cliente', async () => {
     const fixture = TestBed.createComponent(CustomersPageComponent);
     fixture.detectChanges();
     const component = fixture.componentInstance;
 
-    const spy = jest.spyOn(component as never, 'openFormDialog');
-    component.openCreate();
+    const navigate = jest.spyOn(component['router'], 'navigate');
+    component.onAction({ actionId: 'view', row: makeCustomer() } as TableActionEvent<Customer>);
+    await tick();
 
-    expect(spy).toHaveBeenCalledWith();
+    expect(navigate).toHaveBeenCalledWith(['/customers', 'CUS-0001']);
   });
 });
