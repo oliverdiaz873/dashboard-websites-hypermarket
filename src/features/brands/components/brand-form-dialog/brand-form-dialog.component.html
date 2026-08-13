@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{ isEdit() ? 'Editar marca' : 'Nueva marca' }}</h2>
+<mat-dialog-content class="flex flex-col gap-4 pt-2">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4" novalidate>
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Nombre *</span>
+      <input formControlName="name" type="text" class="hs-input" placeholder="Ej: Coca-Cola" />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <span class="text-xs text-red-600">El nombre es obligatorio</span>
+      }
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Slug</span>
+      <input
+        formControlName="slug"
+        type="text"
+        class="hs-input"
+        placeholder="Se genera automáticamente"
+      />
+      <span class="text-xs text-muted">Déjalo vacío para generarlo desde el nombre.</span>
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Descripción</span>
+      <textarea formControlName="description" class="hs-input" rows="3"></textarea>
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Logo (URL)</span>
+      <input
+        formControlName="logo"
+        type="url"
+        class="hs-input"
+        placeholder="https://ejemplo.com/logo.png"
+      />
+    </label>
+
+    <label class="flex items-center gap-2 pt-1">
+      <input formControlName="isActive" type="checkbox" class="hs-checkbox" />
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Activa</span>
+    </label>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()" [disabled]="submitting()">Cancelar</button>
+  <button mat-button type="submit" (click)="onSubmit()" [disabled]="submitting()">
+    @if (submitting()) {
+      <span>Guardando…</span>
+    } @else {
+      <span>{{ isEdit() ? 'Guardar cambios' : 'Crear marca' }}</span>
+    }
+  </button>
+</mat-dialog-actions>
