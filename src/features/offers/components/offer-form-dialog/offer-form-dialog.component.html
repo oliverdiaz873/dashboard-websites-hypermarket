@@ -1,0 +1,107 @@
+<h2 mat-dialog-title>{{ isEdit() ? 'Editar oferta' : 'Nueva oferta' }}</h2>
+<mat-dialog-content class="flex flex-col gap-4 pt-2">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4" novalidate>
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Producto *</span>
+      <select formControlName="productId" class="hs-input hs-input--select">
+        <option value="" disabled>Selecciona un producto</option>
+        @for (option of store.productOptions(); track option.value) {
+          <option [ngValue]="option.value">{{ option.label }}</option>
+        }
+      </select>
+      @if (form.controls.productId.invalid && form.controls.productId.touched) {
+        <span class="text-xs text-red-600">Selecciona un producto</span>
+      }
+    </label>
+
+    <div class="grid grid-cols-2 gap-4">
+      <label class="flex flex-col gap-1">
+        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+          >Precio original *</span
+        >
+        <input
+          formControlName="originalPrice"
+          type="number"
+          step="0.01"
+          min="0"
+          class="hs-input"
+          placeholder="0.00"
+        />
+        @if (form.controls.originalPrice.invalid && form.controls.originalPrice.touched) {
+          <span class="text-xs text-red-600">
+            {{
+              form.controls.originalPrice.hasError('required')
+                ? 'El precio original es obligatorio'
+                : 'Debe ser mayor o igual a 0'
+            }}
+          </span>
+        }
+      </label>
+
+      <label class="flex flex-col gap-1">
+        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+          >Precio oferta *</span
+        >
+        <input
+          formControlName="discountPrice"
+          type="number"
+          step="0.01"
+          min="0"
+          class="hs-input"
+          placeholder="0.00"
+        />
+        @if (form.controls.discountPrice.invalid && form.controls.discountPrice.touched) {
+          <span class="text-xs text-red-600">
+            {{
+              form.controls.discountPrice.hasError('required')
+                ? 'El precio de oferta es obligatorio'
+                : 'Debe ser mayor o igual a 0'
+            }}
+          </span>
+        } @else if (form.errors?.['discountNotLess'] && form.controls.discountPrice.touched) {
+          <span class="text-xs text-red-600">Debe ser menor que el precio original</span>
+        }
+      </label>
+    </div>
+
+    <p class="text-sm text-muted">Descuento: {{ discountPercentage() }}%</p>
+
+    <div class="grid grid-cols-2 gap-4">
+      <label class="flex flex-col gap-1">
+        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Inicio *</span>
+        <input formControlName="startDate" type="datetime-local" class="hs-input" />
+        @if (form.controls.startDate.invalid && form.controls.startDate.touched) {
+          <span class="text-xs text-red-600">La fecha de inicio es obligatoria</span>
+        }
+      </label>
+
+      <label class="flex flex-col gap-1">
+        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Fin</span>
+        <input formControlName="endDate" type="datetime-local" class="hs-input" />
+        @if (form.errors?.['dateRangeInvalid'] && form.controls.endDate.touched) {
+          <span class="text-xs text-red-600">El fin no puede ser anterior al inicio</span>
+        }
+      </label>
+    </div>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Título</span>
+      <input formControlName="title" type="text" class="hs-input" placeholder="Título opcional" />
+    </label>
+
+    <label class="flex items-center gap-2 pt-1">
+      <input formControlName="isActive" type="checkbox" class="hs-checkbox" />
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Activa</span>
+    </label>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()" [disabled]="submitting()">Cancelar</button>
+  <button mat-flat-button type="submit" (click)="onSubmit()" [disabled]="submitting()">
+    @if (submitting()) {
+      <span>Guardando…</span>
+    } @else {
+      <span>{{ isEdit() ? 'Guardar cambios' : 'Crear oferta' }}</span>
+    }
+  </button>
+</mat-dialog-actions>

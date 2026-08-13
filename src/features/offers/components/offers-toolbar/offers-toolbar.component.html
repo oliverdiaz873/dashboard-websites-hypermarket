@@ -1,0 +1,19 @@
+<div class="flex flex-wrap items-center justify-between gap-3">
+  <app-filter-select
+    label="Estado"
+    [options]="activeOptions"
+    [value]="store.activeFilter()"
+    allLabel="Todas"
+    (valueChange)="onActive($event)"
+  />
+
+  <div class="flex items-center gap-2">
+    <button mat-icon-button (click)="store.refresh()" matTooltip="Recargar ofertas" type="button">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button type="button" class="hs-btn hs-btn--primary" (click)="createClicked.emit()">
+      <mat-icon class="!text-base">add</mat-icon>
+      <span>Nueva oferta</span>
+    </button>
+  </div>
+</div>

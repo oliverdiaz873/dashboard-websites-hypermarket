@@ -1,0 +1,56 @@
+<div class="flex h-full flex-col gap-5 p-4 sm:p-6">
+  <app-page-header title="Ofertas" subtitle="Gestión de ofertas de la tienda" />
+
+  @if (!loading()) {
+    <app-offers-toolbar (createClicked)="onCreate()" />
+  }
+
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center rounded-lg border border-border bg-surface">
+      <div class="flex items-center gap-3 text-muted">
+        <div
+          class="size-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
+        ></div>
+        <span class="text-sm">Cargando ofertas…</span>
+      </div>
+    </div>
+  } @else if (showError()) {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state
+        icon="error_outline"
+        title="No se pudieron cargar las ofertas"
+        [message]="store.error() ?? ''"
+      >
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          (click)="retry()"
+        >
+          Reintentar
+        </button>
+      </app-empty-state>
+    </div>
+  } @else if (showTable()) {
+    <app-offers-table
+      [items]="store.filteredItems()"
+      [loading]="store.isLoading()"
+      (actionClicked)="onAction($event)"
+    />
+  } @else {
+    <div
+      class="flex min-h-64 items-center justify-center rounded-lg border border-border bg-surface"
+    >
+      <app-empty-state icon="sale_outline" [title]="emptyTitle()" [message]="emptyMessage()">
+        <button
+          type="button"
+          class="rounded-md bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700"
+          (click)="onCreate()"
+        >
+          Nueva oferta
+        </button>
+      </app-empty-state>
+    </div>
+  }
+</div>
