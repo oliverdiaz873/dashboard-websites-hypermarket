@@ -2,7 +2,7 @@
 // global-search-result.model.ts
 // -----------------------------------------------------------------------------
 // Contrato de resultados de la búsqueda global. Es independiente de las fuentes
-// concretas (LocalSearchAdapterSource, ApiSearchAdapterSource, ...): cada tipo
+// concretas (ApiSearchAdapterSource respaldado por el backend, ...): cada tipo
 // se agrupa en una sección del dropdown.
 // -----------------------------------------------------------------------------
 

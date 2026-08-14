@@ -20,6 +20,7 @@ describe('API_ENDPOINTS', () => {
       stats: '/admin/stats',
       auditLogs: '/admin/audit-logs',
       search: '/search',
+      adminSearch: '/admin/search',
     });
   });
 

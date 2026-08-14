@@ -12,7 +12,7 @@ import { errorInterceptor } from '@core/interceptors/error.interceptor';
 import { loadingInterceptor } from '@core/interceptors/loading.interceptor';
 import { SEARCH_GLOBAL_SOURCE } from '@core/search/services/global-search-source';
 
-import { LocalSearchAdapterSource } from '@features/search/local-search-adapter.source';
+import { ApiSearchAdapterSource } from '@features/search/api-search-adapter.source';
 import { CUSTOMER_DATA_SOURCE } from '@features/customers/data/customer-data-source.token';
 import { ApiCustomerDataSource } from '@features/customers/data/api-customer-data-source';
 
@@ -27,10 +27,9 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor, errorInterceptor])),
     {
       // Composition root: `core/search` permanece puro y `features/search` aporta
-      // la fuente local. Cuando exista `GET /search`, se sustituye por un
-      // `ApiSearchAdapterSource` sin tocar componentes ni stores.
+      // la fuente respaldada por el backend (GET /api/admin/search).
       provide: SEARCH_GLOBAL_SOURCE,
-      useClass: LocalSearchAdapterSource,
+      useClass: ApiSearchAdapterSource,
     },
     {
       // Composition root de clientes: fuente real del backend Express

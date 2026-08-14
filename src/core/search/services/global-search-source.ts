@@ -6,8 +6,8 @@ import { EMPTY_SEARCH_RESULTS, GlobalSearchResults } from '../models/global-sear
 /**
  * Fuente de búsqueda (Dependency Inversion). Permite cambiar de motor sin tocar
  * store/componente: se registra la implementación vía el provider
- * `SEARCH_GLOBAL_SOURCE` (p. ej. LocalSearchAdapterSource) y, cuando exista el
- * backend, por un `ApiSearchAdapterSource`.
+ * `SEARCH_GLOBAL_SOURCE` (p. ej. `ApiSearchAdapterSource` respaldado por el
+ * backend GET /api/admin/search).
  */
 export interface GlobalSearchSource {
   /** Busca entidades que coincidan con la `query` normalizada. */

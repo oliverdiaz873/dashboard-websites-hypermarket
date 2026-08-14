@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
   stats: '/admin/stats',
   auditLogs: '/admin/audit-logs',
   search: '/search',
+  adminSearch: '/admin/search',
 } as const;
 
 export type ApiEndpoint = (typeof API_ENDPOINTS)[keyof typeof API_ENDPOINTS];
