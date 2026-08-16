@@ -60,6 +60,7 @@ export class BaseApiService {
   }
 
   protected buildUrl(path: string): string {
+    if (/^https?:\/\//i.test(path)) return path;
     return `${this.apiConfig.baseUrl}${path}`;
   }
 

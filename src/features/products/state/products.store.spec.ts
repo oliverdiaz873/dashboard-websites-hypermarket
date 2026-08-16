@@ -173,7 +173,6 @@ describe('ProductsStore', () => {
     const payload: CreateProductPayload = {
       name: 'Café Molido',
       price: 120,
-      image: 'https://example.com/cafe.png',
       categoryId: 'c1',
     };
 
@@ -248,5 +247,130 @@ describe('ProductsStore', () => {
       .expectOne((r) => r.url.includes(`${URL}/p1`) && r.method === 'GET')
       .flush({ success: true, data: makeProduct() });
     await expect(pending).resolves.toMatchObject({ id: 'p1' });
+  });
+
+  it('createProduct con file: POST + presign + upload PUT + PATCH imageKey', async () => {
+    const payload: CreateProductPayload = { name: 'Café', price: 120, categoryId: 'c1' };
+    const file = new File(['x'], 'cafe.png', { type: 'image/png' });
+    const pending = store.createProduct(payload, file);
+
+    httpMock
+      .expectOne((r) => r.url.includes(URL) && r.method === 'POST')
+      .flush({ success: true, data: makeProduct() });
+    await tick();
+
+    const presign = httpMock.expectOne(
+      (r) =>
+        r.url.includes('http://localhost:3000/api/admin/uploads/presigned') && r.method === 'POST',
+    );
+    expect(presign.request.body).toEqual({
+      fileName: 'cafe.png',
+      contentType: 'image/png',
+      productId: 'p1',
+    });
+    presign.flush({
+      success: true,
+      data: {
+        uploadUrl: 'http://localhost:3000/api/uploads/local?key=products/p1/x.png&sig=s',
+        publicUrl: 'http://localhost:3000/uploads/products/p1/x.png',
+        expiresInSeconds: 600,
+        key: 'products/p1/x.png',
+        productId: 'p1',
+        purpose: 'product',
+      },
+    });
+    await tick();
+
+    const put = httpMock.expectOne(
+      (r) => r.url.includes('http://localhost:3000/api/uploads/local') && r.method === 'PUT',
+    );
+    expect(put.request.body).toBe(file);
+    put.flush({ success: true });
+    await tick();
+
+    const patch = httpMock.expectOne((r) => r.url.includes(`${URL}/p1`) && r.method === 'PATCH');
+    expect(patch.request.body).toEqual({ imageKey: 'products/p1/x.png' });
+    patch.flush({ success: true, data: makeProduct() });
+    await tick();
+
+    httpMock
+      .expectOne((r) => r.url.includes(URL) && r.method === 'GET')
+      .flush({
+        success: true,
+        data: [makeProduct()],
+        pagination: { page: 1, limit: 20, total: 1, pages: 1 },
+      });
+
+    await pending;
+    expect(store.isSubmitting()).toBe(false);
+    expect(store.products().length).toBe(1);
+  });
+
+  it('updateProduct con file: presign + upload PUT + PATCH con imageKey', async () => {
+    const file = new File(['x'], 'cafe.png', { type: 'image/png' });
+    const pending = store.updateProduct('p1', { price: 99 }, file);
+
+    httpMock
+      .expectOne(
+        (r) =>
+          r.url.includes('http://localhost:3000/api/admin/uploads/presigned') &&
+          r.method === 'POST',
+      )
+      .flush({
+        success: true,
+        data: {
+          uploadUrl: 'http://localhost:3000/api/uploads/local?key=products/p1/y.png&sig=s',
+          publicUrl: 'http://localhost:3000/uploads/products/p1/y.png',
+          expiresInSeconds: 600,
+          key: 'products/p1/y.png',
+          productId: 'p1',
+          purpose: 'product',
+        },
+      });
+    await tick();
+
+    httpMock
+      .expectOne(
+        (r) => r.url.includes('http://localhost:3000/api/uploads/local') && r.method === 'PUT',
+      )
+      .flush({ success: true });
+    await tick();
+
+    const patch = httpMock.expectOne((r) => r.url.includes(`${URL}/p1`) && r.method === 'PATCH');
+    expect(patch.request.body).toEqual({ price: 99, imageKey: 'products/p1/y.png' });
+    patch.flush({ success: true, data: makeProduct({ price: 99 }) });
+    await tick();
+
+    httpMock
+      .expectOne((r) => r.url.includes(URL) && r.method === 'GET')
+      .flush({
+        success: true,
+        data: [makeProduct({ price: 99 })],
+        pagination: { page: 1, limit: 20, total: 1, pages: 1 },
+      });
+
+    await pending;
+    expect(store.isSubmitting()).toBe(false);
+    expect(store.products()[0]?.price).toBe(99);
+  });
+
+  it('updateProduct con removeImage hace PATCH con removeImage:true', async () => {
+    const pending = store.updateProduct('p1', { price: 99 }, null, true);
+
+    const patch = httpMock.expectOne((r) => r.url.includes(`${URL}/p1`) && r.method === 'PATCH');
+    expect(patch.request.body).toEqual({ price: 99, removeImage: true });
+    patch.flush({ success: true, data: makeProduct({ price: 99 }) });
+    await tick();
+
+    httpMock
+      .expectOne((r) => r.url.includes(URL) && r.method === 'GET')
+      .flush({
+        success: true,
+        data: [makeProduct({ price: 99 })],
+        pagination: { page: 1, limit: 20, total: 1, pages: 1 },
+      });
+
+    await pending;
+    expect(store.isSubmitting()).toBe(false);
   });
 });

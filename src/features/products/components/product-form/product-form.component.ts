@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import type {
@@ -8,6 +8,7 @@ import type {
   UpdateProductPayload,
 } from '../../models/product.model';
 import { PRODUCT_STATUS_OPTIONS } from '../../constants/products.constants';
+import { ImageUploadComponent } from '../image-upload/image-upload.component';
 
 export interface SelectOption {
   value: string;
@@ -16,12 +17,18 @@ export interface SelectOption {
 
 export type ProductFormPayload = CreateProductPayload | UpdateProductPayload;
 
+export interface ProductFormSubmit {
+  payload: ProductFormPayload;
+  file: File | null;
+  removeImage: boolean;
+}
+
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ImageUploadComponent],
 })
 export class ProductFormComponent {
   readonly product = input<Product | null>(null);
@@ -30,10 +37,15 @@ export class ProductFormComponent {
   readonly brands = input<SelectOption[]>([]);
   readonly submitting = input<boolean>(false);
 
-  readonly submitted = output<ProductFormPayload>();
+  readonly submitted = output<ProductFormSubmit>();
   readonly cancelled = output<void>();
 
   protected readonly statusOptions = PRODUCT_STATUS_OPTIONS;
+
+  /** Archivo de imagen pendiente de subir (flujo presigned -> PUT -> imageKey). */
+  protected readonly selectedFile = signal<File | null>(null);
+  /** Intención de eliminar la imagen actual al guardar. */
+  protected readonly removeImage = signal(false);
 
   protected readonly form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required] }),
@@ -41,7 +53,6 @@ export class ProductFormComponent {
     price: new FormControl<number | null>(null, {
       validators: [Validators.required, Validators.min(0)],
     }),
-    image: new FormControl('', { validators: [Validators.required] }),
     categoryId: new FormControl('', { validators: [Validators.required] }),
     brandId: new FormControl(''),
     unit: new FormControl(''),
@@ -61,7 +72,6 @@ export class ProductFormComponent {
         name: product.name,
         sku: product.sku,
         price: product.price,
-        image: product.image,
         categoryId: product.categoryId,
         brandId: product.brandId ?? '',
         unit: product.unit ?? '',
@@ -73,12 +83,30 @@ export class ProductFormComponent {
     });
   }
 
+  protected onFileChange(file: File | null): void {
+    this.selectedFile.set(file);
+    if (file) {
+      this.removeImage.set(false);
+    }
+  }
+
+  protected onRemoveChange(remove: boolean): void {
+    this.removeImage.set(remove);
+    if (remove) {
+      this.selectedFile.set(null);
+    }
+  }
+
   protected onSubmit(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
       return;
     }
-    this.submitted.emit(this.isCreate() ? this.toCreatePayload() : this.toUpdatePayload());
+    this.submitted.emit({
+      payload: this.isCreate() ? this.toCreatePayload() : this.toUpdatePayload(),
+      file: this.selectedFile(),
+      removeImage: this.removeImage(),
+    });
   }
 
   protected onCancel(): void {
@@ -86,7 +114,7 @@ export class ProductFormComponent {
   }
 
   hasUnsavedChanges(): boolean {
-    return this.form.dirty;
+    return this.form.dirty || this.selectedFile() !== null || this.removeImage();
   }
 
   private toCreatePayload(): CreateProductPayload {
@@ -94,7 +122,6 @@ export class ProductFormComponent {
     return {
       name: c.name.value?.trim() ?? '',
       price: this.price(c.price),
-      image: c.image.value?.trim() ?? '',
       categoryId: c.categoryId.value ?? '',
       sku: optional(c.sku.value),
       brandId: optional(c.brandId.value),
@@ -114,7 +141,6 @@ export class ProductFormComponent {
     return {
       name: c.name.value?.trim() ?? '',
       price: this.price(c.price),
-      image: c.image.value?.trim() ?? '',
       categoryId: c.categoryId.value ?? '',
       sku: optional(c.sku.value),
       brandId: brandValue ? brandValue : null,

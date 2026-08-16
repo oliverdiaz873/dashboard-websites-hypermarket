@@ -1,0 +1,57 @@
+<div
+  class="flex flex-col gap-2"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  @if (previewUrl(); as url) {
+    <div class="flex items-center gap-4">
+      <img
+        [src]="url"
+        alt="Vista previa de la imagen del producto"
+        class="h-32 w-32 rounded-md border border-border object-cover"
+      />
+      <div class="flex flex-col gap-2">
+        @if (selectedFile()) {
+          <span class="text-xs font-medium text-brand-600">Nueva imagen seleccionada</span>
+        }
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="btn-upload" (click)="openFilePicker()">
+            Cambiar imagen
+          </button>
+          <button type="button" class="btn-upload btn-upload--danger" (click)="onRemove()">
+            Quitar imagen
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <button
+      type="button"
+      class="dropzone"
+      [class.dropzone--active]="dragOver()"
+      (click)="openFilePicker()"
+    >
+      <span class="text-sm font-medium text-muted">
+        Arrastra una imagen aquí o haz clic para seleccionar
+      </span>
+      <span class="text-xs text-neutral-400">JPEG, PNG, WebP, AVIF o GIF · máx. 5 MB</span>
+    </button>
+  }
+
+  @if (removeImage() && initialImage()) {
+    <p class="text-xs text-warning-600">Se eliminará la imagen actual al guardar.</p>
+  }
+
+  @if (error(); as message) {
+    <p class="text-xs text-danger-600">{{ message }}</p>
+  }
+
+  <input
+    #fileInput
+    type="file"
+    accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+    class="hidden"
+    (change)="onInputChange($event)"
+  />
+</div>

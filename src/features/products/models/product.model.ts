@@ -18,6 +18,7 @@ export interface Product {
   description?: string;
   price: number;
   image: string;
+  imageKey?: string | null;
   categoryId: string;
   category: ProductCategoryEmbed;
   brandId?: string;
@@ -34,11 +35,12 @@ export interface Product {
  * Payload de creación (POST /products).
  * `stock`/`minStock` solo aplican en create: el backend crea el inventario aquí.
  * El SKU se auto-genera en backend si se omite.
+ * La imagen se adjunta DESPUÉS de crear el draft vía flujo presigned + imageKey,
+ * por lo que no forma parte del payload de creación.
  */
 export interface CreateProductPayload {
   name: string;
   price: number;
-  image: string;
   categoryId: string;
   sku?: string;
   brandId?: string;
@@ -55,11 +57,12 @@ export interface CreateProductPayload {
  * Payload de actualización (PATCH /products/:id). Partial.
  * `stock`/`minStock` NO se envían aquí: el inventario es gestionado por el
  * módulo de inventario (futuro). `brandId: null` limpia la marca del producto.
+ * La imagen se gestiona por `imageKey` (nueva subida confirmada) o
+ * `removeImage` (eliminar la imagen actual); nunca se envía `image` manual.
  */
 export interface UpdateProductPayload {
   name?: string;
   price?: number;
-  image?: string;
   categoryId?: string;
   sku?: string;
   brandId?: string | null;
@@ -68,4 +71,6 @@ export interface UpdateProductPayload {
   description?: string;
   status?: ProductStatus;
   isAvailable?: boolean;
+  imageKey?: string;
+  removeImage?: boolean;
 }

@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProductFormComponent, type ProductFormPayload } from './product-form.component';
+import { ProductFormComponent, type ProductFormSubmit } from './product-form.component';
 import type { Product } from '../../models/product.model';
 
 interface FormAccess {
   form: { setValue(v: unknown): void; getRawValue(): Record<string, unknown> };
+  onFileChange(file: File | null): void;
+  onRemoveChange(remove: boolean): void;
 }
 
 function ref(component: ProductFormComponent): FormAccess {
@@ -26,8 +28,8 @@ describe('ProductFormComponent', () => {
     fixture.detectChanges();
   });
 
-  function submit(): ProductFormPayload | undefined {
-    let emitted: ProductFormPayload | undefined;
+  function submit(): ProductFormSubmit | undefined {
+    let emitted: ProductFormSubmit | undefined;
     component.submitted.subscribe((value) => (emitted = value));
     (component as unknown as { onSubmit(): void }).onSubmit();
     return emitted;
@@ -37,7 +39,6 @@ describe('ProductFormComponent', () => {
     name: 'Café',
     sku: 'SKU1',
     price: 100,
-    image: 'http://x.png',
     categoryId: 'c1',
     brandId: 'b2',
     unit: 'kg',
@@ -49,14 +50,30 @@ describe('ProductFormComponent', () => {
     minStock: 3,
   };
 
-  it('emite un CreateProductPayload con todos los campos en modo create', () => {
+  it('emite un CreateProductPayload sin imagen en modo create', () => {
     setForm(component, validValues);
-    expect(submit()).toEqual(validValues);
+    const emitted = submit();
+    expect(emitted?.payload).toEqual(validValues);
+    expect(emitted?.file).toBeNull();
+    expect(emitted?.removeImage).toBe(false);
   });
 
   it('no emite si faltan campos requeridos', () => {
     setForm(component, { ...validValues, name: '', price: null, categoryId: '' });
     expect(submit()).toBeUndefined();
+  });
+
+  it('incluye la intención de imagen (file/removeImage) en el submit', () => {
+    setForm(component, validValues);
+    const file = new File(['x'], 'cafe.png', { type: 'image/png' });
+    ref(component).onFileChange(file);
+    expect(submit()?.file).toBe(file);
+    expect(submit()?.removeImage).toBe(false);
+
+    ref(component).onRemoveChange(true);
+    const removed = submit();
+    expect(removed?.file).toBeNull();
+    expect(removed?.removeImage).toBe(true);
   });
 
   describe('modo edit', () => {
@@ -88,16 +105,15 @@ describe('ProductFormComponent', () => {
       expect(raw.brandId).toBe('b1');
     });
 
-    it('emite UpdateProductPayload sin stock/minStock y brandId null si se limpia', () => {
+    it('emite UpdateProductPayload sin stock/minStock ni image y brandId null si se limpia', () => {
       const raw = ref(component).form.getRawValue();
       setForm(component, { ...raw, brandId: '', price: 99 });
 
-      const payload = submit() as Record<string, unknown>;
+      const payload = submit()?.payload as Record<string, unknown>;
       expect(payload).toEqual({
         name: 'Arroz',
         sku: 'SKU1',
         price: 99,
-        image: 'http://x.png',
         categoryId: 'c1',
         brandId: null,
         unit: undefined,
@@ -108,6 +124,7 @@ describe('ProductFormComponent', () => {
       });
       expect('stock' in payload).toBe(false);
       expect('minStock' in payload).toBe(false);
+      expect('image' in payload).toBe(false);
     });
   });
 });

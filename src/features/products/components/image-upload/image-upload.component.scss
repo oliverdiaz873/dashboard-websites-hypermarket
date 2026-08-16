@@ -1,0 +1,59 @@
+:host {
+  display: block;
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  border: 1.5px dashed var(--hs-border);
+  border-radius: var(--hs-radius-md);
+  background-color: var(--hs-surface);
+  cursor: pointer;
+  transition:
+    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover,
+  &--active {
+    border-color: var(--hs-brand-500);
+    background-color: var(--hs-brand-50);
+  }
+
+  &--active {
+    border-color: var(--hs-brand-600);
+  }
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--hs-border);
+  border-radius: var(--hs-radius-md);
+  background-color: transparent;
+  color: var(--hs-muted);
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: var(--hs-surface-alt);
+  }
+
+  &--danger {
+    color: var(--hs-danger-600);
+    border-color: color-mix(in srgb, var(--hs-danger-600) 40%, var(--hs-border));
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--hs-danger-600) 8%, transparent);
+    }
+  }
+}

@@ -14,7 +14,7 @@ import { PageHeaderComponent } from '@shared/components/page-header/page-header.
 import { ProductsStore } from '../../state/products.store';
 import {
   ProductFormComponent,
-  type ProductFormPayload,
+  type ProductFormSubmit,
 } from '../../components/product-form/product-form.component';
 import type {
   CreateProductPayload,
@@ -61,11 +61,12 @@ export class ProductFormPageComponent {
     return this.store.isSubmitting();
   }
 
-  protected async onSubmitted(payload: ProductFormPayload): Promise<void> {
+  protected async onSubmitted(submit: ProductFormSubmit): Promise<void> {
     const create = this.isCreate();
+    const { payload, file, removeImage } = submit;
     try {
       if (create) {
-        await this.store.createProduct(payload as CreateProductPayload);
+        await this.store.createProduct(payload as CreateProductPayload, file);
         this.notificationsStore.add({
           type: NOTIFICATION_TYPE.SUCCESS,
           title: 'Producto creado',
@@ -74,7 +75,7 @@ export class ProductFormPageComponent {
       } else {
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) return;
-        await this.store.updateProduct(id, payload as UpdateProductPayload);
+        await this.store.updateProduct(id, payload as UpdateProductPayload, file, removeImage);
         this.notificationsStore.add({
           type: NOTIFICATION_TYPE.SUCCESS,
           title: 'Producto actualizado',

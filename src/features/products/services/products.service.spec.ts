@@ -2,6 +2,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
+import { SKIP_AUTH, SKIP_LOADING } from '@core/http/tokens/http-context.tokens';
+
 import { ProductsService } from '../services/products.service';
 import type { ProductsQuery } from '../models/products-query';
 import type { CreateProductPayload, Product } from '../models/product.model';
@@ -87,7 +89,6 @@ describe('ProductsService', () => {
     const payload: CreateProductPayload = {
       name: 'Café Molido',
       price: 120,
-      image: 'https://example.com/cafe.png',
       categoryId: 'c1',
       brandId: 'b1',
       stock: 10,
@@ -127,6 +128,51 @@ describe('ProductsService', () => {
     const req = httpMock.expectOne(`${BASE}/p1`);
     expect(req.request.method).toBe('DELETE');
     req.flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(completed).toBe(true);
+  });
+
+  it('requestPresignedUpload hace POST a /admin/uploads/presigned con fileName/contentType/productId', () => {
+    const presigned = {
+      uploadUrl: 'http://localhost:3000/api/uploads/local?key=products/p1/x.png&sig=abc',
+      publicUrl: 'http://localhost:3000/uploads/products/p1/x.png',
+      expiresInSeconds: 600,
+      key: 'products/p1/x.png',
+      productId: 'p1',
+      purpose: 'product',
+    };
+
+    let result: unknown;
+    service
+      .requestPresignedUpload({ fileName: 'cafe.png', contentType: 'image/png', productId: 'p1' })
+      .subscribe((res) => (result = res));
+
+    const req = httpMock.expectOne('http://localhost:3000/api/admin/uploads/presigned');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      fileName: 'cafe.png',
+      contentType: 'image/png',
+      productId: 'p1',
+    });
+    req.flush({ success: true, data: presigned });
+
+    expect(result).toEqual(presigned);
+  });
+
+  it('uploadFile hace PUT absoluto con el File, Content-Type del archivo y sin auth', () => {
+    const url = 'http://localhost:3000/api/uploads/local?key=products/p1/x.png&sig=abc';
+    const file = new File(['x'], 'cafe.png', { type: 'image/png' });
+
+    let completed = false;
+    service.uploadFile(url, file).subscribe({ complete: () => (completed = true) });
+
+    const req = httpMock.expectOne(url);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toBe(file);
+    expect(req.request.headers.get('Content-Type')).toBe('image/png');
+    expect(req.request.context.get(SKIP_AUTH)).toBe(true);
+    expect(req.request.context.get(SKIP_LOADING)).toBe(true);
+    req.flush({ success: true });
 
     expect(completed).toBe(true);
   });

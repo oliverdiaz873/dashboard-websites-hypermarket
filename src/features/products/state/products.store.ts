@@ -123,6 +123,18 @@ export const ProductsStore = signalStore(
       void load();
     };
 
+    const attachImage = async (productId: string, file: File): Promise<Product> => {
+      const presigned = await firstValueFrom(
+        productsService.requestPresignedUpload({
+          fileName: file.name,
+          contentType: file.type || 'application/octet-stream',
+          productId,
+        }),
+      );
+      await firstValueFrom(productsService.uploadFile(presigned.uploadUrl, file));
+      return firstValueFrom(productsService.update(productId, { imageKey: presigned.key }));
+    };
+
     return {
       load,
 
@@ -214,10 +226,13 @@ export const ProductsStore = signalStore(
         void load();
       },
 
-      async createProduct(payload: CreateProductPayload): Promise<Product> {
+      async createProduct(payload: CreateProductPayload, file?: File | null): Promise<Product> {
         patchState(store, { isSubmitting: true });
         try {
-          const product = await firstValueFrom(productsService.create(payload));
+          let product = await firstValueFrom(productsService.create(payload));
+          if (file) {
+            product = await attachImage(product.id, file);
+          }
           patchState(store, { isSubmitting: false });
           await load();
           return product;
@@ -229,10 +244,29 @@ export const ProductsStore = signalStore(
         }
       },
 
-      async updateProduct(id: string, payload: UpdateProductPayload): Promise<Product> {
+      async updateProduct(
+        id: string,
+        payload: UpdateProductPayload,
+        file?: File | null,
+        removeImage = false,
+      ): Promise<Product> {
         patchState(store, { isSubmitting: true });
         try {
-          const product = await firstValueFrom(productsService.update(id, payload));
+          let finalPayload = payload;
+          if (file) {
+            const presigned = await firstValueFrom(
+              productsService.requestPresignedUpload({
+                fileName: file.name,
+                contentType: file.type || 'application/octet-stream',
+                productId: id,
+              }),
+            );
+            await firstValueFrom(productsService.uploadFile(presigned.uploadUrl, file));
+            finalPayload = { ...payload, imageKey: presigned.key };
+          } else if (removeImage) {
+            finalPayload = { ...payload, removeImage: true };
+          }
+          const product = await firstValueFrom(productsService.update(id, finalPayload));
           patchState(store, { isSubmitting: false });
           await load();
           return product;
