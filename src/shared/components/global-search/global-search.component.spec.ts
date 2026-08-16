@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -30,6 +30,7 @@ describe('GlobalSearchComponent', () => {
     source = { search: jest.fn() };
     await TestBed.configureTestingModule({
       imports: [GlobalSearchComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [provideRouter([]), { provide: SEARCH_GLOBAL_SOURCE, useValue: source }],
     }).compileComponents();
     // Evita rechazos por rutas inexistentes al navegar con Enter en los tests.

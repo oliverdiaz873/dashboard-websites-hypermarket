@@ -1,8 +1,11 @@
 // -----------------------------------------------------------------------------
-// environment.ts — Entorno de PRODUCCIÓN
+// environment.ts — Entorno BASE
 // -----------------------------------------------------------------------------
-// Este archivo se usa en el build de producción. La URL de la API es un
-// placeholder: sustituir por la URL real cuando el backend esté desplegado.
+// Archivo base que `@env/environment` resuelve por defecto. Durante el build se
+// sustituye por `fileReplacements` (ver angular.json): `environment.development.ts`
+// en desarrollo y `environment.production.ts` en el build de producción.
+// Este archivo NO se usa directamente en ningún build real: mantiene valores
+// de desarrollo como fallback/local.
 // -----------------------------------------------------------------------------
 export const environment = {
   production: true,

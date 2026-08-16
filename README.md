@@ -225,9 +225,11 @@ Flujo de autenticación completo contra el backend
 
 > **Nota sobre producción:** el build `--configuration production` usa
 > `src/environments/environment.production.ts` (vía `fileReplacements` en
-> `angular.json`). Contiene `apiBaseUrl: "https://REPLACE_WITH_PRODUCTION_API/api"`
-> como placeholder: **reemplazar ese valor antes del build de producción** o
-> integrarlo con el sistema CI/CD del hosting.
+> `angular.json`). La app Angular **no lee variables de entorno en tiempo de
+> build**: el valor de `apiBaseUrl` debe configurarse en ese archivo **antes del
+> build de producción** (o inyectarse por el CI/CD del hosting). La variable
+> documentada es `DASHBOARD_API_BASE_URL` (ver `.env.example`); el valor por
+> defecto `''` es solo fallback/local y **no** es una URL de producción válida.
 
 ---
 
@@ -263,7 +265,8 @@ npm start
 Para producción:
 
 ```bash
-# Antes de desplegar: apuntar apiBaseUrl en src/environments/environment.production.ts
+# Antes de desplegar: configurar apiBaseUrl en src/environments/environment.production.ts
+# (variable documentada: DASHBOARD_API_BASE_URL, ver .env.example)
 npm run build              # ng build (configuración production)
 npm test                   # 303 tests
 npm run lint               # ESLint
