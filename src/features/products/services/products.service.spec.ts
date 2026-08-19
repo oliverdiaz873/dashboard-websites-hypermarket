@@ -9,6 +9,7 @@ import type { ProductsQuery } from '../models/products-query';
 import type { CreateProductPayload, Product } from '../models/product.model';
 
 const BASE = 'http://localhost:3000/api/products';
+const ADMIN_BASE = 'http://localhost:3000/api/admin/products';
 
 describe('ProductsService', () => {
   let service: ProductsService;
@@ -51,7 +52,7 @@ describe('ProductsService', () => {
     service.list(query).subscribe((res) => (result = res));
 
     const req = httpMock.expectOne(
-      `${BASE}?page=2&limit=20&q=arroz&status=active&sortBy=name&sortOrder=asc`,
+      `${ADMIN_BASE}?page=2&limit=20&q=arroz&status=active&sortBy=name&sortOrder=asc`,
     );
     expect(req.request.method).toBe('GET');
     req.flush({
@@ -67,7 +68,7 @@ describe('ProductsService', () => {
   it('list omite filtros vacíos', () => {
     service.list({ page: 1, limit: 50 }).subscribe();
 
-    const req = httpMock.expectOne(`${BASE}?page=1&limit=50`);
+    const req = httpMock.expectOne(`${ADMIN_BASE}?page=1&limit=50`);
     expect(req.request.params.has('q')).toBe(false);
     req.flush({ success: true, data: [], pagination: { page: 1, limit: 50, total: 0, pages: 1 } });
   });
@@ -78,7 +79,7 @@ describe('ProductsService', () => {
     let result: Product | undefined;
     service.getById('p1').subscribe((res) => (result = res));
 
-    const req = httpMock.expectOne(`${BASE}/p1`);
+    const req = httpMock.expectOne(`${ADMIN_BASE}/p1`);
     expect(req.request.method).toBe('GET');
     req.flush({ success: true, data: product });
 
@@ -113,7 +114,7 @@ describe('ProductsService', () => {
     let result: Product | undefined;
     service.update('p1', payload).subscribe((res) => (result = res));
 
-    const req = httpMock.expectOne(`${BASE}/p1`);
+    const req = httpMock.expectOne(`${ADMIN_BASE}/p1`);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(payload);
     req.flush({ success: true, data: makeProduct({ id: 'p1', price: 99 }) });

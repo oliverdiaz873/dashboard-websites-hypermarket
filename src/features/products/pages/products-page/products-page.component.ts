@@ -62,6 +62,23 @@ export class ProductsPageComponent {
     }
     if (event.actionId === 'delete') {
       this.requestDelete(event.row);
+      return;
+    }
+    if (event.actionId === 'publish') {
+      void this.publish(event.row);
+    }
+  }
+
+  private async publish(product: Product): Promise<void> {
+    try {
+      await this.store.updateProduct(product.id, { status: 'active', isAvailable: true });
+      this.notificationsStore.add({
+        type: NOTIFICATION_TYPE.SUCCESS,
+        title: 'Producto publicado',
+        message: 'El producto ya está visible en el catálogo público.',
+      });
+    } catch {
+      // El error ya se notifica vía ErrorInterceptor.
     }
   }
 

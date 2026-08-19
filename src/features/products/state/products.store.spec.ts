@@ -5,7 +5,8 @@ import { TestBed } from '@angular/core/testing';
 import { ProductsStore } from './products.store';
 import type { CreateProductPayload, Product } from '../models/product.model';
 
-const URL = 'http://localhost:3000/api/products';
+const URL = 'http://localhost:3000/api/admin/products';
+const PUBLIC_URL = 'http://localhost:3000/api/products';
 
 function makeProduct(overrides: Partial<Product> = {}): Product {
   return {
@@ -178,7 +179,7 @@ describe('ProductsStore', () => {
 
     const pending = store.createProduct(payload);
 
-    const post = httpMock.expectOne((r) => r.url.includes(URL) && r.method === 'POST');
+    const post = httpMock.expectOne((r) => r.url.includes(PUBLIC_URL) && r.method === 'POST');
     expect(post.request.body).toEqual(payload);
     expect(store.isSubmitting()).toBe(true);
     post.flush({ success: true, data: makeProduct() });
@@ -200,7 +201,7 @@ describe('ProductsStore', () => {
   it('deleteProduct hace DELETE y recarga el listado', async () => {
     const pending = store.deleteProduct('p1');
 
-    const del = httpMock.expectOne((r) => r.url.includes(URL) && r.method === 'DELETE');
+    const del = httpMock.expectOne((r) => r.url.includes(PUBLIC_URL) && r.method === 'DELETE');
     expect(del.request.method).toBe('DELETE');
     del.flush(null, { status: 204, statusText: 'No Content' });
     await tick();
@@ -255,7 +256,7 @@ describe('ProductsStore', () => {
     const pending = store.createProduct(payload, file);
 
     httpMock
-      .expectOne((r) => r.url.includes(URL) && r.method === 'POST')
+      .expectOne((r) => r.url.includes(PUBLIC_URL) && r.method === 'POST')
       .flush({ success: true, data: makeProduct() });
     await tick();
 

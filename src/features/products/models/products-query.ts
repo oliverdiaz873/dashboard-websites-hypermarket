@@ -2,7 +2,7 @@ import { PRODUCT_SORT_FIELDS, type ProductSortField } from '../constants/product
 import type { ProductStatus } from './product.model';
 import type { SortDirection } from '@core/enums/sort-direction';
 
-/** Contrato de consulta de listado, espejo del backend (docs: GET /api/products). */
+/** Contrato de consulta del catálogo administrativo (GET /api/admin/products). */
 export interface ProductsQuery {
   page: number;
   limit: number;

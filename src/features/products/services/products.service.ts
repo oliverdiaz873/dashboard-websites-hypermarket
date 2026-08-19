@@ -20,11 +20,13 @@ export interface PresignedUpload {
 @Injectable({ providedIn: 'root' })
 export class ProductsService extends BaseApiService {
   list(query: ProductsQuery): Observable<PaginatedResponse<Product[]>> {
-    return this.getPaginated<Product[]>(API_ENDPOINTS.products, { params: this.toParams(query) });
+    return this.getPaginated<Product[]>(API_ENDPOINTS.adminProducts, {
+      params: this.toParams(query),
+    });
   }
 
   getById(id: string): Observable<Product> {
-    return this.get<Product>(`${API_ENDPOINTS.products}/${id}`);
+    return this.get<Product>(`${API_ENDPOINTS.adminProducts}/${id}`);
   }
 
   create(payload: CreateProductPayload): Observable<Product> {
@@ -32,7 +34,7 @@ export class ProductsService extends BaseApiService {
   }
 
   update(id: string, payload: UpdateProductPayload): Observable<Product> {
-    return this.patch<Product>(`${API_ENDPOINTS.products}/${id}`, payload);
+    return this.patch<Product>(`${API_ENDPOINTS.adminProducts}/${id}`, payload);
   }
 
   remove(id: string): Observable<void> {

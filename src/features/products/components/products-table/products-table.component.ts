@@ -55,6 +55,12 @@ export class ProductsTableComponent {
 
   protected readonly actions: TableAction<Product>[] = [
     { id: 'edit', label: 'Editar', icon: 'edit' },
+    {
+      id: 'publish',
+      label: 'Publicar',
+      icon: 'publish',
+      visible: (row) => row.status !== 'active' || !row.isAvailable,
+    },
     { id: 'delete', label: 'Eliminar', icon: 'delete' },
   ];
 
