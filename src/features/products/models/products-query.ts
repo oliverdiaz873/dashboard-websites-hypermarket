@@ -8,6 +8,8 @@ export interface ProductsQuery {
   limit: number;
   q?: string;
   category?: string;
+  categoryId?: string;
+  subcategoryId?: string;
   brand?: string;
   status?: ProductStatus;
   sortBy?: ProductSortField;

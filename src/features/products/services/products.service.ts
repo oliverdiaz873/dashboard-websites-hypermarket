@@ -65,6 +65,8 @@ export class ProductsService extends BaseApiService {
     };
     if (query.q) params['q'] = query.q;
     if (query.category) params['category'] = query.category;
+    if (query.categoryId) params['categoryId'] = query.categoryId;
+    if (query.subcategoryId) params['subcategoryId'] = query.subcategoryId;
     if (query.brand) params['brand'] = query.brand;
     if (query.status) params['status'] = query.status;
     if (query.sortBy) params['sortBy'] = query.sortBy;

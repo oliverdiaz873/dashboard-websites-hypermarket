@@ -168,7 +168,11 @@ export const ProductsStore = signalStore(
         try {
           const categories = await firstValueFrom(categoriesService.list());
           patchState(store, {
-            categoryOptions: categories.map((c) => ({ value: c.id, label: c.name })),
+            categoryOptions: categories.map((c) => ({
+              value: c.id,
+              label: c.name,
+              subcategories: c.subcategories.map((sub) => ({ value: sub.slug, label: sub.name })),
+            })),
           });
         } catch {
           /* Sin categorías el formulario no puede crear; el submit lo valida. */

@@ -13,6 +13,7 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
 export interface SelectOption {
   value: string;
   label: string;
+  subcategories?: SelectOption[];
 }
 
 export type ProductFormPayload = CreateProductPayload | UpdateProductPayload;
@@ -54,6 +55,7 @@ export class ProductFormComponent {
       validators: [Validators.required, Validators.min(0)],
     }),
     categoryId: new FormControl('', { validators: [Validators.required] }),
+    subcategoryId: new FormControl(''),
     brandId: new FormControl(''),
     unit: new FormControl(''),
     unitQuantity: new FormControl<number | null>(null, { validators: [Validators.min(1)] }),
@@ -73,6 +75,7 @@ export class ProductFormComponent {
         sku: product.sku,
         price: product.price,
         categoryId: product.categoryId,
+        subcategoryId: product.subcategoryId ?? '',
         brandId: product.brandId ?? '',
         unit: product.unit ?? '',
         unitQuantity: product.unitQuantity ?? null,
@@ -81,6 +84,20 @@ export class ProductFormComponent {
         isAvailable: product.isAvailable,
       });
     });
+  }
+
+  protected subcategories(): SelectOption[] {
+    const category = this.categories().find(
+      (option) => option.value === this.form.controls.categoryId.value,
+    );
+    return category?.subcategories ?? [];
+  }
+
+  protected onCategoryChange(): void {
+    const selected = this.form.controls.subcategoryId.value;
+    if (!this.subcategories().some((option) => option.value === selected)) {
+      this.form.controls.subcategoryId.setValue('');
+    }
   }
 
   protected onFileChange(file: File | null): void {
@@ -123,6 +140,7 @@ export class ProductFormComponent {
       name: c.name.value?.trim() ?? '',
       price: this.price(c.price),
       categoryId: c.categoryId.value ?? '',
+      subcategoryId: optional(c.subcategoryId.value) ?? null,
       sku: optional(c.sku.value),
       brandId: optional(c.brandId.value),
       unit: optional(c.unit.value),
@@ -142,6 +160,7 @@ export class ProductFormComponent {
       name: c.name.value?.trim() ?? '',
       price: this.price(c.price),
       categoryId: c.categoryId.value ?? '',
+      subcategoryId: optional(c.subcategoryId.value) ?? null,
       sku: optional(c.sku.value),
       brandId: brandValue ? brandValue : null,
       unit: optional(c.unit.value),

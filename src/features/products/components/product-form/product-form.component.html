@@ -55,7 +55,11 @@
 
     <label class="flex flex-col gap-1">
       <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Categoría *</span>
-      <select formControlName="categoryId" class="hs-input hs-input--select">
+      <select
+        formControlName="categoryId"
+        class="hs-input hs-input--select"
+        (change)="onCategoryChange()"
+      >
         <option value="" disabled>Selecciona una categoría</option>
         @for (option of categories(); track option.value) {
           <option [ngValue]="option.value">{{ option.label }}</option>
@@ -64,6 +68,16 @@
       @if (form.controls.categoryId.invalid && form.controls.categoryId.touched) {
         <span class="text-xs text-red-600">Selecciona una categoría</span>
       }
+    </label>
+
+    <label class="flex flex-col gap-1">
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Subcategoría</span>
+      <select formControlName="subcategoryId" class="hs-input hs-input--select">
+        <option value="">Sin subcategoría</option>
+        @for (option of subcategories(); track option.value) {
+          <option [ngValue]="option.value">{{ option.label }}</option>
+        }
+      </select>
     </label>
 
     <label class="flex flex-col gap-1">

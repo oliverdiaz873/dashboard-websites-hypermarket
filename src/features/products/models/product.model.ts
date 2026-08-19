@@ -5,6 +5,11 @@ export interface ProductCategoryEmbed {
   slug: string;
 }
 
+export interface ProductSubcategoryEmbed {
+  name: string;
+  slug: string;
+}
+
 export interface ProductBrandEmbed {
   name: string;
   slug: string;
@@ -20,7 +25,9 @@ export interface Product {
   image: string;
   imageKey?: string | null;
   categoryId: string;
+  subcategoryId?: string | null;
   category: ProductCategoryEmbed;
+  subcategory?: ProductSubcategoryEmbed | null;
   brandId?: string;
   brand?: ProductBrandEmbed;
   unit?: string;
@@ -42,6 +49,7 @@ export interface CreateProductPayload {
   name: string;
   price: number;
   categoryId: string;
+  subcategoryId?: string | null;
   sku?: string;
   brandId?: string;
   unit?: string;
@@ -64,6 +72,7 @@ export interface UpdateProductPayload {
   name?: string;
   price?: number;
   categoryId?: string;
+  subcategoryId?: string | null;
   sku?: string;
   brandId?: string | null;
   unit?: string;
