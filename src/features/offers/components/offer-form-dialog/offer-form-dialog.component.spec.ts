@@ -22,7 +22,7 @@ const offer: Offer = {
 
 function flushProductOptions(httpMock: HttpTestingController): void {
   httpMock
-    .expectOne((r) => r.url.includes('/api/products'))
+    .expectOne((r) => r.url.includes('/api/admin/products'))
     .flush({
       success: true,
       data: [{ id: 'p1', name: 'Arroz 1kg' }],

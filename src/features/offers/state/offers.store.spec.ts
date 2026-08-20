@@ -135,11 +135,11 @@ describe('OffersStore', () => {
     expect(notifications.notifications().length).toBe(1);
   });
 
-  it('loadProductOptions consume GET /api/products (page 1, limit 100) y mapea a SelectOption', async () => {
+  it('loadProductOptions consume GET /api/admin/products (page 1, limit 100) y mapea a SelectOption', async () => {
     const pending = store.loadProductOptions();
     const req = httpMock.expectOne(
       (r) =>
-        r.url.includes('/api/products') &&
+        r.url.includes('/api/admin/products') &&
         r.params.get('page') === '1' &&
         r.params.get('limit') === '100',
     );
